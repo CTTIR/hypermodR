@@ -1,0 +1,1 @@
+{"schema_version":1,"device_qualification":"unavailable","profiles":[{"id":"tivita-synthetic-yxb-v1","layout":"y,x,band","qualification":"synthetic_only","wavelength_inference":false}],"unqualified_devices":["Tissue","Mini","Surgery","other"],"asset_roles":["SpecCube","RGB","DICOM","parameter_display","quantitative_export","segmentation","mask","metadata","sidecar","unknown"]}

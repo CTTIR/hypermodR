@@ -1,0 +1,63 @@
+---
+title: "Validation and reliability"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Validation and reliability}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+library(hypermodR)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", error = FALSE)
+```
+This exact-value example evaluates four synthetic classification observations.
+Subjects are the independent units; the score is a pooled descriptive estimand,
+not a clinical or external validation claim.
+
+```{r known-metrics}
+task <- hm_task("truth", "classification", "spectrum", "subject_id")
+reference <- data.frame(
+  observation_id = letters[1:4],
+  subject_id = paste0("unit_", 1:4), truth = c("a", "a", "b", "b")
+)
+pred <- hm_prediction(c("a", "b", "b", "b"), task, letters[1:4],
+  probabilities = matrix(c(.8, .2, .4, .6, .3, .7, .1, .9), 4, 2,
+    byrow = TRUE,
+    dimnames = list(NULL, c("a", "b"))
+  ), class_map = c("a", "b")
+)
+e <- hm_evaluate(pred, reference)
+if (!isTRUE(all(
+  unname(e$metrics["accuracy"]) == .75,
+  isTRUE(all.equal(unname(e$metrics["brier"]), .25))
+))) {
+  cli::cli_abort("Example assertion failed.", class = "hm_example_error")
+}
+e
+hm_reliability(pred, reference)
+```
+
+`hm_split()` connects biological/source identities before assignment. Frame
+windows from the same source cannot become independent units. Nested tuning,
+preprocessing, early stopping and calibration belong inside outer training.
+`hm_calibrate()` requires an explicit inner fit and outer split;
+`hm_apply_calibration()` applies its frozen temperature/abstention settings.
+`hm_active_learning()` proposes training-pool annotation review, not test-label
+access or automatic truth changes.
+
+`hm_bootstrap()` retains whole-unit draws and reports intervals conditional on
+fixed predictions. Training and model selection uncertainty are excluded.
+Missing-class/nonfinite draws invalidate intervals; retain the draw accounting.
+The equal-class/subject/acquisition accuracy estimand differs from pooled
+accuracy. Probability calibration is not evidence of OOD detection.
+
+`hm_benchmark_protocol()` validates protocol admission for the central
+[Spectralverse](https://spectralverse-heidelberg.org) reference programme:
+[HeiPorSPECTRAL](https://spectralverse-heidelberg.org/HeiPorSPECTRAL/) primary
+anatomy, [xeno-spectral](https://spectralverse-heidelberg.org/xeno-spectral/)
+development and separately admitted [ManUSPECTRAL](https://spectralverse-heidelberg.org/manuspectral/)
+human targets.
+Known/prior target access remains development or unresolved. External datasets,
+source rights, transfer performance and clinical intended use need independent
+evidence. No protocol validation alone establishes scientific qualification.

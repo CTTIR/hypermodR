@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Spectralverse source-only matched benchmark protocol",
+  "type": "object",
+  "required": ["version", "program", "cohort", "role", "dataset_revision", "reference_revision", "license_admitted", "person_grouping_verified", "source_cases", "roi_ids", "input_track", "context_budget", "pretraining_overlap", "prior_outcome_access", "target_access", "capabilities"],
+  "properties": {
+    "version": {"const": "1"},
+    "program": {"const": "Spectralverse"},
+    "cohort": {"enum": ["HeiPor", "xeno", "ManU"]},
+    "role": {"enum": ["primary_anatomy", "development_species_perfusion", "human_admission"]},
+    "dataset_revision": {"type": "string", "minLength": 1},
+    "reference_revision": {"type": "string", "minLength": 1},
+    "license_admitted": {"const": true},
+    "person_grouping_verified": {"type": "boolean"},
+    "source_cases": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+    "roi_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+    "input_track": {"enum": ["native_spectral", "documented_adaptation", "auxiliary_rendering"]},
+    "context_budget": {"type": "integer", "minimum": 1},
+    "pretraining_overlap": {"enum": ["none_verified", "known", "unknown"]},
+    "prior_outcome_access": {"type": "boolean"},
+    "target_access": {"enum": ["none", "unlabelled", "labelled"]},
+    "capabilities": {"type": "array", "minItems": 1, "items": {"type": "object", "required": ["model_id", "task", "platform", "qualified", "evidence"]}}
+  }
+}

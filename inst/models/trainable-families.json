@@ -1,0 +1,82 @@
+{
+  "schema": "hypermodr-reference/1",
+  "device": "cpu",
+  "pretrained": false,
+  "families": [
+    {
+      "id": "cnn1d",
+      "implementation": "package_reference:cnn1d",
+      "status": "synthetic_cpu_conformance",
+      "external_qualification": false
+    },
+    {
+      "id": "unet2d",
+      "implementation": "package_reference:unet2d",
+      "status": "synthetic_cpu_conformance",
+      "external_qualification": false
+    },
+    {
+      "id": "cnn3d",
+      "implementation": "package_reference:cnn3d",
+      "status": "synthetic_cpu_conformance",
+      "external_qualification": false
+    },
+    {
+      "id": "spectral_vit",
+      "implementation": "package_reference:spectral_vit",
+      "status": "synthetic_cpu_conformance",
+      "external_qualification": false
+    },
+    {
+      "id": "masked_autoencoder",
+      "implementation": "package_reference:masked_autoencoder",
+      "status": "synthetic_cpu_conformance",
+      "external_qualification": false
+    },
+    {
+      "id": "contrastive_encoder",
+      "implementation": "package_reference:contrastive_encoder",
+      "status": "synthetic_cpu_conformance",
+      "external_qualification": false
+    },
+    {
+      "id": "vae",
+      "implementation": "package_reference:vae",
+      "status": "synthetic_cpu_conformance",
+      "external_qualification": false
+    },
+    {
+      "id": "conditional_gan",
+      "implementation": "package_reference:conditional_gan",
+      "status": "synthetic_cpu_conformance",
+      "external_qualification": false
+    },
+    {
+      "id": "ddpm",
+      "implementation": "package_reference:ddpm",
+      "status": "synthetic_cpu_conformance",
+      "external_qualification": false
+    },
+    {
+      "id": "multitask",
+      "implementation": "package_reference:multitask",
+      "status": "synthetic_cpu_conformance",
+      "external_qualification": false
+    },
+    {
+      "id": "domain_adversarial",
+      "implementation": "package_reference:domain_adversarial",
+      "status": "synthetic_cpu_conformance",
+      "external_qualification": false
+    },
+    {
+      "id": "distillation",
+      "implementation": "package_reference:distillation",
+      "status": "synthetic_cpu_conformance",
+      "external_qualification": false
+    }
+  ],
+  "training_access": "explicit train roles and biological group ids",
+  "artifact": "strict numeric NPZ and JSON; no pickle",
+  "transformations": "PEFT, quantization, projection and export require separate identities"
+}

@@ -1,0 +1,55 @@
+---
+title: "The Shiny workbench"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{The Shiny workbench}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+library(hypermodR)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", error = FALSE)
+```
+The workbench uses the same R objects and numerical functions. Its synthetic
+example predicts continuous response with subject-grouped folds. Opening the
+app does not install runtimes or download weights.
+
+```{r app-state}
+state <- hm_app_state()
+if (!isTRUE(all(identical(state$status, "empty")))) {
+  cli::cli_abort("Example assertion failed.", class = "hm_example_error")
+}
+x <- hm_example()
+if (!isTRUE(all(methods::validObject(x)))) {
+  cli::cli_abort("Example assertion failed.", class = "hm_example_error")
+}
+```
+
+```{r launch, eval=FALSE}
+hm_app(launch = TRUE, host = "127.0.0.1", port = NULL)
+```
+
+Use `hm_app(launch = FALSE)` to construct a `shiny.appobj` without starting a
+server. Import an RDS `HMDataset`/`HMSequence` or start with the synthetic example, inspect wavelength and grouping metadata,
+choose the supported task/model and training recipe, run, inspect the held-out
+metrics, and export the reproducible configuration/results. A changed input or
+configuration invalidates stale results. Keep subject IDs in split metadata;
+individual spectra are not independent biological units.
+
+`hm_submit_job()` starts an owned background job; `hm_job_status()` inspects it
+and `hm_cancel_job()` cancels that owned job. `hm_export_result()` writes a new
+export directory. Default exports omit individual-level data; private exports
+require an explicit request. Read persisted package runs with `hm_read_run()`
+and reproduce their task/workflow/split in an R script.
+
+UI/server tests and real browser workflows are separate evidence. Full keyboard,
+focus, both colour modes, narrow layout, cancellation/recovery, two-session
+isolation and app-to-script equality must be inspected in a real browser before
+claiming browser qualification. Optional app dependencies are Shiny, bslib,
+callr and processx. The shared website uses themakR; the app uses bslib directly.
+
+The current workbench supports grouped regression/classification with R engines.
+Prepare ROI reductions through the API before import; an interactive annotation
+editor is outside this workbench. Runtime metadata resolution, terms review and
+installation are explicit user actions.

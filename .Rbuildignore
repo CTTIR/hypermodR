@@ -9,3 +9,10 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^renv$
+^_site$
+^README\.Rmd$
+^_pkgdown\.yml$
+^\.lintr$
+^pkgdown$
+^CONTRIBUTING\.md$
+^README\.html$

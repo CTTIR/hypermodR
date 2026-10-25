@@ -9,3 +9,4 @@
 *.Rcheck/
 /renv/library/
 /renv/staging/
+/_site/

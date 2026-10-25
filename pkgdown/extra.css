@@ -1,0 +1,6 @@
+html[data-bs-theme="light"] .navbar .text-danger {
+  color: #b82030 !important;
+}
+html[data-bs-theme="dark"] .navbar .text-danger {
+  color: #ff8897 !important;
+}

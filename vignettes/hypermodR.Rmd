@@ -1,0 +1,88 @@
+---
+title: "A grouped hyperspectral workflow"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{A grouped hyperspectral workflow}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+library(hypermodR)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", error = FALSE)
+```
+hypermodR brings hyperspectral data, train-only preprocessing, grouped modelling
+and explicit evaluation into one R workflow. It is development software for
+research. Executable interfaces, technical qualification and scientific validity
+are separate states. No clinical performance or general instrument compatibility
+is claimed.
+
+| Route | Current scope | Qualification boundary |
+|---|---|---|
+| R models | Grouped statistical, chemometric and conventional learning adapters | Synthetic tests; optional R engines require their packages |
+| Data bridges | S4 datasets/sequences, S3 source conversion and bounded blocks | Synthetic and companion fixtures; camera profiles remain unqualified |
+| Neural models | Package-owned trainable references and named upstream admission contracts | No named pretrained model scientifically qualified |
+| Runtime setup | Explicit resolver, reviewed manifest, isolated installation and owned workers | Automated resolver: Linux x86_64 only; exact live smoke/parity required |
+| Workbench | Local Shiny workflow using the same package API | Browser/accessibility qualification tracked separately |
+
+The synthetic regression uses subjects as independent units. All bands are
+measured synthetic coordinates in nm; radiometry is arbitrary. No biological
+or device inference follows from these values. One outer fold is illustrated;
+all model selection belongs inside outer training.
+
+```{r workflow}
+data <- hm_example(seed = 42L)
+if (!isTRUE(all(
+  methods::validObject(data), nrow(data@observations) == 96L,
+  identical(data@bands$wavelength, seq(500, 850, length.out = 8L))
+))) {
+  cli::cli_abort("Example assertion failed.", class = "hm_example_error")
+}
+task <- hm_task("response", "regression", "spectrum", "subject_id")
+splits <- hm_split(data, task, folds = 3L, inner_folds = 2L, seed = 7L)
+fold <- splits$folds[[1L]]
+if (!isTRUE(all(!length(intersect(
+  data@observations$subject_id[fold$train],
+  data@observations$subject_id[fold$test]
+))))) {
+  cli::cli_abort("Example assertion failed.", class = "hm_example_error")
+}
+workflow <- hm_workflow(
+  task, hm_recipe(list(list(type = "scale"))),
+  hm_model_spec("lm", task)
+)
+fit <- hm_fit(workflow, data, fold)
+heldout <- hm_spectra(data, list(
+  observation_id = data@observations$observation_id[fold$test]
+))
+prediction <- hm_predict(fit, heldout)
+evaluation <- hm_evaluate(prediction, heldout$observations)
+errors <- prediction$values - heldout$observations$response
+expected_rmse <- sqrt(mean(errors^2))
+if (!isTRUE(all(isTRUE(all.equal(unname(evaluation$metrics["rmse"]),
+                                 expected_rmse))))) {
+  cli::cli_abort("Example assertion failed.", class = "hm_example_error")
+}
+evaluation
+uncertainty <- hm_bootstrap(evaluation, unit = "subject_id", draws = 20L,
+                            seed = 9L)
+if (!isTRUE(all(uncertainty$invalid_draws == 0L))) {
+  cli::cli_abort("Example assertion failed.", class = "hm_example_error")
+}
+uncertainty$conditioning
+run <- tempfile("hypermodR-run-")
+hm_save_run(list(
+  fit = fit, prediction = prediction, evaluation = evaluation,
+  uncertainty = uncertainty
+), run)
+restored <- hm_read_run(run)
+if (!isTRUE(all(identical(restored$prediction, prediction)))) {
+  cli::cli_abort("Example assertion failed.", class = "hm_example_error")
+}
+unlink(run, recursive = TRUE)
+```
+
+`hm_bootstrap(evaluation, unit = "subject_id", draws = 20L)` resamples whole
+held-out units and reports conditional uncertainty. Such small demonstration
+budgets are not precision recommendations. `hm_compare()` pairs identical
+support; it does not turn a zero-containing interval into a significance claim.

@@ -1,0 +1,13 @@
+{
+  "model_id": "hypersigma",
+  "implementation": "fixed_external_api_adapter",
+  "status": "admission_required",
+  "input_track": "native_sensor",
+  "pretrained": false,
+  "qualified_platforms": [],
+  "blockers": [
+    "exact local code and weight rights receipt",
+    "qualified source/dependency environment",
+    "independent preprocessing and checkpoint parity"
+  ]
+}

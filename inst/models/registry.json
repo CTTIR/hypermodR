@@ -1,0 +1,403 @@
+{
+  "schema_version": 1,
+  "registry_version": "2026-10-25.1",
+  "release_status": "unsigned_development",
+  "signature_required_for_release": true,
+  "models": [
+    {
+      "model_id": "htc",
+      "display_name": "HTC",
+      "category": "research_hsi_candidate",
+      "package_status": "planned_unqualified",
+      "package_enabled": false,
+      "candidate_backend": "python_torch_worker",
+      "stock_vllm_route": false,
+      "initial_variant": "image HSI organ baseline",
+      "proposed_modes": [
+        "frozen_features",
+        "source_head_inference",
+        "target_head_training"
+      ],
+      "input_track": "native_sensor_hsi",
+      "input_contract": [
+        "Preserve full-frame context and measured sensor wavelengths.",
+        "Restored source organ head and newly trained target head have distinct identities."
+      ],
+      "source_repository": "https://github.com/IMSY-DKFZ/htc",
+      "code_terms": {
+        "declared": "MIT",
+        "admission": "review_exact_artifacts",
+        "notes": "Upstream accompanying-material declaration may contain exceptions; review the selected release and artifact."
+      },
+      "weight_terms": {
+        "declared": "MIT for accompanying material unless an exception applies",
+        "admission": "review_exact_artifacts"
+      },
+      "data_terms": {
+        "admission": "record_separately",
+        "notes": "Pretraining and evaluation dataset terms are not established by the code license."
+      },
+      "blockers": [
+        "Exact artifact and environment lock admission",
+        "Compiled-extension and platform parity",
+        "Source/target overlap audit",
+        "Package task qualification"
+      ],
+      "evidence_urls": [
+        "https://github.com/IMSY-DKFZ/htc"
+      ]
+    },
+    {
+      "model_id": "hypervision",
+      "display_name": "HyperVision",
+      "category": "research_hsi_candidate",
+      "package_status": "planned_unqualified",
+      "package_enabled": false,
+      "candidate_backend": "python_torch_worker",
+      "stock_vllm_route": false,
+      "initial_variant": "distilled-B",
+      "proposed_modes": [
+        "frozen_features",
+        "target_head_training",
+        "prompt_assisted_inference"
+      ],
+      "input_track": "native_wavelength_conditioned_hsi",
+      "input_contract": [
+        "Preserve full-frame context, measured wavelengths and spatial metadata.",
+        "Prompt-assisted and unassisted tasks remain separate.",
+        "Do not copy tutorial spatial scale or ground sampling distance."
+      ],
+      "source_repository": "https://github.com/lronkitty/HyperVision",
+      "checkpoint_reference": "https://huggingface.co/IronKitty/HyperVision",
+      "code_terms": {
+        "declared": null,
+        "admission": "license_unresolved",
+        "notes": "The GitHub code route requires exact license review; the weight card does not by itself resolve code and inherited SAM notices."
+      },
+      "weight_terms": {
+        "declared": "Apache-2.0 in model repository metadata",
+        "admission": "review_exact_artifacts"
+      },
+      "data_terms": {
+        "admission": "record_separately"
+      },
+      "blockers": [
+        "Exact code permission and inherited notices",
+        "Exact checkpoint admission",
+        "Package preprocessing and numerical parity",
+        "Package task qualification"
+      ],
+      "evidence_urls": [
+        "https://github.com/lronkitty/HyperVision",
+        "https://huggingface.co/IronKitty/HyperVision"
+      ]
+    },
+    {
+      "model_id": "hyperfree",
+      "display_name": "HyperFree",
+      "category": "research_hsi_candidate",
+      "package_status": "planned_unqualified",
+      "package_enabled": false,
+      "candidate_backend": "python_torch_worker",
+      "stock_vllm_route": false,
+      "initial_variant": "base",
+      "proposed_modes": [
+        "frozen_features",
+        "target_head_training",
+        "fine_tuning",
+        "prompt_assisted_inference"
+      ],
+      "input_track": "native_measured_channel_hsi",
+      "input_contract": [
+        "Retain measured-channel and full-frame provenance.",
+        "Frozen, tuned and prompt-assisted methods remain separate.",
+        "Record prompt origin and annotation budget."
+      ],
+      "source_repository": "https://github.com/Jingtao-Li-CVer/HyperFree",
+      "checkpoint_reference": "https://huggingface.co/JingtaoLi/HyperFree",
+      "code_terms": {
+        "declared": "MIT",
+        "admission": "review_exact_artifacts",
+        "notes": "Review inherited component notices separately."
+      },
+      "weight_terms": {
+        "declared": "Apache-2.0 in model repository metadata",
+        "admission": "review_exact_artifacts"
+      },
+      "data_terms": {
+        "admission": "record_separately"
+      },
+      "blockers": [
+        "Exact artifact and environment lock admission",
+        "Inherited component review",
+        "Package/platform parity",
+        "Package task qualification"
+      ],
+      "evidence_urls": [
+        "https://github.com/Jingtao-Li-CVer/HyperFree",
+        "https://huggingface.co/JingtaoLi/HyperFree"
+      ]
+    },
+    {
+      "model_id": "hypersigma",
+      "display_name": "HyperSIGMA",
+      "category": "research_hsi_candidate",
+      "package_status": "planned_unqualified",
+      "package_enabled": false,
+      "candidate_backend": "python_torch_worker",
+      "stock_vllm_route": false,
+      "initial_variant": "spatial and spectral base branches",
+      "proposed_modes": [
+        "frozen_features",
+        "target_head_training",
+        "fine_tuning"
+      ],
+      "input_track": "explicit_spectral_spatial_hsi",
+      "input_contract": [
+        "Provide complete ROI windows and explicit branch fusion.",
+        "Spatial-only output is a separately named ablation.",
+        "Record source/target spectral support and every adaptation."
+      ],
+      "source_repository": "https://github.com/WHU-Sigma/HyperSIGMA",
+      "checkpoint_reference": "https://huggingface.co/WHU-Sigma/HyperSIGMA",
+      "code_terms": {
+        "declared": "Apache-2.0 at repository level",
+        "admission": "inherited_terms_review",
+        "notes": "Inherited MAE CC-BY-NC notices require file-level review; the umbrella declaration does not settle all components."
+      },
+      "weight_terms": {
+        "declared": "Apache-2.0 in model repository metadata",
+        "admission": "review_exact_artifacts"
+      },
+      "data_terms": {
+        "admission": "record_separately",
+        "notes": "Review noncommercial source dataset terms and their implications for the selected artifacts and intended use."
+      },
+      "blockers": [
+        "Inherited component and pretraining-data terms review",
+        "Exact spatial and spectral checkpoint admission",
+        "Fusion/preprocessing parity",
+        "Package task qualification"
+      ],
+      "evidence_urls": [
+        "https://github.com/WHU-Sigma/HyperSIGMA",
+        "https://huggingface.co/WHU-Sigma/HyperSIGMA"
+      ]
+    },
+    {
+      "model_id": "dual_stream_mhsi",
+      "display_name": "Dual-Stream-MHSI",
+      "category": "research_hsi_candidate",
+      "package_status": "planned_unqualified",
+      "package_enabled": false,
+      "candidate_backend": "python_torch_worker",
+      "stock_vllm_route": false,
+      "initial_variant": "documented 60-band segmentation model",
+      "proposed_modes": [
+        "pretrained_segmentation_if_admitted",
+        "scratch_training_separate_comparator"
+      ],
+      "input_track": "source_medical_segmentation_with_explicit_band_adapter",
+      "input_contract": [
+        "Require verified source band response, full-frame geometry and model arguments.",
+        "Source task and target task remain distinct.",
+        "A scratch-trained model cannot be reported as the unavailable pretrained model."
+      ],
+      "source_repository": "https://github.com/DeepMed-Lab-ECNU/Dual-Stream-MHSI",
+      "checkpoint_reference": {
+        "availability": "checkpoint_unavailable_in_retained_audit",
+        "download_url": null
+      },
+      "code_terms": {
+        "declared": "MIT at repository level",
+        "admission": "inherited_terms_review",
+        "notes": "Vendored Hamburger GPL notice requires separate review."
+      },
+      "weight_terms": {
+        "declared": null,
+        "admission": "license_unresolved"
+      },
+      "data_terms": {
+        "admission": "record_separately"
+      },
+      "blockers": [
+        "Checkpoint unavailable",
+        "Weight terms unresolved",
+        "Source wavelength and exact configuration evidence incomplete",
+        "Inherited component terms review",
+        "Package numerical and task qualification"
+      ],
+      "evidence_urls": [
+        "https://github.com/DeepMed-Lab-ECNU/Dual-Stream-MHSI"
+      ]
+    },
+    {
+      "model_id": "spectralearth",
+      "display_name": "SpectralEarth",
+      "category": "research_hsi_candidate",
+      "package_status": "planned_unqualified",
+      "package_enabled": false,
+      "candidate_backend": "external_python_torch_worker",
+      "stock_vllm_route": false,
+      "initial_variant": "Spec-RN50 with MoCo",
+      "proposed_modes": [
+        "frozen_features",
+        "target_head_training"
+      ],
+      "input_track": "explicit_partial_spectral_support_adaptation",
+      "input_contract": [
+        "Record measured overlap with the source spectral response and ROI window geometry.",
+        "Do not fabricate unsupported SWIR bands, ground sampling distance or full-spectrum equivalence."
+      ],
+      "source_repository": "https://github.com/AABNassim/spectral_earth",
+      "code_terms": {
+        "declared": null,
+        "admission": "license_unresolved",
+        "notes": "No declared permission found in the reviewed route; obtain or identify applicable permission before enabling installation."
+      },
+      "weight_terms": {
+        "declared": null,
+        "admission": "license_unresolved"
+      },
+      "data_terms": {
+        "admission": "record_separately"
+      },
+      "blockers": [
+        "Code permission unresolved",
+        "Weight permission unresolved",
+        "Source response/adaptation admission",
+        "Package numerical and task qualification"
+      ],
+      "evidence_urls": [
+        "https://github.com/AABNassim/spectral_earth"
+      ]
+    },
+    {
+      "model_id": "spectralgpt",
+      "display_name": "SpectralGPT",
+      "category": "research_hsi_candidate",
+      "package_status": "planned_unqualified",
+      "package_enabled": false,
+      "candidate_backend": "external_python_torch_worker",
+      "stock_vllm_route": false,
+      "architecture_note": "Spectral masked autoencoder; the name does not imply an autoregressive language-model interface.",
+      "initial_variant": "documented MAE checkpoint",
+      "proposed_modes": [
+        "frozen_features",
+        "target_head_training"
+      ],
+      "input_track": "lossy_synthetic_multispectral_auxiliary",
+      "input_contract": [
+        "Declare spectral projection, dropped unsupported groups and altered spatial resolution.",
+        "Retain complete ROI geometry.",
+        "A learned full-spectrum projection is a distinct method and requires its own training split and evaluation."
+      ],
+      "source_repository": "https://github.com/danfenghong/IEEE_TPAMI_SpectralGPT",
+      "checkpoint_reference": "https://zenodo.org/records/13139925",
+      "code_terms": {
+        "declared": "GPL-3.0 in repository README",
+        "admission": "inherited_terms_review",
+        "notes": "Review inherited MAE notices and the exact files used; external execution does not replace license review."
+      },
+      "weight_terms": {
+        "declared": "CC-BY-4.0 in retained weight-record audit",
+        "admission": "requires_current_record_verification",
+        "notes": "The record could not be fetched during this review; do not treat the historical declaration as a current installation admission."
+      },
+      "data_terms": {
+        "admission": "record_separately"
+      },
+      "blockers": [
+        "Current exact weight-record verification",
+        "Inherited component terms review",
+        "Explicit lossy-input track admission",
+        "Package numerical and task qualification"
+      ],
+      "evidence_urls": [
+        "https://github.com/danfenghong/IEEE_TPAMI_SpectralGPT",
+        "https://zenodo.org/records/13139925"
+      ]
+    }
+  ],
+  "optional_families": [
+    {
+      "candidate_id": "qwen_language",
+      "family": "Qwen language models",
+      "input_modalities": [
+        "text"
+      ],
+      "candidate_backend": "vllm_registered_architecture",
+      "package_status": "planned_unqualified",
+      "exact_checkpoint": null,
+      "terms": "Resolve separately for the selected checkpoint.",
+      "hsi_evaluation_inherited": false
+    },
+    {
+      "candidate_id": "mistral_language",
+      "family": "Mistral language models",
+      "input_modalities": [
+        "text"
+      ],
+      "candidate_backend": "vllm_registered_architecture",
+      "package_status": "planned_unqualified",
+      "exact_checkpoint": null,
+      "terms": "Resolve separately for the selected checkpoint.",
+      "hsi_evaluation_inherited": false
+    },
+    {
+      "candidate_id": "qwen2_5_vl",
+      "family": "Qwen2.5-VL",
+      "input_modalities": [
+        "text",
+        "image",
+        "video_subject_to_profile"
+      ],
+      "candidate_backend": "vllm_registered_architecture",
+      "package_status": "planned_unqualified",
+      "exact_checkpoint": null,
+      "terms": "Resolve separately for the selected checkpoint.",
+      "hsi_evaluation_inherited": false
+    },
+    {
+      "candidate_id": "qwen3_vl",
+      "family": "Qwen3-VL",
+      "input_modalities": [
+        "text",
+        "image",
+        "video_subject_to_profile"
+      ],
+      "candidate_backend": "vllm_registered_architecture",
+      "package_status": "planned_unqualified",
+      "exact_checkpoint": null,
+      "terms": "Resolve separately for the selected checkpoint.",
+      "hsi_evaluation_inherited": false
+    },
+    {
+      "candidate_id": "internvl",
+      "family": "InternVL",
+      "input_modalities": [
+        "text",
+        "image",
+        "video_subject_to_profile"
+      ],
+      "candidate_backend": "vllm_registered_architecture",
+      "package_status": "planned_unqualified",
+      "exact_checkpoint": null,
+      "terms": "Resolve separately for the selected checkpoint and language backbone.",
+      "hsi_evaluation_inherited": false
+    },
+    {
+      "candidate_id": "pixtral_mistral_vision",
+      "family": "Pixtral and Mistral vision models",
+      "input_modalities": [
+        "text",
+        "image"
+      ],
+      "candidate_backend": "vllm_registered_architecture",
+      "package_status": "planned_unqualified",
+      "exact_checkpoint": null,
+      "terms": "Resolve separately for the selected checkpoint.",
+      "hsi_evaluation_inherited": false
+    }
+  ]
+}

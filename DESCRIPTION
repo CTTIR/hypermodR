@@ -4,14 +4,65 @@ Title: Hyperspectral Modelling and Validation
 Version: 0.0.0.9000
 Authors@R: person("Raban", "Heller", email = "raban.heller@charite.de",
     role = c("aut", "cre"), comment = c(ORCID = "0000-0001-8006-9742"))
-Description: Planning-stage scaffold for interpretable and black-box
-    hyperspectral modelling, image and sequence interoperability, reproducible
-    evaluation, optional model runtimes, and an interactive research workbench.
-    The documented interfaces are proposed and await implementation approval.
+Description: Interpretable and black-box hyperspectral modelling with explicit
+    spectral, spatial and temporal data contracts, grouped validation,
+    reproducible evaluation, optional isolated model runtimes, and an
+    interactive research workbench. Model and instrument qualification is
+    recorded separately from interface availability.
 License: MIT + file LICENSE
 URL: https://github.com/CTTIR/hypermodR
 BugReports: https://github.com/CTTIR/hypermodR/issues
 Encoding: UTF-8
 Depends: R (>= 4.3.0)
+Imports:
+    cli,
+    digest,
+    generics,
+    jsonlite,
+    methods,
+    stats,
+    utils
+Suggests:
+    zip,
+    brms,
+    cluster,
+    dbscan,
+    e1071,
+    fastICA,
+    glmnet,
+    isotree,
+    kernlab,
+    lme4,
+    MASS,
+    mgcv,
+    ordinal,
+    pls,
+    quadprog,
+    ranger,
+    survival,
+    xgboost,
+    hyperspectR,
+    hyperannotatR,
+    tivis.r,
+    cuvis.r,
+    openssl,
+    bslib,
+    callr,
+    covr,
+    httr2,
+    knitr,
+    lintr,
+    magick,
+    tiff,
+    processx,
+    rmarkdown,
+    shiny,
+    testthat (>= 3.2.0),
+    withr
+Remotes: CTTIR/hyperannotatR@bbfd0724ac09d4eae6d5f27dc8904b5e0a7a8284
+VignetteBuilder: knitr
+Config/testthat/edition: 3
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 8.0.0
 Config/Needs/website: CTTIR/themakR
-Config/hypermodR/status: planning
+Config/hypermodR/status: development

@@ -1,0 +1,39 @@
+---
+title: "Cubert video and temporal access"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Cubert video and temporal access}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+library(hypermodR)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", error = FALSE)
+```
+The task is bounded framewise prediction from synthetic feature vectors.
+Recordings, and any connected subjects, must remain together in evaluation.
+Time is elapsed seconds, not frame number. This example preserves unequal
+intervals and makes no SDK, instrument-rate or learned temporal claim.
+
+```{r stream}
+stream <- hm_stream(function(frame, timestamp) mean(frame), max_frames = 4L)
+out <- hm_stream_push(stream, list(c(1, 3), c(2, 4), c(4, 6)),
+  timestamps = c(0, 0.1, 0.4), sequence_id = "recording_1"
+)
+str(out)
+hm_stream_cancel(stream)
+```
+
+`hm_sequence()` constructs S4 `HMSequence` objects with explicit `frame_index`,
+linked observations and geometry. `hm_portable_sequence()` declares portable
+source interchange; cuvis.r conversion through `hm_as_dataset()` requires a
+supported source and explicit calibration provenance. `hm_read_block()` reads
+bounded acquisition/frame selections. Missing source times remain unavailable;
+streaming rejects missing, duplicate or reversed times. Gaps are not repaired.
+
+`hm_temporal_model()` declares framewise, timestamp_mean, temporal_cnn, lstm,
+gru, transformer and state_space package references. Python temporal references
+have separate causal/chunk/reset tests; the R callback above is framewise.
+Live Cubert/cuvis SDK scaling, enumeration, device calibration and source-rate
+qualification remain pending.

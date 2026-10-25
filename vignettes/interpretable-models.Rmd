@@ -1,0 +1,115 @@
+---
+title: "Interpretable models"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Interpretable models}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+library(hypermodR)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", error = FALSE)
+```
+The task is synthetic continuous regression; subjects are independent units.
+Band coefficients describe the fitted coordinate system, not causal tissue
+properties. Scaling and all learned transformations use training rows only.
+
+```{r workflow}
+data <- hm_example(seed = 42L)
+if (!isTRUE(all(
+  methods::validObject(data), nrow(data@observations) == 96L,
+  identical(data@bands$wavelength, seq(500, 850, length.out = 8L))
+))) {
+  cli::cli_abort("Example assertion failed.", class = "hm_example_error")
+}
+task <- hm_task("response", "regression", "spectrum", "subject_id")
+splits <- hm_split(data, task, folds = 3L, inner_folds = 2L, seed = 7L)
+fold <- splits$folds[[1L]]
+if (!isTRUE(all(!length(intersect(
+  data@observations$subject_id[fold$train],
+  data@observations$subject_id[fold$test]
+))))) {
+  cli::cli_abort("Example assertion failed.", class = "hm_example_error")
+}
+workflow <- hm_workflow(
+  task, hm_recipe(list(list(type = "scale"))),
+  hm_model_spec("lm", task)
+)
+fit <- hm_fit(workflow, data, fold)
+heldout <- hm_spectra(data, list(
+  observation_id = data@observations$observation_id[fold$test]
+))
+prediction <- hm_predict(fit, heldout)
+evaluation <- hm_evaluate(prediction, heldout$observations)
+errors <- prediction$values - heldout$observations$response
+expected_rmse <- sqrt(mean(errors^2))
+if (!isTRUE(all(isTRUE(all.equal(unname(evaluation$metrics["rmse"]),
+                                 expected_rmse))))) {
+  cli::cli_abort("Example assertion failed.", class = "hm_example_error")
+}
+evaluation
+uncertainty <- hm_bootstrap(evaluation, unit = "subject_id", draws = 20L,
+                            seed = 9L)
+if (!isTRUE(all(uncertainty$invalid_draws == 0L))) {
+  cli::cli_abort("Example assertion failed.", class = "hm_example_error")
+}
+uncertainty$conditioning
+run <- tempfile("hypermodR-run-")
+hm_save_run(list(
+  fit = fit, prediction = prediction, evaluation = evaluation,
+  uncertainty = uncertainty
+), run)
+restored <- hm_read_run(run)
+if (!isTRUE(all(identical(restored$prediction, prediction)))) {
+  cli::cli_abort("Example assertion failed.", class = "hm_example_error")
+}
+unlink(run, recursive = TRUE)
+```
+
+```{r coefficients}
+coef(fit)
+summary(fit)
+```
+
+Canonical statistical IDs include `lm`, `glm`, `glmnet`, `gam`, `mixed`, `pls`,
+`pcr`, `bayes_conjugate` and optional `brms`. Chemometric/physiological IDs are
+`pca`, `ica`, `nmf`, `mcr_als`, `fcls` and `beer_lambert`. Use
+`hm_spectral_library()` to declare wavelength, units, source and license for
+endmembers. Nonnegative abundances or a Beer–Lambert fit do not prove biological
+identifiability. Baselines, scattering, endmember ambiguity, priors, random
+effects and reference calibration need task-specific justification. Unsupported
+coefficient retrieval raises a typed error rather than inventing uncertainty.
+
+## Supplied physical and residual models
+
+`hm_physics_kernel()` declares an explicit forward/inverse pair. The
+`physics_inverse` engine applies that inverse; `physics_hybrid` learns a residual
+model only on training rows. A declaration records code/constants and units; it
+is not physiological validation. Do not scale physical inputs unless the kernel
+is defined in that scaled coordinate system.
+
+```{r physical-declaration}
+kernel <- hm_physics_kernel(
+  forward = function(concentration, parameters) {
+    concentration * parameters$gain
+  },
+  inverse = function(spectra, parameters) spectra[, 1L] / parameters$gain,
+  parameters = list(gain = 2), source = "synthetic linear law",
+  units = c(input = "arbitrary absorbance",
+            output = "arbitrary concentration")
+)
+if (!isTRUE(all(identical(
+  kernel$inverse(matrix(c(2, 4), 2, 1), kernel$parameters),
+  c(1, 2)
+)))) {
+  cli::cli_abort("Example assertion failed.", class = "hm_example_error")
+}
+hm_model_spec(
+  "physics_hybrid", task,
+  list(kernel = kernel, residual_model = "lm")
+)$model_id
+```
+
+This deliberately simple law illustrates an interface, not radiative transport,
+validated tissue chromophores or independently calibrated concentrations.

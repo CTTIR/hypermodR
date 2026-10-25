@@ -1,0 +1,12 @@
+name: R-CMD-check
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  r_cmd_check:
+    permissions: read-all
+    uses: CTTIR/.github/.github/workflows/R-CMD-check.yaml@bd4664ca7168f9c5f86c521bf81293e2db006eec

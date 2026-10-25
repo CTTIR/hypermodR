@@ -1,8 +1,8 @@
-# Planned vignette catalogue
+# Vignette catalogue
 
-**Status: proposed for approval.** The articles below are planned documentation. No `.Rmd` vignette or executable modelling example has been implemented yet. Their APIs and acceptance criteria must agree with the [architecture](../docs/architecture.md), [quality specification](../docs/quality-and-documentation.md) and [Shiny specification](../docs/shiny-workbench.md).
+**Status: executable development articles implemented.** Core synthetic examples execute offline; optional network/runtime examples are explicit opt-ins. The evidence column retains acceptance requirements, including work still pending. Implemented articles do not establish instrument, platform, browser or scientific qualification. Their APIs and acceptance criteria agree with the [architecture](../docs/architecture.md), [quality specification](../docs/quality-and-documentation.md) and [Shiny specification](../docs/shiny-workbench.md).
 
-| Planned article | Intended reader outcome | Required executable evidence |
+| Article | Intended reader outcome | Required executable evidence |
 |---|---|---|
 | `hypermodR.Rmd` | Complete a synthetic CPU workflow from data validation to a grouped model, prediction, uncertainty and exported result | Offline example with known source values, fixed independent units and verified output readback |
 | `data-and-interoperability.Rmd` | Exchange `HMDataset`/`HMSequence` objects and annotations with the supported HSI packages through `hm_as_dataset()` and documented S3/S4 methods | Sibling-package round trips preserving identity, axes, units, wavelength grid, calibration, annotation revision and temporal order |
@@ -20,8 +20,8 @@ Core articles execute without internet access, model downloads, vendor SDKs or G
 
 Every article states the scientific task, input representation, independent unit, assumptions and limitations before presenting a score. Models selected with target outcomes remain development models. Technical execution is not clinical validation, and a plotted RGB image is not the full spectral measurement.
 
-The notation is shared with the package: `wavelength` is in nm; identifiers are character columns; statistics use broom-compatible names. Planned examples use `hm_model_spec()`, `hm_workflow()`, S3 `hm_fit` and S3 `hm_prediction` consistently with the formal data classes.
+The notation is shared with the package: `wavelength` is in nm; identifiers are character columns; statistics use broom-compatible names. Executable examples use `hm_model_spec()`, `hm_workflow()`, S3 `hm_fit` and S3 `hm_prediction` consistently with the formal data classes.
 
 The vignette build must not hide all examples behind a global unevaluated setting. Small core examples run and check their values. Optional backend sections show their support status and distinguish retained example output from a run performed during the build. Links, figures, captions, units and code wrapping are checked in the rendered package website and standalone vignette output.
 
-Installation and reference statements are added only when the corresponding software exists. This catalogue does not claim CRAN availability, a qualified model backend or a working app.
+Installation and reference statements are added only when the corresponding software exists. This catalogue does not claim CRAN availability, a qualified upstream model backend or complete browser qualification.

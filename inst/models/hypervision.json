@@ -1,0 +1,13 @@
+{
+  "model_id": "hypervision",
+  "implementation": "admission_contract",
+  "status": "blocked",
+  "input_track": "native_sensor",
+  "pretrained": false,
+  "qualified_platforms": [],
+  "blockers": [
+    "exact source and weight rights admission",
+    "package-owned upstream execution adapter",
+    "independent checkpoint and preprocessing parity"
+  ]
+}

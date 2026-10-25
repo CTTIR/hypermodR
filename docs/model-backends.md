@@ -1,6 +1,6 @@
 # Model and backend specification
 
-Status: **proposed; awaiting implementation approval**. The interfaces and profiles below are design contracts, not implemented functions or available installers. Every package adapter is currently unqualified. The companion [proposed registry](model-registry.json) is documentation data, not a runtime registry.
+Status: **development implementation with qualification pending**. Runtime resolution, reviewed manifest installation, isolated worker lifecycle and explicit model contracts are implemented. The automatic resolver currently admits Linux x86_64 only; exact source/weight admission and live model/platform smoke/parity remain separate gates. The contracts below retain their acceptance requirements. The companion [design registry](model-registry.json) is documentation data; the installed runtime registry is in `inst/models/`. Named upstream models remain unqualified.
 
 ## Backend architecture
 

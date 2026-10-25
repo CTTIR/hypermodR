@@ -1,7 +1,10 @@
-# Proposed architecture
+# Architecture and acceptance contract
 
-Status: proposed for approval, 2026-10-25. There is no implemented modelling API
-or backend qualification in this repository yet.
+Status: development implementation, 2026-10-25. Core modelling APIs, data bridges,
+runtime lifecycle code and application interfaces exist. This document retains
+the acceptance contract; interface availability does not establish instrument,
+platform, upstream model or scientific qualification. Consult the executable
+articles for current callable routes and limitations.
 
 ## Separation of responsibilities
 
@@ -171,15 +174,19 @@ Runs reserve exclusive output IDs. Partial, cancelled and failed runs cannot
 replace completed results or publish false success. Atomic receipts bind
 inputs, labels, splits, transforms, checkpoint/head, source, environment, RNG,
 resources and output hashes. Package installation and loading are offline and
-side-effect-free. Resource budgets cover child processes, CPU threads, GPU
-memory, disk, network and time; no background work starts from data upload.
+side-effect-free. On Linux, bounded children receive inherited CPU-affinity
+subsets, numerical thread limits, per-process virtual address-space limits and
+an external elapsed timeout. CUDA selection is explicit but does not limit GPU
+memory. Network use is a policy declaration without network isolation; disk
+quotas and aggregate descendant-memory limits are not enforced. No background
+work starts from data upload.
 
 Core tests use small synthetic data. Public benchmark fixtures are separately
 licensed/versioned; human raw data and model weights stay outside Git and the
 package tarball. Hosted CI, installed-package checks, backend parity, hardware
 qualification and scientific evaluation have separate states.
 
-## Architectural decisions proposed for approval
+## Architectural decisions
 
 1. Formal datasets/sequences with explicit S3 bridges; S3 modelling objects.
 2. Lazy block IO and separate asset roles; no universal vendor-format claim.

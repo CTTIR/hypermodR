@@ -1,6 +1,6 @@
 # Shiny workbench specification
 
-**Status: proposed for approval.** `hm_app()` and the application modules described below are planned interfaces. No application, backend installation or modelling workflow is implemented by this document.
+**Status: implementation in development.** This document remains the architectural and acceptance contract. Core R APIs, data bridges, runtime lifecycle code, model contracts, executable articles and a Shiny workbench now exist. Implemented interfaces do not establish full acceptance: instrument/vendor parity, named upstream model qualification, live platform/model support, complete browser/accessibility checks and scientific validation require their own evidence. See the executable articles and current API reference for callable behavior.
 
 The workbench will expose the same validated data and modelling operations as the R API. It must not maintain a second numerical implementation. A completed app workflow must export enough configuration and provenance to reproduce its package-API counterpart.
 

@@ -1,0 +1,38 @@
+---
+title: "Data and interoperability"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Data and interoperability}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+library(hypermodR)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", error = FALSE)
+```
+The task is lossless access to synthetic spectra. Observation IDs identify rows;
+subjects identify independent biological units. Wavelengths are in nm. S3
+conversion and S4 access are separate contracts.
+
+```{r containers}
+x <- hm_example()
+y <- unserialize(serialize(x, NULL))
+if (!isTRUE(all(methods::is(y, "HMDataset"), identical(x, y)))) {
+  cli::cli_abort("Example assertion failed.", class = "hm_example_error")
+}
+z <- hm_spectra(y, list(observation_id = x@observations$observation_id[1:3]))
+if (!isTRUE(all(identical(dim(z$values), c(3L, 8L))))) {
+  cli::cli_abort("Example assertion failed.", class = "hm_example_error")
+}
+class(z)
+```
+
+Use `hm_as_dataset()` for supported hyperspectR, hyperannotatR and cuvis.r source
+classes; `hm_as_hsi_cube()` supplies the reverse cube pathway. Companion-package
+versions and real object conformance require their own fixtures. Annotation
+handoffs use `hm_annotation_contract()`, `hm_export_annotations()` and
+`hm_stage_annotations()` with immutable image, label-map and revision identity.
+A common class name is insufficient evidence of compatibility. Spatial datasets
+need explicit geometry and explicit `hm_pool()` before a spectrum model; RGB
+and parameter maps are distinct assets, never replacements for full spectra.

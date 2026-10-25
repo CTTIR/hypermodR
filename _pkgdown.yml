@@ -1,0 +1,114 @@
+destination: _site
+template:
+  package: themakR
+  includes:
+    in_header: |
+      <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='5' fill='%2352646b'/%3E%3Ctext x='16' y='24' text-anchor='middle' font-size='24' fill='white'%3EH%3C/text%3E%3C/svg%3E">
+development:
+  mode: auto
+home:
+  title: Hyperspectral modelling with explicit validation
+  sidebar:
+    structure: [links, license, community, citation, authors]
+reference:
+- title: Data and source interoperability
+  contents:
+  - HMDataset-class
+  - HMSequence-class
+  - hm_annotation_contract
+  - hm_as_dataset
+  - hm_as_dataset.cuvis_session
+  - hm_as_hsi_cube
+  - hm_coordinates
+  - hm_dataset
+  - hm_export_annotations
+  - hm_from_tivis
+  - hm_instrument_profiles
+  - hm_portable_sequence
+  - hm_read_block
+  - hm_sequence
+  - hm_spectra
+  - hm_spectral_library
+  - hm_stage_annotations
+  - hm_tivita_profile
+- title: Tasks, modelling and evaluation
+  contents:
+  - hm_active_learning
+  - hm_apply_calibration
+  - hm_bake
+  - hm_benchmark_protocol
+  - hm_bootstrap
+  - hm_calibrate
+  - hm_compare
+  - hm_dual_stream_mhsi
+  - hm_endpoint_contract
+  - hm_evaluate
+  - hm_fit
+  - hm_htc
+  - hm_hyperfree
+  - hm_hypersigma
+  - hm_hypervision
+  - hm_model_spec
+  - hm_models
+  - hm_physics_kernel
+  - hm_pool
+  - hm_predict
+  - hm_prediction
+  - hm_prep
+  - hm_recipe
+  - hm_reliability
+  - hm_spectralearth
+  - hm_spectralgpt
+  - hm_split
+  - hm_stream
+  - hm_stream_cancel
+  - hm_stream_push
+  - hm_task
+  - hm_temporal_model
+  - hm_tune
+  - tidy.hm_fit
+  - augment.hm_fit
+  - glance.hm_fit
+  - hm_workflow
+- title: Runtime, provenance and application
+  contents:
+  - hm_admit_backend
+  - hm_app
+  - hm_app_state
+  - hm_backend_capabilities
+  - hm_backend_plan
+  - hm_backend_status
+  - hm_cache
+  - hm_cache_key
+  - hm_cancel_job
+  - hm_check_backend
+  - hm_example
+  - hm_export_result
+  - hm_install_backend
+  - hm_job_status
+  - hm_prompt
+  - hm_provenance
+  - hm_read_run
+  - hm_render_hsi
+  - hm_resolve_backend
+  - hm_resolve_checkpoint
+  - hm_resources
+  - hm_save_run
+  - hm_start_backend
+  - hm_stop_backend
+  - hm_submit_job
+  - hm_verify_provenance
+  - hm_verify_registry
+  - hm_vllm_chat
+  - hm_with_resources
+  - hm_worker_request
+  - hm_extract_native
+  - hypermodR-package
+articles:
+- title: Start here
+  navbar: ~
+  contents: [hypermodR, data-and-interoperability, tivita-workflows, cubert-video]
+- title: Models and runtimes
+  contents: [interpretable-models, machine-learning, deep-and-foundation-models, backends-and-installation]
+- title: Reliable workflows
+  contents: [validation-and-reliability, shiny-workbench, extending-hypermodR]

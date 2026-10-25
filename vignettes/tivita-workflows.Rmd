@@ -1,0 +1,42 @@
+---
+title: "TIVITA workflows"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{TIVITA workflows}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+library(hypermodR)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", error = FALSE)
+```
+This example checks source orientation, not a camera. The only admitted profile
+here is a synthetic y,x,band declaration. Tissue, Mini and Surgery device/export
+profiles require independent calibration and reference-output evidence.
+
+```{r tivita}
+measurement <- list(
+  cube = array(seq_len(24), c(2, 3, 4)),
+  wavelengths = c(500, 600, 700, 800), metadata = list(synthetic = TRUE),
+  references = list(), timestamp = "2026-01-01", path = "synthetic"
+)
+x <- hm_from_tivis(
+  measurement,
+  hm_tivita_profile(wavelengths = measurement$wavelengths)
+)
+b <- hm_read_block(x)
+if (!isTRUE(all(
+  identical(as.numeric(b$values), as.numeric(measurement$cube)),
+  identical(dim(b$values), c(2L, 3L, 4L, 1L))
+))) {
+  cli::cli_abort("Example assertion failed.", class = "hm_example_error")
+}
+hm_instrument_profiles()
+```
+
+`hm_from_tivis()` requires an explicit source profile. It does not infer a grid
+from the camera name or the measurement's band count. Radiometric calibration
+remains unknown unless established separately. Masks retain unknown/invalid
+pixels; registered SpecCube, RGB, DICOM and parameter-display assets retain
+distinct roles. A vendor display does not establish quantitative export parity.

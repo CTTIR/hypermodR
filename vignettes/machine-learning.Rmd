@@ -1,0 +1,57 @@
+---
+title: "Conventional machine learning"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Conventional machine learning}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+library(hypermodR)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", error = FALSE)
+```
+This task predicts synthetic response with grouped nearest neighbours. Subjects
+are independent units; proximity in a fitted spectral space has no causal
+interpretation. A fixed k is illustrative and is not selected on held-out rows.
+
+```{r knn}
+x <- hm_example()
+task <- hm_task("response", "regression", "spectrum", "subject_id")
+split <- hm_split(x, task, folds = 3L, inner_folds = 2L)$folds[[1L]]
+w <- hm_workflow(
+  task, hm_recipe(list(list(type = "scale"))),
+  hm_model_spec("knn", task, list(k = 3L))
+)
+fit <- hm_fit(w, x, split)
+selection <- list(
+  observation_id = x@observations$observation_id[split$test]
+)
+test <- hm_spectra(x, selection)
+hm_evaluate(hm_predict(fit, test), test$observations)
+```
+
+Other canonical IDs include `lda`, `qda`, `naive_bayes`, `svm`, `rf`, `xgboost`,
+`gaussian_process`, `ensemble`, `kmeans`, `pam`, `dbscan`, `isolation_forest`,
+`one_class_svm` and `pca_anomaly`; `coxph` and `clm` serve survival/ordinal tasks.
+Inspect `hm_models(task = "classification")` and install the relevant optional
+R packages explicitly. `hm_tune()` accepts explicit candidates and a nested
+grouped split, learns each recipe inside inner training and refits on outer
+training. Retain the tuning ledger. Compare identical held-out cases through
+`hm_compare()`, with paired whole-unit resampling; report support and invalid
+draws rather than selecting whichever metric looks best.
+
+Bounded tuning currently requires Linux with `taskset`, `prlimit` and
+`timeout`. Portable fitting and prediction above remain available elsewhere.
+
+```{r bounded-platform-status}
+bounded_status <- if (identical(Sys.info()[["sysname"]], "Linux")) {
+  "Linux bounded tuning route available subject to installed resource tools."
+} else {
+  paste0(
+    "Bounded tuning unsupported on this platform; portable ",
+    "fitting remains available."
+  )
+}
+cat(bounded_status)
+```

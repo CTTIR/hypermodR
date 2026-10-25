@@ -1,0 +1,49 @@
+---
+title: "Deep and foundation models"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Deep and foundation models}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+library(hypermodR)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", error = FALSE)
+```
+Model declarations do not download weights or import upstream Python. This
+example makes named classification specifications only; no pretrained inference
+or scientific result is produced.
+
+```{r named-contracts}
+task <- hm_task("class", "classification", "image", "subject_id")
+constructors <- list(
+  hm_htc, hm_hyperfree, hm_hypersigma, hm_hypervision,
+  hm_dual_stream_mhsi, hm_spectralearth, hm_spectralgpt
+)
+specifications <- lapply(constructors, function(f) f(task))
+vapply(specifications, function(x) x$model_id, character(1))
+```
+
+HTC, HyperFree and HyperSIGMA have explicit extraction implementations requiring
+exact reviewed source inventories, weights, preprocessing and rights. Their
+independent installed-package parity remains pending. HyperSIGMA's fixed fused
+features are distinct from its upstream trained downstream model. HyperVision,
+Dual-Stream-MHSI, SpectralEarth and SpectralGPT retain explicit execution blocks
+until their exact source/weights/input contracts are admitted. SpectralEarth is
+an adapted spectral track; SpectralGPT is a lossy multispectral auxiliary track.
+None is a qualified clinical model.
+
+Package-owned scratch reference IDs use `reference:` followed by `cnn1d`,
+`unet2d`, `cnn3d`, `spectral_vit`, `masked_autoencoder`, `contrastive_encoder`,
+`vae`, `conditional_gan`, `ddpm`, `multitask`, `domain_adversarial` or
+`distillation`. These have separate training objectives and synthetic gradient,
+restore and prediction tests. Distillation uses a scratch frozen teacher.
+Their worker protocol is distinct from the ordinary R engine workflow; registry
+visibility alone does not admit an R `hm_fit()` neural route.
+
+Reproduction is opt-in: resolve and review an exact runtime, use explicit training
+roles/group IDs, bound epochs, retain numeric artifacts and run adapter-specific
+parity. Do not run a model from a documentation build. GPU/Metal/ROCm/WSL,
+PEFT, quantization and scientific transfer are not qualified by CPU reference
+tests. See the runtime article before enabling any external execution.

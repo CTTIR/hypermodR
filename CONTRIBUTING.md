@@ -1,7 +1,7 @@
 # Contributing
 
 Follow the [CTTIR contribution policy](https://github.com/CTTIR/.github/blob/main/CONTRIBUTING.md)
-and the proposed [quality requirements](docs/quality-and-documentation.md).
+and the proposed [quality requirements](https://github.com/CTTIR/hypermodR/blob/main/docs/quality-and-documentation.md).
 The repository currently contains a specification for approval; implementation
 has not started. Proposed interfaces are not a compatibility promise until
 qualified and released.

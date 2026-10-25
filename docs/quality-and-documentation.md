@@ -1,6 +1,6 @@
 # Quality and documentation specification
 
-**Status: proposed for approval.** This document defines acceptance criteria for the future package. The repository does not yet implement the APIs, model adapters, installers, vignettes or Shiny application described here. Support will be reported for exact package, model, backend and platform versions after verification.
+**Status: implementation in development.** This document remains the architectural and acceptance contract. Core R APIs, data bridges, runtime lifecycle code, model contracts, executable articles and a Shiny workbench now exist. Implemented interfaces do not establish full acceptance: instrument/vendor parity, named upstream model qualification, live platform/model support, complete browser/accessibility checks and scientific validation require their own evidence. See the executable articles and current API reference for callable behavior.
 
 ## Source of the requirements
 
@@ -79,9 +79,9 @@ Browser tests are a separate qualification lane. They may be excluded from routi
 
 ## Documentation design
 
-The [vignette catalogue](../vignettes/README.md) defines the proposed articles. README and vignettes distinguish implemented, tested and planned features. Until implementation is approved and completed, API examples are explicitly design examples and no installation command claims a released package exists.
+The [vignette catalogue](../vignettes/README.md) defines the proposed articles. README and vignettes distinguish implemented, tested and planned features. Executable synthetic examples now accompany the development implementation; no installation command claims a released package exists.
 
-The future README must contain:
+The README acceptance criteria are:
 
 1. Intended audience, task scope and maturity.
 2. A compact capability matrix with exact platform/backend qualification status.
@@ -95,7 +95,7 @@ A source README is rendered into the published README only after its executable 
 
 ## Website and app presentation
 
-The future website uses `Config/Needs/website: CTTIR/themakR` and `template.package: themakR` in `_pkgdown.yml`, following the [theme adoption guide](https://github.com/CTTIR/themakR/blob/af490b90d483bcde8b22b348cd5a539621ade8f7/vignettes/themakR.Rmd). Keep inherited navigation and the light/dark/auto switch. Verify the Reference, Articles, Changelog, search, citation and license views after rendering.
+The development website uses `Config/Needs/website: CTTIR/themakR` and `template.package: themakR` in `_pkgdown.yml`, following the [theme adoption guide](https://github.com/CTTIR/themakR/blob/af490b90d483bcde8b22b348cd5a539621ade8f7/vignettes/themakR.Rmd). Keep inherited navigation and the light/dark/auto switch. Verify the Reference, Articles, Changelog, search, citation and license views after rendering.
 
 The theme requires real source metadata for sidebar sections. A logo, DOI, CRAN badge or successful workflow badge is added only when the corresponding artifact or service exists. Bibliographic metadata must identify the correct package or third-party work.
 

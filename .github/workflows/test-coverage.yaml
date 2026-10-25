@@ -1,0 +1,14 @@
+name: test-coverage
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test_coverage:
+    permissions: read-all
+    uses: CTTIR/.github/.github/workflows/test-coverage.yaml@bd4664ca7168f9c5f86c521bf81293e2db006eec
+    with:
+      floor: 95

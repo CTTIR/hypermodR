@@ -1,6 +1,6 @@
 # Interoperability specification
 
-**Status: proposed; awaiting approval.** This document describes intended interfaces and acceptance criteria. The repository does not yet implement them. Existing companion APIs below were inspected at the stated source revisions; a source inspection is not an installed-package integration qualification.
+**Status: implementation in development.** This document remains the architectural and acceptance contract. Core R APIs, data bridges, runtime lifecycle code, model contracts, executable articles and a Shiny workbench now exist. Implemented interfaces do not establish full acceptance: instrument/vendor parity, named upstream model qualification, live platform/model support, complete browser/accessibility checks and scientific validation require their own evidence. See the executable articles and current API reference for callable behavior.
 
 `hypermodR` will own modelling, model comparison and prediction provenance. Companion packages retain acquisition decoding, calibration, annotation and visualisation responsibilities. Conversions preserve their original objects and identity fields; they do not rewrite source recordings or annotation projects.
 

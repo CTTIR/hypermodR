@@ -1,0 +1,60 @@
+---
+title: "Backends and installation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Backends and installation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+library(hypermodR)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", error = FALSE)
+```
+The core R workflow needs no Python runtime. Capability inspection is offline
+and does not install anything. A capability probe is not model qualification.
+
+```{r capabilities}
+hm_backend_capabilities()
+```
+
+The automatic metadata resolver currently admits Linux x86_64 with an explicit
+existing Python 3.11 or 3.12 and exactly uv 0.11.26. `reference_cpu` resolves
+NumPy 2.2.6 and Torch 2.6.0; `vllm_linux_cuda` resolves vLLM 0.11.0. Resolution
+is an explicit network operation and is therefore omitted from offline builds.
+These are implemented setup routes, not blanket platform/model support claims.
+
+```{r resolve, eval=identical(Sys.getenv("HYPERMODR_RESOLVE_EXAMPLE"), "true")}
+# Opt in only with explicit executables and a new persistent external directory.
+resolution <- hm_resolve_backend("reference_cpu",
+  model_id = "reference:cnn1d",
+  python = Sys.getenv("HYPERMODR_PYTHON"), uv = Sys.getenv("HYPERMODR_UV"),
+  directory = Sys.getenv("HYPERMODR_RESOLUTION_DIR")
+)
+resolution$hard_gates
+```
+
+Inspect every artifact's full license/notice text and exact identity before
+setting its reviewed flag. `hm_admit_backend(resolution, reviewed_terms)`
+creates an installation plan only after that review. `hm_backend_plan()` also
+accepts an explicitly pinned custom profile. `hm_install_backend(plan,
+accept_terms = TRUE)` performs the separately requested installation into an
+external cache; `hm_start_backend()`, `hm_backend_status()` and
+`hm_stop_backend()` own the process lifecycle. `hm_worker_request()` uses bounded
+numeric interchange, never arbitrary Python deserialization.
+
+vLLM additionally requires exact NVIDIA driver/device ABI admission and an exact
+local checkpoint manifest. `hm_resolve_checkpoint()` resolves a public immutable
+40-character revision without downloading weights and rejects custom remote
+code; review checkpoint terms separately. Use `hm_vllm_chat()` only for a
+compatible served language/vision model, with explicit consent and disclosure
+for remote transmission. Native HSI architectures do not run through stock
+vLLM. `hm_render_hsi()` records the information lost in three-channel views;
+`hm_prompt()` binds prompt origins. Generated text remains auxiliary.
+
+Install receipts, artifact hashes, exact versions and `hm_check_backend()`
+smoke/parity evidence must travel with a support claim. Offline misses, corrupt
+artifacts and unsupported platforms fail explicitly. Repeat installs verify
+integrity; interrupted staging and ownership locks are not silently stolen.
+No Windows, macOS, GPU or named upstream model qualification follows from this
+article. No installation is triggered by loading the package or opening the app.

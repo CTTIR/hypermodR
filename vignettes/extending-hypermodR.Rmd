@@ -1,0 +1,49 @@
+---
+title: "Extending hypermodR"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Extending hypermodR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+library(hypermodR)
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", error = FALSE)
+```
+Extensions must preserve identity, units, input semantics and explicit failures.
+This small local S3 bridge demonstrates conversion to the public S4 container;
+it is not a registration of a new qualified camera or model backend.
+
+```{r adapter}
+hm_as_dataset.example_spectra <- function(x, profile = NULL, ...) {
+  hm_dataset(x$values, x$observations, x$bands,
+    provenance = list(synthetic = TRUE, source = "local example")
+  )
+}
+source <- structure(list(
+  values = matrix(1:6, 2, 3),
+  observations = data.frame(observation_id = c("a", "b")),
+  bands = data.frame(wavelength = c(500, 600, 700))
+), class = "example_spectra")
+x <- hm_as_dataset(source)
+if (!isTRUE(all(
+  methods::validObject(x),
+  identical(as.numeric(hm_spectra(x)$values), as.numeric(source$values))
+))) {
+  cli::cli_abort("Example assertion failed.", class = "hm_example_error")
+}
+```
+
+A distributed adapter needs registered S3/S4 dispatch and conformance tests for
+identity, native axis order, explicit wavelength availability, units, calibration,
+geometry, masks, annotation revision and temporal order. Use asymmetric fixtures
+and independent expected values. Reject unsupported conversions before work.
+
+There is no public arbitrary model-plugin registration API. New model engines
+must integrate the package's task/specification contract with train-only recipe
+fitting, prediction schema and explicit fit/predict availability. Backend
+extensions require installed resources addressed through `system.file()`, exact
+artifact hashes/rights and numerical parity. Do not load code from mutable
+remote repositories or use private development paths at runtime. Read the
+architecture, interoperability and backend specifications for acceptance criteria.

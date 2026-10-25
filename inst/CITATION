@@ -1,0 +1,6 @@
+bibentry(bibtype = "Manual",
+  title = "hypermodR: Hyperspectral Modelling and Validation",
+  author = person("Raban", "Heller"),
+  year = "2026",
+  note = paste("R package version", meta$Version),
+  url = "https://github.com/CTTIR/hypermodR")

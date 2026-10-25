@@ -1,119 +1,152 @@
-# hypermodR
+hypermodR
+================
 
-**Hyperspectral Modelling and Validation in R**
+hypermodR brings hyperspectral data, train-only preprocessing, grouped
+modelling and explicit evaluation into one R workflow. It is development
+software for research. Executable interfaces, technical qualification
+and scientific validity are separate states. No clinical performance or
+general instrument compatibility is claimed.
 
-**Status: planning-stage repository; implementation awaits approval.** No
-modelling functions, model installers or Shiny application are available yet.
-The interfaces and capabilities below describe the proposed package, not
-completed support. The package's own code is licensed under [MIT](LICENSE.md).
-External models, weights, datasets and instrument SDKs retain their own terms.
+| Route | Current scope | Qualification boundary |
+|----|----|----|
+| R models | Grouped statistical, chemometric and conventional learning adapters | Synthetic tests; optional R engines require their packages |
+| Data bridges | S4 datasets/sequences, S3 source conversion and bounded blocks | Synthetic and companion fixtures; camera profiles remain unqualified |
+| Neural models | Package-owned trainable references and named upstream admission contracts | No named pretrained model scientifically qualified |
+| Runtime setup | Explicit resolver, reviewed manifest, isolated installation and owned workers | Automated resolver: Linux x86_64 only; exact live smoke/parity required |
+| Workbench | Local Shiny workflow using the same package API | Browser/accessibility qualification tracked separately |
 
-hypermodR is intended to connect interpretable and black-box modelling with
-reliable hyperspectral data handling, biological-unit validation and a shared
-R/Shiny workflow. It will complement the existing CTTIR packages instead of
-replacing their readers, annotation tools or visualisation interfaces.
+## Install the development source
 
-## Proposed scope
+From a checked-out source directory:
 
-| Area | Intended capability |
-|---|---|
-| Data | Spectra, hyperspectral images, registered companion images, ROI/label maps, longitudinal acquisitions and hyperspectral video |
-| Instruments | Profile-qualified TIVITA exports and Cubert/CUVIS sessions, including video chronology; unknown formats remain identifiable rather than guessed |
-| Open-box methods | Spectral indices with explicit definitions, chemometrics, linear/generalised/additive/mixed models, physiological forward/inverse models and constrained unmixing |
-| Conventional learning | Regularised models, discriminant methods, kernel methods, trees/forests, boosting, Gaussian processes, ensembles and task-appropriate survival/ordinal methods |
-| Deep learning | Spectral, spatial, spectral-spatial and temporal networks; transformers, representation learning, segmentation, reconstruction and domain adaptation |
-| Named research candidates | HTC, HyperVision, HyperFree, HyperSIGMA, Dual-Stream-MHSI, SpectralEarth and SpectralGPT, each with its own input, licensing and qualification record |
-| Language/vision-language models | Optional compatible vLLM profiles for explicitly defined tasks; rendered RGB/video/plots are labelled as auxiliary inputs |
-| Evaluation | Grouped/nested selection, temporal leakage prevention, paired uncertainty, calibration, abstention, robustness and independent confirmation |
-| Interface | Standard S3 modelling methods, formal S4 dataset/sequence contracts and a Shiny workbench using the same public API |
+``` r
+install.packages(".", repos = NULL, type = "source")
+```
 
-Coverage is organised by task and model family, with an extension contract for
-additional implementations. An available architecture is not automatically an
-installed, tested or scientifically qualified model.
+Install optional R engines only when needed. Loading hypermodR does not
+install Python, download weights or start a server. The package is not
+presented as a CRAN release. Read the installed runtime setup article
+with `vignette("backends-and-installation", package = "hypermodR")`.
 
-## Interoperability
+## A complete synthetic workflow
 
-The proposed bridges target [hyperspectR](https://github.com/CTTIR/hyperspectR),
-[hyperspectaculR](https://github.com/CTTIR/hyperspectaculR),
-[hyperannotatR](https://github.com/CTTIR/hyperannotatR),
-[tivis.r](https://github.com/CTTIR/tivis.r) and
-[cuvis.r](https://github.com/CTTIR/cuvis.r).
+The task is continuous response prediction from eight synthetic spectral
+bands (500–850 nm, arbitrary radiometric units). Subjects are the
+independent split units; the 96 spectra are repeated measurements from
+12 subjects. This is one outer fold for illustration, not a selected
+model or confirmation study. Scaling is learned on training rows only.
+The held-out RMSE is reconstructed independently before an immutable run
+is saved and read back.
 
-Conversions must preserve image identity, values and scaling, wavelength units
-and original band mapping, masks, coordinates, annotation revision, acquisition
-time and independent-unit identifiers. Video access must be bounded and retain
-gaps and irregular timing. Prediction imports must remain unreviewed until
-accepted in the annotation package.
+``` r
+data <- hm_example(seed = 42L)
+if (!isTRUE(all(
+  methods::validObject(data), nrow(data@observations) == 96L,
+  identical(data@bands$wavelength, seq(500, 850, length.out = 8L))
+))) {
+  cli::cli_abort("Example assertion failed.", class = "hm_example_error")
+}
+task <- hm_task("response", "regression", "spectrum", "subject_id")
+splits <- hm_split(data, task, folds = 3L, inner_folds = 2L, seed = 7L)
+fold <- splits$folds[[1L]]
+if (!isTRUE(all(!length(intersect(
+  data@observations$subject_id[fold$train],
+  data@observations$subject_id[fold$test]
+))))) {
+  cli::cli_abort("Example assertion failed.", class = "hm_example_error")
+}
+workflow <- hm_workflow(
+  task, hm_recipe(list(list(type = "scale"))),
+  hm_model_spec("lm", task)
+)
+fit <- hm_fit(workflow, data, fold)
+heldout <- hm_spectra(data, list(
+  observation_id = data@observations$observation_id[fold$test]
+))
+prediction <- hm_predict(fit, heldout)
+evaluation <- hm_evaluate(prediction, heldout$observations)
+errors <- prediction$values - heldout$observations$response
+expected_rmse <- sqrt(mean(errors^2))
+if (!isTRUE(all(isTRUE(all.equal(unname(evaluation$metrics["rmse"]),
+  expected_rmse))))) {
+  cli::cli_abort("Example assertion failed.", class = "hm_example_error")
+}
+evaluation
+#>       rmse        mae       bias
+#> 0.10558376 0.08430486 0.03453047
+uncertainty <- hm_bootstrap(evaluation, unit = "subject_id", draws = 20L,
+  seed = 9L)
+if (!isTRUE(all(uncertainty$invalid_draws == 0L))) {
+  cli::cli_abort("Example assertion failed.", class = "hm_example_error")
+}
+uncertainty$conditioning
+#> [1] "fixed predictions; fitting and selection uncertainty excluded"
+run <- tempfile("hypermodR-run-")
+hm_save_run(list(
+  fit = fit, prediction = prediction, evaluation = evaluation,
+  uncertainty = uncertainty
+), run)
+restored <- hm_read_run(run)
+if (!isTRUE(all(identical(restored$prediction, prediction)))) {
+  cli::cli_abort("Example assertion failed.", class = "hm_example_error")
+}
+unlink(run, recursive = TRUE)
+```
 
-See the [data and interoperability specification](docs/interoperability.md).
-The current packages do not already share a common S4 HSI class; introducing
-one in hypermodR requires explicit bridges and cross-package tests.
+## Data, models and the workbench
 
-## Model runtimes and installation
+`HMDataset` and `HMSequence` are formal S4 containers. `hm_spectra()`
+and `hm_read_block()` are S4 accessors; `hm_as_dataset()` bridges
+supported S3 sources. `hm_fit` and `hm_prediction` are S3 results with
+standard print/summary and prediction methods. Camera brands do not
+establish wavelength calibration. TIVITA profiles distinguish spectral
+cubes, RGB and vendor displays; Cubert sequences retain frame identity,
+explicit time and calibration declarations. See the [article
+catalogue](https://github.com/CTTIR/hypermodR/blob/main/vignettes/README.md).
 
-The R core will remain usable without Python, a GPU or a vendor SDK. Explicit
-package functions and corresponding Shiny actions will plan, install and check
-optional runtimes in versioned user-space environments. Installation must not
-occur during package installation, loading, ordinary checks or vignette builds.
+`hm_models()` exposes model identities and support status.
+`hm_model_spec()` is the common constructor. Named upstream constructors
+are `hm_htc()`, `hm_hyperfree()`, `hm_hypersigma()`, `hm_hypervision()`,
+`hm_dual_stream_mhsi()`, `hm_spectralearth()` and `hm_spectralgpt()`. A
+registry entry is not an executable or qualified model.
+`hm_temporal_model()` declares causal package reference families. Stock
+vLLM serves compatible language/vision models; it does not execute these
+native HSI architectures.
 
-**Runtime automation is a public package feature.** The local vLLM setup,
-DNN/transformer environment setup, model acquisition checks, worker/server
-lifecycle, model adapters and diagnostics will be implemented in Git-tracked
-package code. R interfaces live in `R/`; platform profiles, dependency locks,
-model manifests and package-owned worker resources live in `inst/`. These
-resources will ship with the R package and work from an installed package
-without access to the development checkout or its orchestration folder.
+``` r
+hm_app()
+```
 
-Native HSI networks require their own compatible workers. vLLM is planned for
-supported language and vision-language architectures; it is not a universal
-runtime for arbitrary HSI neural networks. In particular, SpectralGPT is a
-masked autoencoder, not an autoregressive language model. Training and
-fine-tuning use separate native workers.
+The local app offers a synthetic example and reproducible exports
+through the same task, workflow, split and run APIs. Read the installed
+workbench guide with
+`vignette("shiny-workbench", package = "hypermodR")`.
 
-The [backend specification and platform matrix](docs/model-backends.md) and
-[proposed model registry](docs/model-registry.json) retain unavailable models
-and unresolved terms explicitly. Automatic setup is planned only for a
-qualified platform/profile; it will not replace drivers or silently alter
-existing environments or services.
+## Scientific use and the Spectralverse programme
 
-## Shiny workbench and documentation
+[Spectralverse](https://spectralverse-heidelberg.org) is the central
+external reference programme:
+[HeiPor](https://spectralverse-heidelberg.org/HeiPorSPECTRAL/) anchors
+primary anatomy,
+[xeno](https://spectralverse-heidelberg.org/xeno-spectral/)
+species/perfusion development, and
+[ManU](https://spectralverse-heidelberg.org/manuspectral/) separate
+human admission. `hm_benchmark_protocol()` validates protocol metadata;
+it does not supply data, grant rights or certify external validation.
+Target outcome access, case/ROI support and native versus adapted
+spectral tracks remain explicit.
 
-The proposed workbench follows **Import → QC/geometry → ROI/task/grouping →
-Model/backend → Run → Compare → Export**. Numerical and validation logic will
-live in the R API, with application logic in `R/` and static assets only in
-`inst/`. See the [app specification](docs/shiny-workbench.md).
+Bootstrap intervals condition on fixed predictions and omit
+training/selection uncertainty. Development, transfer and confirmation
+claims require distinct independent units and admission evidence.
+Missing-class draws remain invalid; model confidence is not an admitted
+out-of-distribution detector.
 
-The [vignette catalogue](vignettes/README.md) covers the complete intended
-workflow, including executable offline synthetic examples and separately
-qualified optional-backend examples. The site will use CTTIR's `themakR`
-pkgdown template. A runnable quick start, app launch command and installation
-instructions will be added when the corresponding capability passes its gates.
-
-## Quality and scientific scope
-
-The package will follow the [CTTIR contribution policy](https://github.com/CTTIR/.github/blob/main/CONTRIBUTING.md),
-with `qviewparsR` as the reference and shared check, coverage and lint workflows.
-Proposed additional gates include a 95% test-coverage floor, blocking lint,
-independent numerical fixtures, platform-specific backend qualification,
-browser/accessibility checks and verified source-tarball contents.
-
-The [architecture](docs/architecture.md) and
-[quality/documentation requirements](docs/quality-and-documentation.md) define
-the proposed contracts. Technical reproducibility, task performance and
-clinical validity remain separate. Expert ROIs, adapted spectra and lossy
-multimodal renderings will not be presented as equivalent inputs.
-
-[Spectralverse Heidelberg](https://spectralverse-heidelberg.org/) is the central
-external methods reference: HeiPorSPECTRAL for anatomy, xeno-spectral for
-domain/species/perfusion transfer, and ManUSPECTRAL for a separately admitted
-human branch. These datasets do not provide burn or spinal-injury reference
-labels by implication.
-
-Only orchestration of **package development**—implementation plans, task state,
-development reviews and local build/check evidence—belongs in the ignored
-`orchestration/` directory. End-user runtime setup and execution automation
-belongs in the public package as described above. Downloaded environments,
-weights and runtime receipts live in an external user cache; the source code
-that manages them is tracked and packaged. Public product specifications remain
-in this repository. Clinical data, raw recordings, downloaded model weights and
-machine-specific credentials do not belong in Git or the package archive.
+Package-owned code uses the [MIT license](LICENSE.md). Data, external
+source, SDKs and weights retain their own terms. Review the
+[contribution guide](CONTRIBUTING.md),
+[architecture](https://github.com/CTTIR/hypermodR/blob/main/docs/architecture.md)
+and [quality
+requirements](https://github.com/CTTIR/hypermodR/blob/main/docs/quality-and-documentation.md).
+Use `citation("hypermodR")` for the software citation; no publication
+DOI is claimed.
