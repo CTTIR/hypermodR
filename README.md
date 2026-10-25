@@ -1,4 +1,4 @@
-# hypermodR <picture class="cttir-readme-logo"><source class="cttir-logo-dark-source" media="(prefers-color-scheme: dark)" srcset="man/figures/logo-with-name-dark.png" /><img src="man/figures/logo-with-name.png" align="right" alt="hypermodR logo" width="120" height="155" /></picture>
+# hypermodR <picture class="cttir-readme-logo"><source class="cttir-logo-dark-source" media="(prefers-color-scheme: dark)" srcset="man/figures/logo-with-name-dark.png" /><img src="man/figures/logo-with-name.png" align="right" alt="hypermodR logo" width="120" height="139" /></picture>
 
 hypermodR brings hyperspectral data, train-only preprocessing, grouped
 modelling and explicit evaluation into one R workflow. It is development
