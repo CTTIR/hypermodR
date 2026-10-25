@@ -1,0 +1,17 @@
+Package: hypermodR
+Type: Package
+Title: Hyperspectral Modelling and Validation
+Version: 0.0.0.9000
+Authors@R: person("Raban", "Heller", email = "raban.heller@charite.de",
+    role = c("aut", "cre"), comment = c(ORCID = "0000-0001-8006-9742"))
+Description: Planning-stage scaffold for interpretable and black-box
+    hyperspectral modelling, image and sequence interoperability, reproducible
+    evaluation, optional model runtimes, and an interactive research workbench.
+    The documented interfaces are proposed and await implementation approval.
+License: MIT + file LICENSE
+URL: https://github.com/CTTIR/hypermodR
+BugReports: https://github.com/CTTIR/hypermodR/issues
+Encoding: UTF-8
+Depends: R (>= 4.3.0)
+Config/Needs/website: CTTIR/themakR
+Config/hypermodR/status: planning

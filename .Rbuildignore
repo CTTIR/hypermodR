@@ -1,0 +1,11 @@
+^orchestration$
+^\.git$
+^\.github$
+^\.gitignore$
+^docs$
+^site$
+^LICENSE\.md$
+^vignettes/README\.md$
+^.*\.Rproj$
+^\.Rproj\.user$
+^renv$
