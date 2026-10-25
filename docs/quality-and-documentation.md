@@ -45,7 +45,7 @@ The following table distinguishes existing CTTIR requirements from stronger requ
 | Shiny behavior | CTTIR measurable-code requirement plus reference tests | UI construction and server tests in ordinary package coverage; separate browser checks for complete user workflows, downloads, recovery and session isolation. |
 | Accessibility | Proposed strengthening | WCAG 2.2 AA as the design target, with automated checks and manual keyboard, focus, contrast and screen-reader spot checks on actual rendered pages. |
 | Documentation | CTTIR reference and theme | Offline core examples execute; reference entries cover every export; rendered navigation, assets and links work in both colour modes and narrow layouts. |
-| Distribution | Package-specific requirement | Git and source-tarball inspections exclude private orchestration, data, environment caches, model weights and credentials. |
+| Distribution | Package-specific requirement | Git and source-tarball inspections include runtime installer/lifecycle code, model registries, platform profiles/locks and package-owned workers. Only development orchestration and downloaded/private artifacts are excluded. Clean-library installed tests verify namespace functions and `system.file()` resource hashes without the checkout. |
 
 Coverage is a defect-detection aid, not a scientific qualification score. Core tests, backend tests, app tests and scientific benchmarks may overlap; their counts are not added to imply independent evidence.
 
@@ -107,6 +107,6 @@ Public package files will include `DESCRIPTION`, `NAMESPACE`, `R/`, `man/`, `tes
 
 The three organization workflows must be called as reusable workflows rather than copied. Browser and backend qualification lanes supplement them. Exact workflow and dependency revisions are recorded for reproducible release checks.
 
-Public product specifications describe behavior and acceptance criteria. Execution plans, task ledgers, checkpoints and audit evidence are maintained separately in the ignored orchestration directory and excluded from R source builds. Release evidence must verify both exclusions; `.gitignore` alone does not control a source archive.
+Public product specifications describe behavior and acceptance criteria. Only package-development plans, task ledgers, reviews and local build/check evidence are maintained in the ignored orchestration directory and excluded from R source builds. End-user vLLM/DNN/transformer installation and execution automation is public, tracked, packaged product code. Its R functions and installed registry/profile/worker resources must operate without `orchestration/`, `docs/` or a development checkout. Runtime receipts and downloaded artifacts belong in an external user cache. Release evidence must verify both inclusion of required runtime assets and exclusion of development/private material; `.gitignore` alone does not control a source archive.
 
 This specification does not authorize CRAN submission, model publication or application deployment. Those actions remain separate from implementation and technical verification.

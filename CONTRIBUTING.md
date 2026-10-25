@@ -12,7 +12,13 @@ Place Shiny logic in `R/`, maintain independent numerical fixtures, and keep
 optional runtimes out of the core installation path. Do not advertise a skipped
 backend test as a passing qualification.
 
-Keep product specifications and source/tests in Git. Execution ledgers, local
-audit evidence, raw data, credentials, installed environments and model weights
-remain outside tracked package content. New external dependencies and model
-artifacts require separate source, license, version and checksum records.
+Keep product specifications, source/tests and all end-user runtime automation in
+Git. The vLLM/DNN/transformer installer and lifecycle code belongs in `R/`, with
+package-owned registries, platform profiles, locks and workers in `inst/`; these
+must be included in the source archive and usable after installation. Do not
+place runtime implementation in ignored `orchestration/` or build-excluded
+`docs/`. Only development execution ledgers, local build/check evidence and
+reviews belong in `orchestration/`. Raw data, credentials, downloaded
+environments and weights remain outside tracked package content. New external
+dependencies and model artifacts require separate source, license, version and
+checksum records.

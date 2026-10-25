@@ -10,6 +10,24 @@ These are different execution routes. A model being a transformer, being hosted 
 
 Native workers will be isolated by exact environment profile because upstream Python, PyTorch, compiled-extension and image-library requirements differ. The design uses a versioned worker protocol and declared array interchange, not arbitrary Python objects or pickles passed into R. Worker commands use argument vectors, not interpolated shell commands. A shared in-process Python environment is not required.
 
+## Runtime automation ships with the package
+
+Automating local vLLM setup and DNN/transformer environments is an end-user package capability. Its implementation must be tracked on GitHub and distributed with the R package. It is not part of the ignored development orchestration.
+
+| Content | GitHub | Package distribution |
+|---|---|---|
+| Installer, capability checks, lifecycle, diagnostics and connectors in `R/backend-*.R` | Tracked | R source archive and installed namespace |
+| Model registry/manifests in `inst/models/` | Tracked | Installed `models/` resources |
+| Platform profiles, dependency locks and package-owned setup resources in `inst/backends/` | Tracked | Installed `backends/` resources |
+| Package-owned Python workers and DNN/transformer adapters in `inst/python/hypermodr_worker/` | Tracked | Installed `python/hypermodr_worker/` resources |
+| Runtime tests, documentation and examples | Tracked | Appropriate source-package tests and built documentation |
+| Development plans, ledgers, reviews and local build/check evidence in `orchestration/` | Ignored | Excluded |
+| Downloaded environments, upstream artifacts, weights, SDK binaries, runtime receipts and credentials | External user cache or protected storage | Acquired or created separately under the declared plan; not bundled |
+
+The current `docs/model-registry.json` is a design catalogue. The actual runtime registry will be implemented in `inst/models/registry.json`; installed functions cannot depend on `docs/`, which is excluded from package builds. Product automation uses installed namespace functions and `system.file()` resources and must work with the development checkout unavailable.
+
+Distribution acceptance requires tracked-file coverage, source-archive inspection, clean-library installation, resource hash readback, and offline/mocked planning/lifecycle tests from an unrelated working directory. This verifies that a downloaded R package contains its setup logic, while actual runtime downloads remain explicit operations.
+
 Training and fine-tuning use qualified native training workers. vLLM can supply inference, rollouts and weight-transfer facilities within training systems; it does not replace the package's gradient-training implementation. New heads, learned spectral adapters, fine-tuning, quantization and converted checkpoints create distinct model identities. [vLLM training integration](https://docs.vllm.ai/en/latest/training/rlhf/)
 
 ## Required HSI candidate registry

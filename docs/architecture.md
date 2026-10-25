@@ -15,6 +15,16 @@ An MIT core does not change upstream code, weight, data or SDK licensing.
 External workers keep incompatible Python/Torch/compiled dependencies apart.
 No source copying or model redistribution follows merely from registration.
 
+End-user setup and execution automation is part of the product. The local
+vLLM installer/connector, DNN and transformer setup, model managers, runtime
+checks and worker/server lifecycle are public Git-tracked package code. R
+implementation lives in `R/`, with runtime registries, platform profiles,
+dependency locks and package-owned workers in `inst/`. Installed code resolves
+resources through `system.file()` and the package namespace, not checkout paths.
+Only development plans, task ledgers, reviews and local build/check evidence
+are excluded under `orchestration/`. Downloaded environments, models and runtime
+receipts use an external user cache rather than this development directory.
+
 ## Data and object contract
 
 Formal S4 `HMDataset` represents validated data sources, observation/band/asset
@@ -178,4 +188,4 @@ qualification and scientific evaluation have separate states.
 5. Shared API for scripts and Shiny; annotation review remains with hyperannotatR.
 6. Mandatory biological-unit/temporal split integrity and immutable run provenance.
 7. MIT package core with independently tracked external artifact terms.
-8. Public product specifications; ignored local execution orchestration.
+8. Public and packaged runtime automation; ignored development orchestration only.

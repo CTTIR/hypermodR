@@ -1,3 +1,4 @@
+# Development plans/state only; package runtime automation belongs in R/ and inst/.
 /orchestration/
 .Rhistory
 .RData

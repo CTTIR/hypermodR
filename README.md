@@ -56,6 +56,14 @@ package functions and corresponding Shiny actions will plan, install and check
 optional runtimes in versioned user-space environments. Installation must not
 occur during package installation, loading, ordinary checks or vignette builds.
 
+**Runtime automation is a public package feature.** The local vLLM setup,
+DNN/transformer environment setup, model acquisition checks, worker/server
+lifecycle, model adapters and diagnostics will be implemented in Git-tracked
+package code. R interfaces live in `R/`; platform profiles, dependency locks,
+model manifests and package-owned worker resources live in `inst/`. These
+resources will ship with the R package and work from an installed package
+without access to the development checkout or its orchestration folder.
+
 Native HSI networks require their own compatible workers. vLLM is planned for
 supported language and vision-language architectures; it is not a universal
 runtime for arbitrary HSI neural networks. In particular, SpectralGPT is a
@@ -101,8 +109,11 @@ domain/species/perfusion transfer, and ManUSPECTRAL for a separately admitted
 human branch. These datasets do not provide burn or spinal-injury reference
 labels by implication.
 
-Execution plans, task state and audit evidence are maintained in the local
-`orchestration/` directory, excluded from Git and R package builds. Public
-product specifications remain in this repository. No clinical data, raw
-instrument recordings, model weights or machine-specific credentials belong
-in the repository or package archive.
+Only orchestration of **package development**—implementation plans, task state,
+development reviews and local build/check evidence—belongs in the ignored
+`orchestration/` directory. End-user runtime setup and execution automation
+belongs in the public package as described above. Downloaded environments,
+weights and runtime receipts live in an external user cache; the source code
+that manages them is tracked and packaged. Public product specifications remain
+in this repository. Clinical data, raw recordings, downloaded model weights and
+machine-specific credentials do not belong in Git or the package archive.
