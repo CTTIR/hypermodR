@@ -1,5 +1,4 @@
-hypermodR
-================
+# hypermodR <img src="man/figures/logo.png" align="right" width="120" height="139" alt="hypermodR logo" />
 
 hypermodR brings hyperspectral data, train-only preprocessing, grouped
 modelling and explicit evaluation into one R workflow. It is development
@@ -150,3 +149,8 @@ and [quality
 requirements](https://github.com/CTTIR/hypermodR/blob/main/docs/quality-and-documentation.md).
 Use `citation("hypermodR")` for the software citation; no publication
 DOI is claimed.
+
+## Branding
+
+Editable R sources and regeneration instructions are in
+[tools/branding](https://github.com/CTTIR/hypermodR/tree/main/tools/branding).

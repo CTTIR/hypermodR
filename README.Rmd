@@ -1,5 +1,5 @@
 ---
-title: "hypermodR"
+title: 'hypermodR <img src="man/figures/logo.png" align="right" width="120" height="139" alt="hypermodR logo" />'
 output: github_document
 ---
 
@@ -139,3 +139,8 @@ Package-owned code uses the [MIT license](LICENSE.md). Data, external source,
 SDKs and weights retain their own terms. Review the [contribution guide](CONTRIBUTING.md),
 [architecture](https://github.com/CTTIR/hypermodR/blob/main/docs/architecture.md) and [quality requirements](https://github.com/CTTIR/hypermodR/blob/main/docs/quality-and-documentation.md).
 Use `citation("hypermodR")` for the software citation; no publication DOI is claimed.
+
+## Branding
+
+Editable R sources and regeneration instructions are in
+[tools/branding](https://github.com/CTTIR/hypermodR/tree/main/tools/branding).
