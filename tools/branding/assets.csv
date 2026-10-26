@@ -32,3 +32,4 @@ hypermodR,favicon.ico,pkgdown/favicon/favicon.ico
 hypermodR,hex-dark.svg,pkgdown/favicon/favicon.svg
 hypermodR,icon-192.png,pkgdown/favicon/web-app-manifest-192x192.png
 hypermodR,icon-512.png,pkgdown/favicon/web-app-manifest-512x512.png
+hypermodR,hex-dark.svg,inst/app/favicon.svg

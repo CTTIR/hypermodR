@@ -1,4 +1,6 @@
 .hm_app_ui <- function() {
+  favicon <- .hm_resource("app", "favicon.svg")
+  favicon_raw <- readBin(favicon, "raw", n = file.info(favicon)$size)
   bslib::page_navbar(
     title = "hypermodR \u00b7 Spectral workbench",
     lang = "en",
@@ -13,11 +15,8 @@
     header = shiny::tagList(
       shiny::tags$head(
         shiny::tags$link(
-          rel = "icon", href = paste0(
-            "data:image/svg+xml,%3Csvg ",
-            "xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 ",
-            "32'%3E%3Ctext y='26' ",
-            "font-size='26'%3E%CE%BB%3C/text%3E%3C/svg%3E"
+          rel = "icon", type = "image/svg+xml", href = paste0(
+            "data:image/svg+xml;base64,", jsonlite::base64_enc(favicon_raw)
           )
         ),
         shiny::tags$style(
