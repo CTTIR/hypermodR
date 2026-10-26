@@ -1,8 +1,39 @@
-.hm_no_symlink <- function(path) {
-  p <- path.expand(path)
-  while (nzchar(p) &&
-           !identical(p, dirname(p))) {
-    link <- Sys.readlink(p)
+.hm_path_parts <- function(path) {
+  x <- gsub("\\\\", "/", path.expand(path))
+  if (!grepl("^(/|[A-Za-z]:/)", x)) {
+    x <- paste(gsub("\\\\", "/", getwd()), x, sep = "/")
+  }
+  parts <- strsplit(x, "/", fixed = TRUE)[[1L]]
+  parts <- parts[nzchar(parts) & parts != "."]
+  if (.Platform$OS.type == "windows") tolower(parts) else parts
+}
+# Refuse symlinks in the components of `path` below the trusted directory
+# `root`. The root is resolved once, so links above it that belong to the
+# platform or the user's configuration (for example /var -> /private/var on
+# macOS) are accepted, while every component under the root, including the
+# final one, must be a real file or directory.
+.hm_no_symlink <- function(path, root) {
+  real <- normalizePath(root, winslash = "/", mustWork = FALSE)
+  p <- .hm_path_parts(path)
+  below <- NULL
+  for (r in list(.hm_path_parts(root), .hm_path_parts(real))) {
+    k <- length(r)
+    if (length(p) >= k && identical(p[seq_len(k)], r)) {
+      below <- p[k + seq_len(length(p) - k)]
+      break
+    }
+  }
+  if (is.null(below) ||
+        ".." %in% below) {
+    .hm_abort(
+      "Cache or artifact path is outside its trusted root.",
+      "hm_integrity_error"
+    )
+  }
+  current <- real
+  for (part in below) {
+    current <- file.path(current, part)
+    link <- Sys.readlink(current)
     if (!is.na(link) &&
           nzchar(link)) {
       .hm_abort(
@@ -10,7 +41,6 @@
         "hm_integrity_error"
       )
     }
-    p <- dirname(p)
   }
   invisible(TRUE)
 }
@@ -50,7 +80,7 @@ hm_install_backend <- function(
       "hm_terms_error"
     )
   }
-  .hm_no_symlink(plan$cache)
+  .hm_no_symlink(plan$cache, dirname(plan$cache))
   dir.create(plan$cache,
     recursive = TRUE, showWarnings = FALSE,
     mode = "0700"
@@ -76,12 +106,12 @@ hm_install_backend <- function(
     auto_unbox = TRUE
   )
   if (dir.exists(target)) {
-    .hm_no_symlink(target)
+    .hm_no_symlink(target, dirname(plan$cache))
     ok <- all(
       vapply(
         plan$profile$artifacts, function(a) {
           f <- file.path(target, a$path)
-          .hm_no_symlink(f)
+          .hm_no_symlink(f, dirname(plan$cache))
           .hm_artifact_ok(f, a)
         }, logical(1)
       )
@@ -123,14 +153,14 @@ hm_install_backend <- function(
       recursive = TRUE, showWarnings = FALSE
     )
     cached <- file.path(plan$cache, "artifacts", a$sha256)
-    .hm_no_symlink(cached)
+    .hm_no_symlink(cached, dirname(plan$cache))
     if (.hm_artifact_ok(cached, a)) {
       if (!file.copy(cached, dest)) {
         .hm_abort("Failed to stage cached artifact.")
       }
     } else if (startsWith(a$url, "file://")) {
       source <- substring(a$url, 8L)
-      .hm_no_symlink(source)
+      .hm_no_symlink(source, dirname(source))
       if (!file.copy(source, dest)) {
         .hm_abort("Local artifact is unavailable.")
       }

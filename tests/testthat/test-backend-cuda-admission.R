@@ -101,7 +101,7 @@ test_that(
         invisible(TRUE)
       },
       .hm_no_symlink = function(
-        path) {
+        path, root) {
         invisible(TRUE)
       },
       .hm_resource_process = function(

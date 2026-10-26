@@ -53,7 +53,7 @@ hm_resolve_backend <- function(
   if (!startsWith(uv_version, "uv 0.11.26 ")) {
     .hm_abort("Resolver uv version must be exactly 0.11.26.")
   }
-  .hm_no_symlink(directory)
+  .hm_no_symlink(directory, dirname(directory))
   if (!dir.create(directory,
         recursive = TRUE, showWarnings = FALSE,
         mode = "0700"
@@ -287,7 +287,7 @@ hm_resolve_checkpoint <- function(
       "are required."
     ))
   }
-  .hm_no_symlink(directory)
+  .hm_no_symlink(directory, dirname(directory))
   if (!dir.create(directory,
         recursive = TRUE, showWarnings = FALSE,
         mode = "0700"

@@ -108,7 +108,7 @@ hm_start_backend <- function(
       "Runtime path differs from declared installation."
     )
   }
-  .hm_no_symlink(backend$path)
+  .hm_no_symlink(backend$path, dirname(backend$plan$cache))
   if (
       !is.null(
                backend$plan$profile$python) &&
@@ -120,7 +120,7 @@ hm_start_backend <- function(
   }
   for (a in backend$plan$profile$artifacts) {
     f <- file.path(backend$path, a$path)
-    .hm_no_symlink(f)
+    .hm_no_symlink(f, dirname(backend$plan$cache))
     if (!.hm_artifact_ok(f, a)) {
       .hm_abort(
         "Runtime integrity changed.",
