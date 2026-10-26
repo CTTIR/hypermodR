@@ -17,7 +17,7 @@ test_that(
     )
     v[1, 1, 1] <- NA_real_
     mask <- matrix(
-      c(TRUE, FALSE, NA, rep(TRUE, 7)),
+      c(TRUE, FALSE, FALSE, rep(TRUE, 7)),
       2, 5
     )
     x <- suppressWarnings(
@@ -67,5 +67,25 @@ test_that(
     expect_identical(y$metadata$hypermodR$inverse_sort, c(3L, 1L, 2L))
     back <- hm_as_dataset(y)
     expect_identical(back@bands$native_index, c(2L, 3L, 1L))
+  }
+)
+test_that(
+  "unknown mask pixels export as invalid and the native mask is restored",
+  {
+    skip_if_not_installed("hyperspectR")
+    mask <- matrix(
+      c(TRUE, FALSE, NA, rep(TRUE, 7)),
+      2, 5
+    )
+    d <- hm_dataset(
+      array(as.numeric(seq_len(30)), c(2, 5, 3)),
+      .hm_image_observations(),
+      data.frame(wavelength = c(500, 600, 700)),
+      .hm_native_geometry(),
+      list(spatial_masks = list(mask))
+    )
+    y <- hm_as_hsi_cube(d, "image")
+    expect_identical(y$mask, mask & !is.na(mask))
+    expect_identical(hm_as_dataset(y)@provenance$spatial_masks, list(mask))
   }
 )
