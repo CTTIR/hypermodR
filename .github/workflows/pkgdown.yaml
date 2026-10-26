@@ -28,6 +28,8 @@ jobs:
       - name: Build documentation site
         shell: Rscript {0}
         run: pkgdown::build_site(new_process = FALSE)
+      - name: Sync current branding across site versions
+        run: Rscript tools/branding/sync-site.R _site
       - uses: actions/upload-artifact@v4
         with:
           name: pkgdown-site

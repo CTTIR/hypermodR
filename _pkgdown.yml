@@ -1,9 +1,6 @@
 destination: _site
 template:
   package: themakR
-  includes:
-    in_header: |
-      <link rel="icon" type="image/svg+xml" href="favicon.svg">
 development:
   mode: auto
 home:
