@@ -68,7 +68,7 @@ test_that(
 test_that(
   "lazy RDS sources verify content before reading",
   {
-    path <- tempfile(tmpdir = Sys.getenv("TMPDIR"))
+    path <- tempfile()
     on.exit(unlink(path))
     saveRDS(
       array(1:60, c(3, 5, 4)),
@@ -116,7 +116,7 @@ test_that(
       data.frame(wavelength = seq(400, 710, 10)),
       core_geometry()
     )
-    path <- tempfile(tmpdir = Sys.getenv("TMPDIR"))
+    path <- tempfile()
     on.exit(unlink(path))
     Rprofmem(path)
     z <- hm_read_block(x, list(rows = 1:16, cols = 1:32))
