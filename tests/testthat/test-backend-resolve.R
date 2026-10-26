@@ -23,6 +23,8 @@ test_that(
     )
     python <- unname(Sys.which("python3"))
     skip_if(!nzchar(python))
+    caps <- hm_backend_capabilities()
+    skip_if_not(identical(caps$os, "Linux") && identical(caps$arch, "x86_64"))
     version <- trimws(
       processx::run(python, c(
         "-c",
@@ -32,7 +34,7 @@ test_that(
     if (!grepl("^3[.](11|12)[.]", version)) {
       expect_error(
         hm_resolve_backend("reference_cpu", "reference:cnn1d",
-          python = python
+          python = python, uv = "uv"
         ),
         "3.11 or 3.12"
       )
