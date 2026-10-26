@@ -27,11 +27,6 @@ test_that(
                           device = "cuda:0")),
       "inherited"
     )
-    Sys.setenv(CUDA_VISIBLE_DEVICES = "")
-    expect_error(
-      select(plan, resources),
-      "inherited"
-    )
     Sys.setenv(
                CUDA_VISIBLE_DEVICES = "GPU-uuid")
     expect_error(
@@ -83,6 +78,24 @@ test_that(
         "list"
       )
     }
+  }
+)
+
+test_that(
+  "an empty inherited CUDA list admits no device",
+  {
+    # Windows cannot hold an empty environment variable: assigning "" removes
+    # it, so an empty inherited list cannot occur there.
+    skip_on_os("windows")
+    plan <- list(profile = list(device = "cuda", hardware_verified = TRUE))
+    withr::local_envvar(CUDA_VISIBLE_DEVICES = "")
+    expect_identical(
+      Sys.getenv("CUDA_VISIBLE_DEVICES", unset = NA_character_), ""
+    )
+    expect_error(
+      .hm_backend_device_env(plan, hm_resources(device = "cuda:2")),
+      "inherited"
+    )
   }
 )
 

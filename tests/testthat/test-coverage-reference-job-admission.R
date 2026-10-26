@@ -67,14 +67,9 @@ test_that(
       captured$args$control$backend$plan$digest,
       backend$plan$digest
     )
-    expect_true(
-      startsWith(
-        captured$args$control$artifact_path,
-        paste0(
-          normalizePath(root),
-          .Platform$file.sep
-        )
-      )
+    expect_identical(
+      normalizePath(dirname(captured$args$control$artifact_path)),
+      normalizePath(root)
     )
     expect_false(
       file.exists(captured$args$control$artifact_path)
