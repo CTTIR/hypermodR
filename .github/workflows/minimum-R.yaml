@@ -27,7 +27,9 @@ jobs:
         with:
           # R 4.3.0 bundles Matrix 1.5-4 (ABI 0); current lme4 binaries need
           # ABI 1. Matrix 1.6-5 is the last release that supports R < 4.4.
-          extra-packages: any::rcmdcheck, Matrix@1.6-5
+          # Its Enhances include Bioconductor's graph, whose R 4.3 mirror is
+          # gone; nothing here needs it.
+          extra-packages: any::rcmdcheck, Matrix@1.6-5, graph=?ignore
           needs: check
       - name: Check declared minimum R
         shell: Rscript {0}
