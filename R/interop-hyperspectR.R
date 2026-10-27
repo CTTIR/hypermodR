@@ -62,7 +62,17 @@ hm_as_dataset.hsi_cube <- function(
   if (!is.null(x$metadata$hypermodR)) {
     p <- utils::modifyList(p, x$metadata$hypermodR)
   }
-  p$spatial_masks <- list(x$mask)
+  # hyperspectR masks are binary. Restore the tri-state native mask written by
+  # hm_as_hsi_cube() when it collapses exactly onto the cube mask.
+  mask <- x$mask
+  native <- x$metadata$hypermodR$spatial_masks
+  if (!is.null(mask) && is.list(native) && length(native) == 1L &&
+        is.logical(native[[1L]]) &&
+        identical(dim(native[[1L]]), dim(mask)) &&
+        isTRUE(all((native[[1L]] & !is.na(native[[1L]])) == mask))) {
+    mask <- native[[1L]]
+  }
+  p$spatial_masks <- list(mask)
   b <- data.frame(wavelength = x$wavelengths)
   if (!is.null(p$sorted_to_native) &&
         length(p$sorted_to_native) ==
@@ -126,6 +136,11 @@ hm_as_hsi_cube <- function(x, acquisition_id, frame_id = NULL, ...) {
       1L
     }
     mask <- x@provenance$spatial_masks[[i]]
+  }
+  if (!is.null(mask)) {
+    # hyperspectR (>= 0.2.0) rejects NA in masks. Unknown pixels are not
+    # usable, as in hm_read_block(); the native mask stays in metadata.
+    mask <- mask & !is.na(mask)
   }
   hyperspectR::hsi_cube(
     array(z$values, dim(z$values)[1:3]),

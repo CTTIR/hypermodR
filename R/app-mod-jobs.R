@@ -101,7 +101,9 @@ hm_submit_job <- function(
       control$artifact_root, recursive = TRUE,
       showWarnings = FALSE
     )
-    .hm_no_symlink(control$artifact_root)
+    .hm_no_symlink(
+      control$artifact_root, dirname(control$artifact_root)
+    )
     control$artifact_path <- tempfile(
       "learned-",
       tmpdir = normalizePath(control$artifact_root, mustWork = TRUE)

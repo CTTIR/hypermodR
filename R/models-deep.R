@@ -22,7 +22,7 @@
   handle
 }
 .hm_deep_artifact_hash <- function(path) {
-  .hm_no_symlink(path)
+  .hm_no_symlink(path, dirname(path))
   files <- c("model.json", "state.npz", "input.json")
   stats::setNames(
     vapply(
@@ -98,7 +98,7 @@
         !dir.exists(dirname(path))) {
     .hm_abort("Provide a new artifact directory under an existing parent.")
   }
-  .hm_no_symlink(path)
+  .hm_no_symlink(path, dirname(path))
   path <- file.path(
     normalizePath(dirname(path)),
     basename(path)
