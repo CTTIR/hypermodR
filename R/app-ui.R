@@ -1,7 +1,9 @@
 .hm_app_ui <- function() {
   bslib::page_navbar(
     window_title = "hypermodR",
-    title = shiny::tagList(.cttir_brand_logo(), "hypermodR \u00b7 Spectral workbench"),
+    title = shiny::tagList(
+      .cttir_brand_logo(), "hypermodR \u00b7 Spectral workbench"
+    ),
     lang = "en",
     theme = bslib::bs_theme(
       version = 5, bootswatch = "flatly",
