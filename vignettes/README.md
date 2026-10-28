@@ -1,4 +1,4 @@
-# Vignette catalogue
+# Vignette catalogue <picture class="cttir-readme-logo"><source class="cttir-logo-dark-source" media="(prefers-color-scheme: dark)" srcset="figures/logo-dark.svg" /><img src="figures/logo.svg" align="right" alt="hypermodR logo" width="120" height="139" /></picture>
 
 **Status: executable development articles implemented.** Core synthetic examples execute offline; optional network/runtime examples are explicit opt-ins. The evidence column retains acceptance requirements, including work still pending. Implemented articles do not establish instrument, platform, browser or scientific qualification. Their APIs and acceptance criteria agree with the [architecture](../docs/architecture.md), [quality specification](../docs/quality-and-documentation.md) and [Shiny specification](../docs/shiny-workbench.md).
 
