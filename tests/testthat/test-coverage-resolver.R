@@ -154,11 +154,11 @@ test_that(paste0(
   )
   expect_s3_class(out, "hm_backend_resolution")
   expect_identical(out$profile$model_id, "reference:cnn1d")
-  expect_identical(out$profile$runtime_version, "torch-2.6.0-numpy-2.2.6")
+  expect_identical(out$profile$runtime_version, "torch-2.13.0-numpy-2.2.6")
   expect_identical(out$profile$artifacts[[1]]$sha256, expected_sha)
   expect_equal(out$profile$artifacts[[1]]$bytes, 42)
   expect_identical(unlist(state$requests[[1]]$requirements), c(
-    "numpy==2.2.6", "torch==2.6.0"
+    "numpy==2.2.6", "torch==2.13.0", "setuptools==84.1.0"
   ))
   expect_identical(state$requests[[1]]$torch_backend, "cpu")
   expect_identical(readLines(file.path(
@@ -182,15 +182,12 @@ test_that(paste0(
   reviewed[[1]]$reviewed <- TRUE
   plan <- hm_admit_backend(out, reviewed, cache = file.path(parent, "cache"))
   expect_s3_class(plan, "hm_backend_plan")
-  vllm <- hm_resolve_backend(
+  expect_error(hm_resolve_backend(
     "vllm_linux_cuda", "fixture/model", python,
     uv, file.path(parent, "vllm")
-  )
-  expect_identical(vllm$profile$device, "cuda")
-  expect_identical(unlist(state$requests[[2]]$requirements), "vllm==0.11.0")
-  reviewed <- vllm$profile$terms
-  reviewed[[1]]$reviewed <- TRUE
-  expect_error(hm_admit_backend(vllm, reviewed), "vLLM requires")
+  ), class = "hm_backend_security_error")
+  expect_false(dir.exists(file.path(parent, "vllm")))
+  expect_length(state$requests, 1L)
   state$uv <- "uv 0.12.0"
   expect_error(hm_resolve_backend(
     "reference_cpu", "fixture", python, uv,

@@ -28,8 +28,9 @@ status and scientific_qualification=FALSE.
 Inspect installation and separately supplied parity evidence
 }
 \details{
-Availability verifies artifact sizes/hashes for the supplied
-installation. Parity is caller-supplied evidence bound to the plan digest,
+Availability verifies the declared installation path, containment,
+artifact sizes/hashes and any Python environment inventory. Parity is
+caller-supplied evidence bound to the plan digest,
 reported as reported_pass rather than independently executed here. No
 scientific qualification follows.
 }

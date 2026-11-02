@@ -1,6 +1,7 @@
 """Loopback-only independent OpenAI-compatible transport fixture."""
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
+from socketserver import TCPServer
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -23,6 +24,15 @@ class Handler(BaseHTTPRequestHandler):
         pass
 
 
-server = HTTPServer(('127.0.0.1', 0), Handler)
+class LoopbackServer(HTTPServer):
+    def server_bind(self):
+        # The fixture has an explicit loopback address; reverse DNS is neither
+        # needed nor part of testing the HTTP protocol.
+        TCPServer.server_bind(self)
+        self.server_name = 'localhost'
+        self.server_port = self.server_address[1]
+
+
+server = LoopbackServer(('127.0.0.1', 0), Handler)
 print(server.server_port, flush=True)
 server.serve_forever()

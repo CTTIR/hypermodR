@@ -94,40 +94,8 @@ hm_start_backend <- function(
     .hm_abort(
               "Loopback and one thread are required.")
   }
-  .hm_validate_plan(backend$plan)
-  device_env <- .hm_backend_device_env(
-                                       backend$plan,
-                                       resources)
-  if (!identical(
-    backend$path,
-    file.path(
-              backend$plan$cache,
-              backend$plan$digest)
-  )) {
-    .hm_abort(
-      "Runtime path differs from declared installation."
-    )
-  }
-  .hm_no_symlink(backend$path, dirname(backend$plan$cache))
-  if (
-      !is.null(
-               backend$plan$profile$python) &&
-        !.hm_environment_ok(backend$path)) {
-    .hm_abort(
-      "Python environment integrity changed.",
-      "hm_integrity_error"
-    )
-  }
-  for (a in backend$plan$profile$artifacts) {
-    f <- file.path(backend$path, a$path)
-    .hm_no_symlink(f, dirname(backend$plan$cache))
-    if (!.hm_artifact_ok(f, a)) {
-      .hm_abort(
-        "Runtime integrity changed.",
-        "hm_integrity_error"
-      )
-    }
-  }
+  .hm_validate_installation(backend)
+  device_env <- .hm_backend_device_env(backend$plan, resources)
   p <- backend$plan$profile
   command <- file.path(
                        backend$path,

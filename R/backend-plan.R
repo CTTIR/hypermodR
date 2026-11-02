@@ -5,6 +5,21 @@
     nzchar(path) &&
     !grepl("(^[/\\\\]|^[A-Za-z]:|\\\\|(^|/)\\.\\.?(/|$))", path)
 }
+.hm_runtime_security <- function(profile) {
+  retired_cpu <- startsWith(profile$profile_id, "reference_cpu-") &&
+    identical(profile$runtime_version, "torch-2.6.0-numpy-2.2.6")
+  retired_vllm <- startsWith(profile$profile_id, "vllm_linux_cuda-") &&
+    identical(profile$runtime_version, "vllm-0.11.0")
+  if (retired_cpu || retired_vllm) {
+    .hm_abort(paste0(
+      "This generated runtime profile was retired after upstream security ",
+      "advisories. Resolve reference_cpu again for the reviewed replacement ",
+      "version; automatic vLLM setup is unavailable pending a replacement ",
+      "profile. Existing files were preserved. See the backend setup guide."
+    ), "hm_backend_security_error")
+  }
+  invisible(TRUE)
+}
 .hm_validate_profile <- function(p) {
   required <- c(
     "profile_id", "model_id", "source_revision", "runtime_version", "os",
@@ -93,6 +108,7 @@
         !isTRUE(p$custom_code_reviewed)) {
     .hm_abort("Custom code requires hash-bound review.")
   }
+  .hm_runtime_security(p)
   invisible(p)
 }
 #' Plan an isolated runtime installation

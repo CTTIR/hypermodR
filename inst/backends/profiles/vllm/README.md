@@ -14,11 +14,14 @@ are rejected. Rendered three-band HSI images are lossy auxiliary data. Image/vid
 wire payloads require a separately admitted processor profile; this release does
 not claim that a text-only transport establishes vision parity.
 
-Linux CUDA setup can now be resolved without authoring a profile:
-`hm_resolve_backend("vllm_linux_cuda", model_id, python)` freezes vLLM 0.11.0
-and its complete compatible binary dependency graph; `hm_resolve_checkpoint()`
-freezes an immutable public checkpoint. After exact wheel/checkpoint terms and
-driver/GPU ABI review, `hm_admit_backend()` assembles the declared install plan.
-`hm_install_backend()` creates its private environment and `hm_start_backend()`
-runs the packaged loopback vLLM launcher. This availability of automation does not
-claim a successful live vLLM smoke/parity result.
+Automatic `hm_resolve_backend("vllm_linux_cuda", ...)` is currently blocked.
+Its former vLLM 0.11.0 profile is affected by published upstream security
+advisories; no replacement profile is presented as qualified. Old generated
+profiles cannot be installed or started, and their files remain untouched.
+See [runtime security admission](../../SECURITY.md).
+
+A manually reviewed current custom manifest may still use the packaged loopback
+launcher after exact wheel/checkpoint terms, current security, driver/GPU ABI
+and actual model behavior have been checked. An immutable checkpoint manifest
+can be prepared separately with `hm_resolve_checkpoint()`. Connector operation
+is distinct from installing or qualifying the server.
