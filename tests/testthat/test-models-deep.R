@@ -69,9 +69,12 @@ test_that(
       !nzchar(python),
       "Explicit optional Torch interpreter not provided"
     )
-    root <- normalizePath(test_path("..", ".."))
-    launcher <- file.path(root, "inst", "backends", "reference-launch.py")
-    base <- file.path(root, "inst", "python", "hypermodr_worker")
+    launcher <- system.file(
+      "backends", "reference-launch.py", package = "hypermodR", mustWork = TRUE
+    )
+    base <- system.file(
+      "python", "hypermodr_worker", package = "hypermodR", mustWork = TRUE
+    )
     area <- tempfile()
     dir.create(area)
     on.exit(

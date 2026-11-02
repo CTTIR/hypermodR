@@ -99,22 +99,23 @@ test_that(
       unlink(area, recursive = TRUE),
       add = TRUE
     )
-    root <- normalizePath(test_path("..", ".."))
     launch <- file.path(area, "launch.py")
     writeLines(
       c(
         paste0("#!", python),
         readLines(
-          file.path(
-            root, "inst", "backends",
-            "reference-launch.py"
+          system.file(
+            "backends", "reference-launch.py",
+            package = "hypermodR", mustWork = TRUE
           )
         )
       ),
       launch
     )
     profile <- backend_test_profile(launch, model = "reference:cnn1d")
-    base <- file.path(root, "inst", "python", "hypermodr_worker")
+    base <- system.file(
+      "python", "hypermodr_worker", package = "hypermodR", mustWork = TRUE
+    )
     for (file in list.files(
       base, pattern = "[.]py$", recursive = TRUE,
       full.names = TRUE
