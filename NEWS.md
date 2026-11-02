@@ -1,3 +1,24 @@
+# hypermodR 0.0.0.9001 (unreleased)
+
+* Reject stale temporal partitions, incompatible radiometric prediction units,
+  invalid survival inputs and misaligned named matrix outcomes. Reconstruction
+  evaluation requires an explicit reference in the fitted output space.
+  Refit legacy models lacking the new input-unit contract.
+* Preserve selected-frame observations, tri-state masks and complete band
+  metadata through hyperspectR conversion; reject stale content identities and
+  hidden live state in persistent metadata.
+* Align backend availability checks with startup integrity validation and
+  stop owned workers after malformed responses. Ignore external pip configuration
+  during explicitly requested environment setup.
+* Update the CPU reference profile to Torch 2.13.0, NumPy 2.2.6 and setuptools
+  84.1.0. Retire affected generated profiles and block automatic vLLM setup
+  until a replacement is reviewed; existing runtime files remain preserved.
+* Honor the workbench's 50 MiB upload limit, bind setup consent to the reviewed
+  resolution, and show unsupported-platform restrictions before job submission.
+* Make development installation and first use executable from a fresh session,
+  repair packaged-document links, pin shared lint configuration and exclude
+  Python bytecode caches from source distributions.
+
 # hypermodR 0.0.0.9000
 
 * Standardize the named v5 package logo across README, documentation pages

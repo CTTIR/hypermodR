@@ -31,6 +31,13 @@
   if (!is.data.frame(x)) {
     .hm_abort("Metadata must be a data.frame.")
   }
+  if (!.hm_plain(x)) {
+    .hm_abort("Metadata cannot contain live handles or functions.")
+  }
+  if (anyNA(names(x)) || any(!nzchar(names(x))) ||
+        anyDuplicated(names(x))) {
+    .hm_abort("Metadata column names must be unique and nonempty.")
+  }
   ids <- grep(
     "(^|_)id$|^annotation_revision$", names(x),
     value = TRUE
@@ -52,7 +59,8 @@
 .hm_bands <- function(bands, n) {
   .hm_table(bands)
   if (nrow(bands) !=
-        n || !is.numeric(bands$wavelength)) {
+        n || !is.numeric(bands$wavelength) ||
+        !is.null(dim(bands$wavelength)) || length(bands$wavelength) != n) {
     .hm_abort("bands must have one numeric wavelength per native band.")
   }
   unknown <- is.na(bands$wavelength)
@@ -77,7 +85,9 @@
   if (!"native_index" %in% names(bands)) {
     bands$native_index <- seq_len(n)
   }
-  if (anyNA(bands$native_index) ||
+  if (!is.numeric(bands$native_index) ||
+    !is.null(dim(bands$native_index)) || length(bands$native_index) != n ||
+    any(!is.finite(bands$native_index)) ||
     anyDuplicated(bands$native_index) ||
     any(bands$native_index < 1 | bands$native_index != floor(
       bands$native_index
@@ -86,6 +96,24 @@
   }
   if (!"canonical_index" %in% names(bands)) {
     bands$canonical_index <- seq_len(n)
+  }
+  index <- bands$canonical_index
+  if (!is.numeric(index) || !is.null(dim(index)) || length(index) != n ||
+        any(!is.finite(index)) ||
+        anyDuplicated(index) || any(index < 1 | index != floor(index))) {
+    .hm_abort("canonical_index must be unique positive integers.")
+  }
+  if ("valid" %in% names(bands) &&
+        (!is.logical(bands$valid) || !is.null(dim(bands$valid)) ||
+           length(bands$valid) != n)) {
+    .hm_abort("Band validity must be logical; NA denotes unknown validity.")
+  }
+  if ("fwhm" %in% names(bands) &&
+        (!is.numeric(bands$fwhm) ||
+           !is.null(dim(bands$fwhm)) || length(bands$fwhm) != n ||
+           any(!is.na(bands$fwhm) &
+                 (!is.finite(bands$fwhm) | bands$fwhm <= 0)))) {
+    .hm_abort("Known band FWHM must be finite positive nm values.")
   }
   bands
 }
@@ -130,6 +158,7 @@
         )
       }
       .hm_table(object@observations, "observation_id")
+      .hm_table(object@assets)
       if (!nrow(object@observations)) {
         .hm_abort("At least one observation is required.")
       }

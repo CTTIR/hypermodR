@@ -40,7 +40,8 @@ supported.}
 }
 \value{
 An \code{hm_fit} containing workflow, fitted recipe, engine, training
-indices, validated split, original band map and hash-bound provenance.
+indices, validated split, original band map, input radiometric unit and
+hash-bound provenance.
 
 Engine coefficients with scale and link attributes. Original-scale
 output is a named intercept/band vector (or engine list of vectors), with

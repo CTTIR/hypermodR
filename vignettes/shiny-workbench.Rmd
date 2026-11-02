@@ -61,11 +61,21 @@ metrics, and export the reproducible configuration/results. A changed input or
 configuration invalidates stale results. Keep subject IDs in split metadata;
 individual spectra are not independent biological units.
 
+Uploads are limited to 50 MiB while the app runs; stopping it restores the
+previous Shiny upload limit. Use only trusted RDS files. Bounded fitting and
+runtime setup require Linux with `taskset`, `prlimit` and `timeout`. On other
+hosts the workbench shows this limitation before configuration and disables
+those actions. Import, inspection and configuration remain available; use the
+ordinary `hm_fit()` API for local R models.
+
 `hm_submit_job()` starts an owned background job; `hm_job_status()` inspects it
 and `hm_cancel_job()` cancels that owned job. `hm_export_result()` writes a new
 export directory. Default exports omit individual-level data; private exports
 require an explicit request. Read persisted package runs with `hm_read_run()`
 and reproduce their task/workflow/split in an R script.
+The export becomes complete only after its reproduction script and optional
+private model files are written. A failed export keeps its reserved directory
+for inspection and cannot be read as complete; retry with a new directory.
 
 UI/server tests and real browser workflows are separate evidence. Full keyboard,
 focus, both colour modes, narrow layout, cancellation/recovery, two-session
@@ -77,3 +87,6 @@ The current workbench supports grouped regression/classification with R engines.
 Prepare ROI reductions through the API before import; an interactive annotation
 editor is outside this workbench. Runtime metadata resolution, terms review and
 installation are explicit user actions.
+Each new runtime resolution clears the terms checkbox. Review its displayed
+notices and check it again before installing; review of an earlier resolution
+does not authorize the new set of artifacts.

@@ -7,7 +7,10 @@
 #'   currently unqualified CUVIS sources raise typed errors.
 #' @details hyperspectR cube conversion preserves measured bands, masks and
 #' declared
-#'   geometry; hyperannotatR conversion uses a bounded public tile and records
+#'   geometry. A cube exported by this package also retains selected-frame
+#'   observations and band metadata; recorded content identity must still match
+#'   on reimport. Explicit observations override restored identities.
+#'   hyperannotatR conversion uses a bounded public tile and records
 #'   manifest/revision identity. CUVIS session enumeration and SDK scaling
 #' remain
 #'   blocked pending source-backed fixtures. Conversion does not infer
@@ -35,6 +38,14 @@ hm_as_dataset.default <- function(x, profile = NULL, ...) {
     coordinate_convention = "pixel centres", y_direction = "down"
   )
 }
+.hm_cube_identity <- function(x) {
+  restoration <- x$metadata$hypermodR
+  restoration$cube_identity <- NULL
+  .hm_hash(list(
+    data = x$data, wavelengths = x$wavelengths, fwhm = x$fwhm,
+    mask = x$mask, restoration = restoration
+  ))
+}
 #' @rdname hm_as_dataset
 #' @param observations Explicit acquisition and biological identities.
 #' @param geometry Source spatial geometry.
@@ -45,6 +56,16 @@ hm_as_dataset.hsi_cube <- function(
   ...
 ) {
   .hm_require("hyperspectR")
+  stored <- x$metadata$hypermodR
+  bound <- !is.null(stored$cube_identity)
+  if (bound && !identical(stored$cube_identity, .hm_cube_identity(x))) {
+    .hm_abort("Cube content or restoration metadata changed.",
+              "hm_source_error")
+  }
+  if (missing(observations) && bound &&
+        !is.null(stored$source_observations)) {
+    observations <- stored$source_observations
+  }
   if (missing(geometry) &&
         !is.null(x$metadata$hypermodR$geometry)) {
     geometry <- x$metadata$hypermodR$geometry
@@ -81,6 +102,18 @@ hm_as_dataset.hsi_cube <- function(
   }
   if (!is.null(x$fwhm)) {
     b$fwhm <- rep_len(x$fwhm, length(x$wavelengths))
+  }
+  if (bound && !is.null(p$native_band_map)) {
+    native_bands <- .hm_bands(p$native_band_map, nrow(b))
+    selected <- match(p$sorted_to_native, native_bands$native_index)
+    if (length(selected) != nrow(b) || anyNA(selected) ||
+          anyDuplicated(selected) ||
+          !isTRUE(all.equal(native_bands$wavelength[selected], x$wavelengths,
+                            check.attributes = FALSE))) {
+      .hm_abort("Stored band identities disagree with the cube.",
+                "hm_source_error")
+    }
+    b <- native_bands[selected, , drop = FALSE]
   }
   hm_dataset(x$data, observations, b, geometry, p)
 }
@@ -121,7 +154,7 @@ hm_as_hsi_cube <- function(x, acquisition_id, frame_id = NULL, ...) {
   }
   p$companion_metadata <- NULL
   p$geometry <- x@geometry
-  m$hypermodR <- p
+  p$source_observations <- z$observations
   fwhm <- if ("fwhm" %in% names(b) &&
                 all(is.finite(b$fwhm))) {
     b$fwhm
@@ -137,13 +170,17 @@ hm_as_hsi_cube <- function(x, acquisition_id, frame_id = NULL, ...) {
     }
     mask <- x@provenance$spatial_masks[[i]]
   }
+  p$spatial_masks <- list(mask)
+  m$hypermodR <- p
   if (!is.null(mask)) {
     # hyperspectR (>= 0.2.0) rejects NA in masks. Unknown pixels are not
     # usable, as in hm_read_block(); the native mask stays in metadata.
     mask <- mask & !is.na(mask)
   }
-  hyperspectR::hsi_cube(
+  out <- hyperspectR::hsi_cube(
     array(z$values, dim(z$values)[1:3]),
     b$wavelength, fwhm, m, mask
   )
+  out$metadata$hypermodR$cube_identity <- .hm_cube_identity(out)
+  out
 }

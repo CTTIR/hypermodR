@@ -11,6 +11,12 @@
   }
   .hm_abort("Observation table required.")
 }
+.hm_split_groups <- function(obs, task) {
+  unique(c(task$groups, intersect(
+    c("subject_id", "procedure_id", "wound_id", "sequence_id",
+      "acquisition_id", "source_lineage_id"), names(obs)
+  )))
+}
 .hm_components <- function(obs, groups) {
   n <- nrow(obs)
   parent <- seq_len(n)
@@ -94,7 +100,9 @@
 #' stratifying outcomes and rejects outer categorical folds without full class
 #' support. Temporal training precedes cutoff minus embargo and look-back;
 #' groups exposed at/after cutoff are removed entirely from training. Source
-#' times are not repaired or reinterpreted.
+#' times are not repaired or reinterpreted. Temporal results retain the selected
+#' time-column identity and its observations; fitting rejects a stale clock or
+#' altered partition. Regenerate the temporal split after changing timestamps.
 #' @export
 hm_split <- function(
   data, task, design = "nested_grouped", seed = 1L, folds = 5L,
@@ -112,18 +120,7 @@ hm_split <- function(
   if (!design %in% c("grouped", "nested_grouped")) {
     .hm_abort("Unknown split design.")
   }
-  groups <- unique(
-    c(
-      task$groups, intersect(
-        c(
-          "subject_id", "procedure_id", "wound_id", "sequence_id",
-          "acquisition_id",
-          "source_lineage_id"
-        ),
-        names(obs)
-      )
-    )
-  )
+  groups <- .hm_split_groups(obs, task)
   component <- .hm_components(obs, groups)
   units <- unique(component)
   if (length(folds) !=

@@ -64,5 +64,7 @@ Validate model predictions
 Categorical labels must belong to the declared map. Unmixing
 outputs are nonnegative and sum to one unless task reference explicitly
 declares nonnegative-only abundances. This validation does not establish
-predictive accuracy or calibrated probabilities.
+predictive accuracy or calibrated probabilities. Numeric scalar tasks
+(including survival risk) require finite numeric vectors; matrix tasks
+require finite numeric matrices. Named matrix outputs retain column identity.
 }

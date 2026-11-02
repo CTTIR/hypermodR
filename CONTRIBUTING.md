@@ -2,9 +2,10 @@
 
 Follow the [CTTIR contribution policy](https://github.com/CTTIR/.github/blob/main/CONTRIBUTING.md)
 and the proposed [quality requirements](https://github.com/CTTIR/hypermodR/blob/main/docs/quality-and-documentation.md).
-The repository currently contains a specification for approval; implementation
-has not started. Proposed interfaces are not a compatibility promise until
-qualified and released.
+The repository contains a development implementation, executable articles and
+tests. The architecture and quality specifications define its acceptance
+criteria; interface availability is not model, hardware or scientific
+qualification. Development interfaces are not a released compatibility promise.
 
 Use `hm_` for package functions, character identifier columns, documented units,
 broom-compatible statistical column names and classed `cli::cli_abort()` errors.

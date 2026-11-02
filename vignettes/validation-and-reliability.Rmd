@@ -65,6 +65,9 @@ hm_reliability(pred, reference)
 `hm_split()` connects biological/source identities before assignment. Frame
 windows from the same source cannot become independent units. Nested tuning,
 preprocessing, early stopping and calibration belong inside outer training.
+Temporal splits bind the selected time column and its observation identities.
+Regenerate a split after changing timestamps, cutoff, look-back or embargo;
+fitting rejects a stale clock or altered temporal partition.
 `hm_calibrate()` requires an explicit inner fit and outer split;
 `hm_apply_calibration()` applies its frozen temperature/abstention settings.
 `hm_active_learning()` proposes training-pool annotation review, not test-label
@@ -85,3 +88,38 @@ human targets.
 Known/prior target access remains development or unresolved. External datasets,
 source rights, transfer performance and clinical intended use need independent
 evidence. No protocol validation alone establishes scientific qualification.
+
+
+## Reconstruction coordinates
+
+Preprocessing can change both units and the number of spectral features. A
+reconstruction model predicts in its fitted recipe coordinates. With a nonempty
+recipe, `hm_evaluate()` requires an explicitly transformed target and matching
+space declaration. Copying the declaration alone does not transform a target.
+The resulting error and angle describe these coordinates, not native spectra.
+Named matrix outputs and targets must also have identical column names/order.
+
+```{r reconstruction-coordinates}
+data <- hm_example()
+task <- hm_task(NULL, "reconstruction", "spectrum", "subject_id")
+fold <- hm_split(data, task, folds = 3L, inner_folds = 2L)$folds[[1L]]
+workflow <- hm_workflow(task, hm_recipe(list(list(type = "scale"))),
+                        hm_model_spec("pca", task, list(rank = 8L)))
+fit <- hm_fit(workflow, data, fold)
+heldout_ids <- data@observations$observation_id[fold$test]
+heldout <- hm_spectra(data, list(observation_id = heldout_ids))
+prediction <- hm_predict(fit, heldout)
+reference <- heldout$observations
+attr(reference, "target") <- hm_bake(fit$recipe, heldout$values)
+attr(reference, "target_space") <- prediction$provenance$output_space
+reconstruction <- hm_evaluate(prediction, reference)
+reconstruction
+reconstruction$interpretation
+```
+
+Prediction also requires the same declared radiometric input unit as fitting.
+Calibration identifiers may differ across acquisitions; this check does not
+qualify a device or prove that its declared units/calibration are correct.
+Previously saved fits without an input-unit contract must be refitted.
+Survival risk predictions are finite numeric vectors, with complete numeric
+nonnegative event times and binary status in the evaluation reference.

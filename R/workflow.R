@@ -51,7 +51,8 @@ hm_workflow <- function(task, recipe, model) {
 #' metric and direction. Reference workers require backend_handle and a new
 #' artifact_path.
 #' @return An `hm_fit` containing workflow, fitted recipe, engine, training
-#' indices, validated split, original band map and hash-bound provenance.
+#' indices, validated split, original band map, input radiometric unit and
+#' hash-bound provenance.
 #' @details Preprocessing and engine fitting use training rows only. Connected
 #' biological/source identities cannot cross train/test; inner folds must
 #' remain inside outer training. Spatial images/sequences require explicit
@@ -145,7 +146,9 @@ hm_fit <- function(workflow, data, split, control = list()) {
   structure(
     list(
       workflow = workflow, recipe = recipe, engine = engine, training = idx,
-      split = split, band_map = d$band_map, provenance = hm_provenance(
+      split = split, band_map = d$band_map,
+      input_radiometric_unit = d$provenance$radiometric_unit,
+      provenance = hm_provenance(
         list(data = data, split = split, recipe = recipe)
       )
     ),
@@ -163,7 +166,12 @@ hm_fit <- function(workflow, data, split, control = list()) {
 #' @details Applies the frozen training recipe. Measured
 #' wavelength/unit/fwhm/native/canonical band metadata present during training
 #' must match exactly. Prediction does not fit preprocessing or use new
-#' outcomes.
+#' outcomes. The declared radiometric unit must also match; calibration
+#' identities may differ between acquisitions. Older serialized fits without
+#' this unit contract must be refitted. Reconstruction after preprocessing is
+#' in fitted recipe coordinates, recorded as provenance$output_space. Evaluate
+#' it against a target baked with that recipe and the matching target_space
+#' reference attribute, never against untransformed spectra.
 #' @export
 hm_predict <- function(object, newdata, ...) UseMethod("hm_predict")
 #' @rdname hm_predict
@@ -185,40 +193,59 @@ hm_predict.hm_fit <- function(object, newdata, ...) {
       "hm_band_mismatch"
     )
   }
+  if (is.null(object$input_radiometric_unit)) {
+    .hm_abort("Fitted radiometric unit is unavailable; refit this workflow.",
+              "hm_radiometric_mismatch")
+  }
+  if (!identical(object$input_radiometric_unit,
+                 d$provenance$radiometric_unit)) {
+    .hm_abort("Prediction radiometric unit differs from training.",
+              "hm_radiometric_mismatch")
+  }
   x <- hm_bake(object$recipe, d$values)
   out <- .hm_predict_engine(object$engine, x, object$workflow$task, ...)
   if (inherits(out, "hm_prediction")) {
-    return(out)
-  }
-  if (!is.list(out)) {
-    if (is.matrix(out) &&
-      object$workflow$task$type %in% c(
-        "classification", "ordinal",
-        "segmentation"
-      )) {
-      classes <- object$engine$classes
-      out <- list(
-        values = classes[max.col(out, ties.method = "first")],
-        probabilities = out, class_map = classes
-      )
-    } else {
-      out <- list(values = out)
-      if (object$workflow$task$type %in% c(
-        "classification", "ordinal",
-        "segmentation"
-      )) {
-        out$class_map <- object$engine$classes
+    prediction <- out
+  } else {
+    if (!is.list(out)) {
+      if (is.matrix(out) &&
+        object$workflow$task$type %in% c(
+          "classification", "ordinal",
+          "segmentation"
+        )) {
+        classes <- object$engine$classes
+        out <- list(
+          values = classes[max.col(out, ties.method = "first")],
+          probabilities = out, class_map = classes
+        )
+      } else {
+        out <- list(values = out)
+        if (object$workflow$task$type %in% c(
+          "classification", "ordinal",
+          "segmentation"
+        )) {
+          out$class_map <- object$engine$classes
+        }
       }
     }
-  }
-  do.call(
-    hm_prediction, c(
-      out, list(
-        task = object$workflow$task,
-        observation_id = d$observations$observation_id
+    prediction <- do.call(
+      hm_prediction, c(
+        out, list(
+          task = object$workflow$task,
+          observation_id = d$observations$observation_id
+        )
       )
     )
-  )
+  }
+  if (object$workflow$task$type == "reconstruction" &&
+        length(object$recipe$steps)) {
+    prediction$provenance$output_space <- list(
+      coordinates = "fitted_recipe",
+      recipe_hash = .hm_hash(object$recipe),
+      wavelength = object$recipe$output_wavelength
+    )
+  }
+  prediction
 }
 #' @rdname hm_predict
 #' @export
@@ -402,18 +429,7 @@ summary.hm_fit <- function(object, ...) {
     .hm_abort("Training and test indices overlap or are empty.")
   }
   obs <- data$observations
-  groups <- unique(
-    c(
-      task$groups, intersect(
-        c(
-          "subject_id", "procedure_id", "wound_id", "sequence_id",
-          "acquisition_id",
-          "source_lineage_id"
-        ),
-        names(obs)
-      )
-    )
-  )
+  groups <- .hm_split_groups(obs, task)
   component <- .hm_components(obs, groups)
   if (length(intersect(component[train], component[test]))) {
     .hm_abort(
@@ -424,6 +440,25 @@ summary.hm_fit <- function(object, ...) {
   if (!is.null(split$observation_id) &&
         !identical(split$observation_id, obs$observation_id)) {
     .hm_abort("Split observation identities changed.", "hm_integrity_error")
+  }
+  if (identical(split$design, "temporal")) {
+    if (!is.character(split$time) || length(split$time) != 1L ||
+          is.na(split$time) || !split$time %in% names(obs) ||
+          !identical(split$time_hash,
+                     .hm_time_hash(obs, split$time))) {
+      .hm_abort("Temporal time identities changed; regenerate the split.",
+                "hm_split_error")
+    }
+    expected <- .hm_temporal_split(
+      obs, task, split$seed, time = split$time, cutoff = split$cutoff,
+      look_back = split$look_back, embargo = split$embargo
+    )
+    if (!setequal(train, expected$train) ||
+          !setequal(test, expected$test) ||
+          !setequal(split$excluded, expected$excluded)) {
+      .hm_abort("Temporal partition changed; regenerate the split.",
+                "hm_split_error")
+    }
   }
   if (!is.null(split$inner)) {
     split$inner <- lapply(

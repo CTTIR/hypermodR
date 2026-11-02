@@ -13,3 +13,4 @@ jobs:
     with:
       blocking: true
       with-defaults: true
+      config-ref: 7781930dce57f5d8ac05a7803fb42fe3b591d354

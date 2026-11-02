@@ -20,6 +20,7 @@
   } else {
     attr(e$reference, "target")[index]
   }
+  attr(r, "target_space") <- attr(e$reference, "target_space")
   hm_evaluate(p, r, e$estimand, hierarchy = e$hierarchy)
 }
 #' Paired whole-unit bootstrap of fixed predictions
@@ -57,18 +58,7 @@ hm_bootstrap <- function(
         level <= 0 || level >= 1) {
     .hm_abort("Invalid bootstrap controls.")
   }
-  grouping <- unique(
-    c(
-      e$predictions$task$groups, intersect(
-        c(
-          "subject_id", "procedure_id", "wound_id", "sequence_id",
-          "acquisition_id",
-          "source_lineage_id"
-        ),
-        names(r)
-      )
-    )
-  )
+  grouping <- .hm_split_groups(r, e$predictions$task)
   component <- .hm_components(r, grouping)
   if (any(
     vapply(

@@ -4,3 +4,23 @@ html[data-bs-theme="light"] .navbar .text-danger {
 html[data-bs-theme="dark"] .navbar .text-danger {
   color: #ff8897 !important;
 }
+/* pkgdown supplies heading logos. The README and standalone vignettes keep
+   their embedded logos; only the website suppresses the duplicates. */
+.template-article .cttir-vignette-logo,
+.template-home .cttir-readme-logo {
+  display: none;
+}
+
+/* Keep rendered examples readable in both website color modes. */
+html[data-bs-theme="light"] pre code span.co {
+  color: #52606d;
+}
+html[data-bs-theme="dark"] pre code span.co {
+  color: #adb5bd;
+}
+html[data-bs-theme="light"] pre code span.va {
+  color: #a44900;
+}
+html[data-bs-theme="light"] pre code span.kw {
+  color: #b82030;
+}
