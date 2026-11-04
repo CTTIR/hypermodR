@@ -32,5 +32,10 @@ Predict with a fitted workflow
 Applies the frozen training recipe. Measured
 wavelength/unit/fwhm/native/canonical band metadata present during training
 must match exactly. Prediction does not fit preprocessing or use new
-outcomes.
+outcomes. The declared radiometric unit must also match; calibration
+identities may differ between acquisitions. Older serialized fits without
+this unit contract must be refitted. Reconstruction after preprocessing is
+in fitted recipe coordinates, recorded as provenance$output_space. Evaluate
+it against a target baked with that recipe and the matching target_space
+reference attribute, never against untransformed spectra.
 }

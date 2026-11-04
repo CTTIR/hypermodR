@@ -12,6 +12,10 @@
 #' read_private_fit() helper resolves their location after moving the export;
 #' use hm_predict with an owned matching backend_handle to verify and predict.
 #' Installed runtime receipts and cache paths are not portable exports.
+#' The destination is reserved before writing. Its completion marker appears
+#' only after reproduction code and any private artifacts are finalized.
+#' Interrupted exports retain a failed destination with partial contents for
+#' inspection; the destination cannot be read as a completed run.
 #' @export
 hm_export_result <- function(result, path, include_private = FALSE) {
   if (!is.list(result) ||
@@ -38,7 +42,7 @@ hm_export_result <- function(result, path, include_private = FALSE) {
     control[runtime_fields] <- NULL
   }
   out <- list(
-    workflow = result$workflow, split = result$split[c("train", "test")],
+    workflow = result$workflow, split = .hm_app_export_split(result$split),
     control = control, input_hash = result$input_hash,
     metrics = result$evaluation$metrics,
     private = include_private
@@ -65,12 +69,24 @@ hm_export_result <- function(result, path, include_private = FALSE) {
     out$private_artifacts$fit$engine$artifact_path <-
       file.path("private", "reference-model")
   }
-  hm_save_run(out, path)
+  .hm_scalar_character(path, "path")
+  if (!dir.exists(dirname(path))) {
+    .hm_abort("Run parent directory must exist.", "hm_io_error")
+  }
+  if (!dir.create(path, showWarnings = FALSE)) {
+    .hm_abort(
+      "Run path is already reserved or cannot be created.",
+      "hm_run_conflict"
+    )
+  }
+  destination_root <- normalizePath(path, mustWork = TRUE)
+  path <- file.path(destination_root, ".partial")
   complete <- FALSE
   on.exit(if (!complete) {
-    unlink(file.path(path, "COMPLETE"))
-    .hm_run_receipt(path, "failed")
+    unlink(file.path(destination_root, "COMPLETE"))
+    .hm_run_receipt(destination_root, "failed")
   }, add = TRUE)
+  hm_save_run(out, path)
   if (!is.null(artifact_source)) {
     destination <- file.path(path, "private", "reference-model")
     dir.create(destination, recursive = TRUE)
@@ -163,8 +179,31 @@ hm_export_result <- function(result, path, include_private = FALSE) {
   if (!isTRUE(all.equal(out, restored, check.environment = FALSE))) {
     .hm_abort("Export readback failed.", "hm_integrity_error")
   }
+  files <- list.files(path, all.files = TRUE, no.. = TRUE,
+                      full.names = TRUE)
+  files <- files[basename(files) != "COMPLETE"]
+  destinations <- file.path(destination_root, basename(files))
+  if (any(file.exists(destinations)) ||
+        !all(file.rename(files, destinations))) {
+    .hm_abort("Cannot finalize export contents.", "hm_io_error")
+  }
+  if (!file.rename(file.path(path, "COMPLETE"),
+                   file.path(destination_root, "COMPLETE"))) {
+    .hm_abort("Cannot finalize export completion.", "hm_io_error")
+  }
+  unlink(path, recursive = TRUE)
   complete <- TRUE
-  invisible(path)
+  invisible(destination_root)
+}
+
+.hm_app_export_split <- function(split) {
+  fields <- c("train", "test", "design", "seed", "excluded", "time",
+              "time_hash", "cutoff", "look_back", "embargo")
+  out <- split[intersect(fields, names(split))]
+  if (!is.null(split$inner)) {
+    out$inner <- lapply(split$inner, .hm_app_export_split)
+  }
+  out
 }
 
 .hm_app_export_safe <- function(x) {

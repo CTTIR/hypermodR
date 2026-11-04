@@ -21,7 +21,7 @@ coverage_result <- function() {
                    , drop = FALSE],
     spectra$observations[i,
                          , drop = FALSE],
-    spectra$band_map
+    spectra$band_map, provenance = spectra$provenance
   )
   p <- hm_predict(fit, held)
   list(
@@ -194,7 +194,7 @@ test_that(
       spectra$values[i, , drop = FALSE],
       spectra$observations[i,
                            , drop = FALSE],
-      spectra$band_map
+      spectra$band_map, provenance = spectra$provenance
     )
     expect_identical(
       hm_predict(

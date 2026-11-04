@@ -53,7 +53,10 @@ Convert a qualified companion object
 \details{
 hyperspectR cube conversion preserves measured bands, masks and
 declared
-geometry; hyperannotatR conversion uses a bounded public tile and records
+geometry. A cube exported by this package also retains selected-frame
+observations and band metadata; recorded content identity must still match
+on reimport. Explicit observations override restored identities.
+hyperannotatR conversion uses a bounded public tile and records
 manifest/revision identity. CUVIS session enumeration and SDK scaling
 remain
 blocked pending source-backed fixtures. Conversion does not infer

@@ -2,7 +2,9 @@
 #' @param predictions An `hm_prediction`.
 #' @param reference Data frame with observation_id in exactly prediction order
 #' and task outcome/reference columns. Reconstruction targets are supplied as
-#' the numeric matrix attribute target.
+#' the numeric matrix attribute target. For predictions in fitted recipe
+#' coordinates, bake this target with the fitted recipe and set attribute
+#' target_space to predictions$provenance$output_space.
 #' @param estimand Either pooled or equal_class_subject_acquisition.
 #' @param resampling Optional named argument list passed to `hm_bootstrap()`.
 #' @param hierarchy Two column names giving biological unit then acquisition
@@ -14,7 +16,10 @@
 #' class/acquisition, acquisitions within class/subject, subjects within class,
 #' then classes equally. Missing class support produces unavailable macro
 #' metrics. Anomaly scores are not calibrated risks; reconstruction spectral
-#' angles are radians. Survival uses comparable event-time pairs. Evaluation
+#' angles are radians and refer to the declared target coordinates. Named
+#' matrix reference/output columns must match exactly; no reordering is
+#' inferred.
+#' Survival uses comparable event-time pairs. Evaluation
 #' does not fit models or repair reference alignment.
 #' @export
 hm_evaluate <- function(
@@ -28,6 +33,7 @@ hm_evaluate <- function(
     .hm_abort("Reference identities must match prediction order exactly.")
   }
   task <- p$task
+  .hm_numeric_prediction(p$values, task)
   y <- if (is.null(task$outcome)) {
     NULL
   } else {
@@ -253,12 +259,27 @@ hm_evaluate <- function(
     cm <- loss <- NULL
   } else if (task$type == "survival") {
     ref <- task$reference
+    valid_field <- function(name) {
+      x <- ref[[name]]
+      is.character(x) && length(x) == 1L && !is.na(x) &&
+        nzchar(x) && x %in% names(reference)
+    }
+    if (!is.list(ref) ||
+          !all(vapply(c("time", "status"), valid_field, logical(1)))) {
+      .hm_abort("Invalid survival reference: time/status columns required.",
+                "hm_reference_error")
+    }
     time <- reference[[ref$time]]
     status <- reference[[ref$status]]
-    if (anyNA(time) ||
-          any(!is.finite(time)) ||
+    if (!is.numeric(time) || !is.null(dim(time)) ||
+          length(time) != length(p$observation_id) ||
+          any(!is.finite(time)) || any(time < 0) ||
+          (!is.numeric(status) && !is.logical(status)) ||
+          !is.null(dim(status)) ||
+          length(status) != length(time) || anyNA(status) ||
           any(!status %in% c(0, 1))) {
-      .hm_abort("Invalid survival reference.")
+      .hm_abort(paste0("Invalid survival reference: nonnegative times and ",
+                       "binary status required."), "hm_reference_error")
     }
     pairs <- which(
       outer(time, time, "<") &
@@ -288,6 +309,12 @@ hm_evaluate <- function(
   )) {
     if (task$type == "reconstruction") {
       y <- attr(reference, "target")
+      space <- p$provenance$output_space
+      if (!is.null(space) &&
+            !identical(attr(reference, "target_space"), space)) {
+        .hm_abort(paste0("Reconstruction target space differs from ",
+                         "fitted recipe output."), "hm_reference_error")
+      }
     }
     if (!is.numeric(y) ||
       !identical(
@@ -298,6 +325,11 @@ hm_evaluate <- function(
         length(p$values) ||
       any(!is.finite(y))) {
       .hm_abort("Finite shape-matched numeric reference required.")
+    }
+    if (is.matrix(y) &&
+          !identical(colnames(y), colnames(p$values))) {
+      .hm_abort("Numeric matrix reference/output column identities differ.",
+                "hm_reference_error")
     }
     error <- p$values - y
     loss <- if (is.matrix(error)) {
@@ -381,10 +413,12 @@ hm_evaluate <- function(
       "calibrated risks; ROC/AP unavailable when either ",
       "reference class is absent."
     ),
-    reconstruction = paste0(
-      "Spectral angle in radians; zero-norm spectra remain ",
-      "unavailable."
-    ),
+    reconstruction = if (is.null(p$provenance$output_space)) {
+      "Spectral angle in radians; zero-norm spectra remain unavailable."
+    } else {
+      paste0("Error and angle in fitted recipe coordinates, not native ",
+             "spectral error; zero-norm outputs remain unavailable.")
+    },
     temporal = paste(
       "Numeric temporal error; declared horizon:", if (is.null(
         task$reference$horizon

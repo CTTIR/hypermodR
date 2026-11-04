@@ -136,6 +136,10 @@ test_that(paste0(
                  assets = assets,
                  registration_id = "other"
                ), class = "hm_source_error")
+})
+
+test_that("hyperspectR export retains explicit selected-frame values", {
+  skip_if_not_installed("hyperspectR")
   expect_error(
     hm_as_hsi_cube(core_image(), "a", frame_id = "f"),
     "Images have no"

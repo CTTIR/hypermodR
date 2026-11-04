@@ -1,4 +1,6 @@
 .hm_app_ui <- function() {
+  platform_notice <- .hm_app_platform_notice()
+  unavailable <- !is.null(platform_notice)
   bslib::page_navbar(
     window_title = "hypermodR",
     title = shiny::tagList(
@@ -26,11 +28,18 @@
             "--bs-btn-bg:#52646b;--bs-btn-color:#fff;",
             "--bs-btn-hover-bg:#405057;--bs-btn-hover-color:#fff}",
             ".navbar-brand{max-width:calc(100vw - 6rem);",
-            "white-space:normal}"
+            "white-space:normal}",
+            ".hm-platform-notice{background:var(--bs-tertiary-bg);",
+            "color:var(--bs-body-color);",
+            "border-color:var(--bs-border-color)}"
           )
         )
       ),
       bslib::input_dark_mode(id = "dark"),
+      if (!is.null(platform_notice)) {
+        shiny::div(class = "alert hm-platform-notice", role = "note",
+                   platform_notice)
+      },
       shiny::div(
         role = "status",
         `aria-live` = "polite",
@@ -219,7 +228,8 @@
         ),
         shiny::actionButton(
           "resolve",
-          "Resolve CPU reference metadata (network)"
+          "Resolve CPU reference metadata (network)",
+          disabled = unavailable
         ),
         shiny::verbatimTextOutput("runtime"),
         shiny::checkboxInput(
@@ -229,7 +239,8 @@
         ),
         shiny::actionButton(
           "install",
-          "Admit reviewed CPU plan and install"
+          "Admit reviewed CPU plan and install",
+          disabled = unavailable
         )
       )
     ),
@@ -248,7 +259,7 @@
                                   "configuration"),
         shiny::actionButton(
           "run", "Run configured workflow",
-          class = "btn-primary"
+          class = "btn-primary", disabled = unavailable
         ),
         shiny::actionButton(
                             "cancel",

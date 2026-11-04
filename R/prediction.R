@@ -15,7 +15,9 @@
 #' @details Categorical labels must belong to the declared map. Unmixing
 #' outputs are nonnegative and sum to one unless task reference explicitly
 #' declares nonnegative-only abundances. This validation does not establish
-#' predictive accuracy or calibrated probabilities.
+#' predictive accuracy or calibrated probabilities. Numeric scalar tasks
+#' (including survival risk) require finite numeric vectors; matrix tasks
+#' require finite numeric matrices. Named matrix outputs retain column identity.
 #' @export
 hm_prediction <- function(
   values, task, observation_id, probabilities = NULL, class_map = NULL,
@@ -32,6 +34,7 @@ hm_prediction <- function(
         n) {
     .hm_abort("Prediction row count differs from identities.")
   }
+  .hm_numeric_prediction(values, task)
   if (is.numeric(values) &&
         any(!is.finite(values))) {
     .hm_abort(paste0(
@@ -72,8 +75,9 @@ hm_prediction <- function(
     }
   }
   if (task$type %in% c("multilabel", "unmixing", "reconstruction") &&
-        !is.matrix(values)) {
-    .hm_abort("This task requires a matrix output.")
+        (!is.matrix(values) || !is.numeric(values))) {
+    .hm_abort("This task requires a numeric matrix output.",
+              "hm_prediction_error")
   }
   if (task$type == "multilabel" && (any(!values %in% c(0, 1)) ||
     is.null(class_map) ||
@@ -145,4 +149,25 @@ plot.hm_prediction <- function(x, ...) {
     )
   }
   graphics::plot(x$values, ...)
+}
+
+.hm_numeric_prediction <- function(values, task) {
+  if (is.matrix(values) && !is.null(colnames(values)) &&
+        (anyNA(colnames(values)) || any(!nzchar(colnames(values))) ||
+           anyDuplicated(colnames(values)))) {
+    .hm_abort("Matrix output column identities must be unique and complete.",
+              "hm_prediction_error")
+  }
+  if (task$type %in% c("multilabel", "unmixing", "reconstruction") &&
+        (!is.matrix(values) || !is.numeric(values) ||
+           any(!is.finite(values)))) {
+    .hm_abort("This task requires a finite numeric matrix output.",
+              "hm_prediction_error")
+  }
+  if (task$type %in% c("regression", "temporal", "survival", "anomaly") &&
+        (!is.numeric(values) || !is.null(dim(values)) ||
+           any(!is.finite(values)))) {
+    .hm_abort("This task requires a finite numeric prediction vector.",
+              "hm_prediction_error")
+  }
 }

@@ -1,7 +1,7 @@
 Package: hypermodR
 Type: Package
 Title: Hyperspectral Modelling and Validation
-Version: 0.0.0.9000
+Version: 0.0.0.9001
 Authors@R: person("Raban", "Heller", email = "raban.heller@charite.de",
     role = c("aut", "cre"), comment = c(ORCID = "0000-0001-8006-9742"))
 Description: Interpretable and black-box hyperspectral modelling with explicit

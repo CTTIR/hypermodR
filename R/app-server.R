@@ -3,16 +3,26 @@
   state <- hm_app_state()
   tick <- shiny::reactiveVal(0L)
   runtime <- shiny::reactiveVal(NULL)
+  reviewed_resolution <- shiny::reactiveVal(NULL)
   runtime_job <- NULL
+  error_notification <- NULL
   retained <- list()
   comparison <- shiny::reactiveVal(
                                    "Run two compatible workflows to compare.")
   refresh <- function() tick(tick() + 1L)
+  clear_review <- function() {
+    reviewed_resolution(NULL)
+    shiny::updateCheckboxInput(session, "terms", value = FALSE)
+  }
   safe <- function(code) {
     tryCatch(
       {
         force(code)
         state$error <- NULL
+        if (!is.null(error_notification)) {
+          shiny::removeNotification(error_notification, session = session)
+          error_notification <<- NULL
+        }
         refresh()
       }, error = function(e) {
         state$error <- .hm_app_safe_error(e)
@@ -20,9 +30,9 @@
           .hm_app_transition(state, "failed")
         }
         refresh()
-        shiny::showNotification(
+        error_notification <<- shiny::showNotification(
           state$error, type = "error",
-          duration = NULL
+          duration = NULL, id = error_notification, session = session
         )
       }
     )
@@ -332,6 +342,7 @@
                                             e))
           }
         )
+        clear_review()
         runtime(value)
         runtime_job <<- NULL
       }
@@ -355,6 +366,7 @@
             )
           )
         }
+        clear_review()
         runtime(
           list(
             status = "Resolving official metadata; no installation yet."
@@ -381,6 +393,18 @@
     )
   )
   shiny::observeEvent(
+    input$terms, {
+      resolution <- runtime()
+      reviewed_resolution(if (isTRUE(input$terms) &&
+                                inherits(resolution,
+                                         "hm_backend_resolution")) {
+        .hm_hash(resolution)
+      } else {
+        NULL
+      })
+    }, ignoreInit = TRUE, priority = 10
+  )
+  shiny::observeEvent(
     input$install, safe(
       {
         resolution <- runtime()
@@ -388,7 +412,8 @@
             !inherits(
                       resolution,
                       "hm_backend_resolution") ||
-              !isTRUE(input$terms)) {
+              !isTRUE(input$terms) ||
+              !identical(reviewed_resolution(), .hm_hash(resolution))) {
           .hm_abort(
             paste0(
               "Resolve metadata and explicitly review every artifact ",

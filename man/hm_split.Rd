@@ -48,5 +48,7 @@ connected. Grouped assignment balances component counts rather than
 stratifying outcomes and rejects outer categorical folds without full class
 support. Temporal training precedes cutoff minus embargo and look-back;
 groups exposed at/after cutoff are removed entirely from training. Source
-times are not repaired or reinterpreted.
+times are not repaired or reinterpreted. Temporal results retain the selected
+time-column identity and its observations; fitting rejects a stale clock or
+altered partition. Regenerate the temporal split after changing timestamps.
 }
