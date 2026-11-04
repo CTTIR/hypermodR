@@ -59,7 +59,7 @@ Suggests:
     shiny,
     testthat (>= 3.2.0),
     withr
-Remotes: CTTIR/hyperannotatR@bbfd0724ac09d4eae6d5f27dc8904b5e0a7a8284
+Additional_repositories: https://cttir.r-universe.dev
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 Roxygen: list(markdown = TRUE)
