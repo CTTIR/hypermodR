@@ -17,3 +17,5 @@
 ^CONTRIBUTING\.md$
 ^README\.html$
 ^tools/branding$
+(^|/)__pycache__($|/)
+\.py[cod]$

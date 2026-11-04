@@ -5,8 +5,9 @@
 #' @param parity Named evidence including plan_digest and passed.
 #' @return List with model identity, availability status, reported parity
 #' status and scientific_qualification=FALSE.
-#' @details Availability verifies artifact sizes/hashes for the supplied
-#' installation. Parity is caller-supplied evidence bound to the plan digest,
+#' @details Availability verifies the declared installation path, containment,
+#' artifact sizes/hashes and any Python environment inventory. Parity is
+#' caller-supplied evidence bound to the plan digest,
 #' reported as reported_pass rather than independently executed here. No
 #' scientific qualification follows.
 #' @export
@@ -21,16 +22,9 @@ hm_check_backend <- function(
     identical(model_id, backend$plan$model_id)
   if (available) {
     .hm_validate_plan(backend$plan)
-    available <- all(
-      vapply(
-        backend$plan$profile$artifacts, function(a) {
-          .hm_artifact_ok(
-            file.path(backend$path, a$path),
-            a
-          )
-        }, logical(1)
-      )
-    )
+    available <- isTRUE(tryCatch(
+      .hm_validate_installation(backend), error = function(e) FALSE
+    ))
   }
   list(
     model_id = model_id, availability = if (

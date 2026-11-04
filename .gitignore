@@ -10,3 +10,6 @@
 /renv/library/
 /renv/staging/
 /_site/
+__pycache__/
+*.py[cod]
+/README.html

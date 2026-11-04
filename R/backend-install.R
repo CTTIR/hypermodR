@@ -56,6 +56,35 @@
       a$sha256
     )
 }
+# Check the same installed bytes and containment before reporting availability
+# or starting execution. Platform/resource admission is a separate operation.
+.hm_validate_installation <- function(backend) {
+  .hm_validate_plan(backend$plan)
+  if (!identical(
+    backend$path, file.path(backend$plan$cache, backend$plan$digest)
+  )) {
+    .hm_abort(
+      "Runtime path differs from declared installation.",
+      "hm_integrity_error"
+    )
+  }
+  root <- dirname(backend$plan$cache)
+  .hm_no_symlink(backend$path, root)
+  if (!is.null(backend$plan$profile$python) &&
+        !isTRUE(tryCatch(.hm_environment_ok(backend$path),
+                         error = function(e) FALSE))) {
+    .hm_abort("Python environment integrity changed.", "hm_integrity_error")
+  }
+  for (artifact in backend$plan$profile$artifacts) {
+    path <- file.path(backend$path, artifact$path)
+    .hm_no_symlink(path, root)
+    if (!isTRUE(tryCatch(.hm_artifact_ok(path, artifact),
+                         error = function(e) FALSE))) {
+      .hm_abort("Runtime integrity changed.", "hm_integrity_error")
+    }
+  }
+  invisible(TRUE)
+}
 #' Install declared files into an immutable user runtime directory
 #' @param plan Resolved backend plan.
 #' @param accept_terms Explicit acceptance bound to this plan's terms and
@@ -286,6 +315,13 @@ hm_install_backend <- function(
       "--find-links", stage, "-r", file.path(stage, py$lock)
     ),
     timeout = 3e+05, env = c(
+      # Explicit env already excludes inherited PIP_* options; this also
+      # disables user, global and site configuration files.
+      PIP_CONFIG_FILE = if (.Platform$OS.type == "windows") {
+        "NUL"
+      } else {
+        "/dev/null"
+      },
       OMP_NUM_THREADS = "1",
       OPENBLAS_NUM_THREADS = "1", MKL_NUM_THREADS = "1"
     )
@@ -318,6 +354,7 @@ hm_install_backend <- function(
   as.list(hashes)
 }
 .hm_environment_ok <- function(path) {
+  .hm_no_symlink(file.path(path, "environment"), path)
   receipt <- tryCatch(
     jsonlite::read_json(file.path(path, "receipt.json")),
     error = function(e) NULL

@@ -107,9 +107,20 @@ test_that(
       stderr = "|", cleanup = TRUE
     )
     on.exit(server$kill_tree())
-    server$poll_io(3000)
-    port <- server$read_output_lines(n = 1L)
-    expect_match(port, "^[0-9]+$")
+    deadline <- proc.time()[[3L]] + 10
+    port <- character()
+    while (!length(port) && server$is_alive() &&
+             proc.time()[[3L]] < deadline) {
+      server$poll_io(100)
+      port <- server$read_output_lines(n = 1L)
+    }
+    if (length(port) != 1L || !grepl("^[0-9]+$", port)) {
+      cli::cli_abort(paste0(
+        "Loopback fixture did not report its bound port. Exit: ",
+        server$get_exit_status(), "; diagnostics: ", server$read_error()
+      ))
+    }
+    expect_true(as.integer(port) > 0L && as.integer(port) <= 65535L)
     endpoint <- paste0("http://127.0.0.1:", port, "/v1")
     prompt <- hm_prompt("Auxiliary description", "prespecified")
     response <- hm_vllm_chat(endpoint, "test-model", prompt)

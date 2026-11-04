@@ -12,7 +12,8 @@ archives, executes setup scripts, installs drivers or resolves online dependenci
 For isolated Python setup, declare `python = list(executable = ..., version = ...,
 lock = "requirements.txt")`, include the lock and every wheel as hashed artifacts,
 and place wheels in the artifact root. Setup creates a private venv with copies
-and invokes pip with --no-index --no-deps --require-hashes. Runtime commands are
+and invokes pip with --no-index --no-deps --require-hashes, ignoring ambient
+pip configuration and inherited pip options. Runtime commands are
 verified again before launch. Custom executable code requires both reviewed
 manifest acknowledgement and explicit installer acknowledgement.
 
@@ -30,8 +31,7 @@ key and sign the exact registry bytes outside the repository before release.
 
 ## Automated official-artifact resolution
 
-`hm_resolve_backend()` automates Linux x86_64 CPU reference and vLLM CUDA wheel
-resolution with exact uv 0.11.26, an explicitly selected existing Python 3.11/3.12,
+`hm_resolve_backend()` automates Linux x86_64 CPU reference wheel resolution with exact uv 0.11.26, an explicitly selected existing Python 3.11/3.12,
 and official PyPI/PyTorch binary origins. It resolves metadata only, pins every
 transitive wheel's URL/SHA256/bytes, records published terms, and bundles packaged
 launchers/workers. It does not require scientific or live runtime qualification to
@@ -47,3 +47,9 @@ The metadata resolver never auto-downloads Python, builds source packages, or
 uses caller-specific package indexes/configuration. The selected interpreter
 itself remains an explicit existing prerequisite. Resolution records and pip
 locks are written only into the requested external exclusive directory.
+
+The CPU reference pins are Torch 2.13.0, NumPy 2.2.6 and setuptools 84.1.0. The former generated
+Torch 2.6.0 and vLLM 0.11.0 profiles are retired; automatic vLLM resolution is
+blocked pending a reviewed replacement. See [runtime security admission](SECURITY.md)
+for precise advisory applicability, preserved-file behavior and the separate
+responsibility of custom-manifest owners.

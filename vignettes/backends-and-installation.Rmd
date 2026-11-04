@@ -44,9 +44,19 @@ hm_backend_capabilities()
 
 The automatic metadata resolver currently admits Linux x86_64 with an explicit
 existing Python 3.11 or 3.12 and exactly uv 0.11.26. `reference_cpu` resolves
-NumPy 2.2.6 and Torch 2.6.0; `vllm_linux_cuda` resolves vLLM 0.11.0. Resolution
-is an explicit network operation and is therefore omitted from offline builds.
-These are implemented setup routes, not blanket platform/model support claims.
+NumPy 2.2.6, Torch 2.13.0 and setuptools 84.1.0. Resolution is an explicit network operation and is
+therefore omitted from offline builds. This setup route is not a blanket
+platform/model support claim.
+
+The earlier Torch 2.6.0 generated profile is retired following the publisher's
+[checkpoint advisory](https://github.com/pytorch/pytorch/security/advisories/GHSA-63cw-57p8-fm3p).
+Automatic `vllm_linux_cuda` resolution is blocked pending a reviewed replacement
+for its vulnerable 0.11.0 profile; see the publisher's
+[video-processing advisory](https://github.com/vllm-project/vllm/security/advisories/GHSA-4r2x-xpjr-7cvv).
+Existing files are preserved, but those generated profiles cannot be installed
+or started again. Resolve a new CPU profile and review its artifacts/terms, or
+use a separately reviewed current custom manifest. Exact upstream/model/Linux
+qualification remains separate from these version and admission repairs.
 
 ```{r resolve, eval=identical(Sys.getenv("HYPERMODR_RESOLVE_EXAMPLE"), "true")}
 # Opt in only with explicit executables and a new persistent external directory.
@@ -60,14 +70,15 @@ resolution$hard_gates
 
 Inspect every artifact's full license/notice text and exact identity before
 setting its reviewed flag. `hm_admit_backend(resolution, reviewed_terms)`
-creates an installation plan only after that review. `hm_backend_plan()` also
+creates an installation plan only after that review. Pip configuration files
+and inherited pip options do not redirect installation outside the owned environment. `hm_backend_plan()` also
 accepts an explicitly pinned custom profile. `hm_install_backend(plan,
 accept_terms = TRUE)` performs the separately requested installation into an
 external cache; `hm_start_backend()`, `hm_backend_status()` and
 `hm_stop_backend()` own the process lifecycle. `hm_worker_request()` uses bounded
 numeric interchange, never arbitrary Python deserialization.
 
-vLLM additionally requires exact NVIDIA driver/device ABI admission and an exact
+A separately reviewed custom vLLM setup requires exact NVIDIA driver/device ABI admission and an exact
 local checkpoint manifest. `hm_resolve_checkpoint()` resolves a public immutable
 40-character revision without downloading weights and rejects custom remote
 code; review checkpoint terms separately. Use `hm_vllm_chat()` only for a

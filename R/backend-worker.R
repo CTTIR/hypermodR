@@ -75,6 +75,10 @@ hm_worker_request <- function(
         max_bytes) {
     .hm_abort("Worker request exceeds byte limit.")
   }
+  response_complete <- FALSE
+  on.exit({
+    if (!response_complete) hm_stop_backend(handle)
+  }, add = TRUE)
   handle$process$write_input(paste0(payload, "\n"))
   started <- proc.time()[[3]]
   response <- ""
@@ -113,7 +117,7 @@ hm_worker_request <- function(
     jsonlite::fromJSON(lines[[1]], simplifyVector = FALSE),
     error = function(e) NULL
   )
-  if (is.null(ans) ||
+  if (!is.list(ans) ||
         !identical(ans$protocol, req$protocol) ||
         !identical(ans$id, req$id) ||
         !identical(ans$model, req$model) ||
@@ -134,26 +138,37 @@ hm_worker_request <- function(
   }
   if (!is.null(ans$array)) {
     a <- ans$array
-    shape <- unlist(a$shape)
-    values <- unlist(a$values)
-    if (!identical(a$dtype, "float64") ||
-      !identical(a$order, "F") ||
-      !length(shape) ||
-      any(
-        !is.finite(shape) |
-          shape <= 0 | shape != floor(shape)
-      ) ||
-      prod(shape) !=
-        length(values) ||
-      length(values) >
-        max_bytes / 8 || !is.numeric(values) ||
-      any(!is.finite(values)) ||
-      length(unlist(a$channels)) !=
-        tail(shape, 1L)) {
+    # JSON lists must contain scalar values, not nested objects or nulls.
+    scalar_list <- function(x, type) {
+      is.list(x) && is.null(names(x)) && length(x) > 0L &&
+        all(vapply(x, function(value) {
+          length(value) == 1L && !is.list(value) && !anyNA(value) &&
+            if (type == "numeric") is.numeric(value) else
+              (is.character(value) || is.numeric(value))
+        }, logical(1)))
+    }
+    valid <- is.list(a) && identical(a$dtype, "float64") &&
+      identical(a$order, "F") && scalar_list(a$shape, "numeric") &&
+      scalar_list(a$values, "numeric") && scalar_list(a$channels, "channel")
+    if (valid) {
+      shape <- unlist(a$shape, use.names = FALSE)
+      values <- unlist(a$values, use.names = FALSE)
+      channels <- unlist(a$channels, use.names = FALSE)
+      valid <- all(is.finite(shape) & shape > 0 &
+                     shape <= .Machine$integer.max & shape == floor(shape)) &&
+        prod(shape) == length(values) && length(values) <= max_bytes / 8 &&
+        all(is.finite(values)) && length(channels) == tail(shape, 1L) &&
+        !anyDuplicated(channels) &&
+        all(vapply(a$channels, function(value) {
+          if (is.numeric(value)) is.finite(value) else nzchar(value)
+        }, logical(1)))
+    }
+    if (!valid) {
       hm_stop_backend(handle)
-      .hm_abort("Malformed worker output array.")
+      .hm_abort("Malformed worker output array.", "hm_worker_error")
     }
     ans$array <- array(values, dim = shape)
   }
+  response_complete <- TRUE
   ans
 }

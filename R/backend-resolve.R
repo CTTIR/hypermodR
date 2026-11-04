@@ -3,7 +3,8 @@
 #' This explicit network operation resolves metadata only. It does not download
 #' model weights or install packages. Published terms and inherited distribution
 #' notices must be reviewed before converting the result into an install plan.
-#' @param backend Either reference_cpu or vllm_linux_cuda.
+#' @param backend reference_cpu. The former vllm_linux_cuda setup route is
+#' blocked pending a reviewed replacement for its retired vulnerable profile.
 #' @param model_id Exact model identity or reference family.
 #' @param python Explicit existing Python 3.11 or 3.12 executable.
 #' @param uv Explicit uv resolver executable (version 0.11.26).
@@ -19,6 +20,14 @@ hm_resolve_backend <- function(
   ))
 ) {
   backend <- match.arg(backend)
+  if (backend == "vllm_linux_cuda") {
+    .hm_abort(paste0(
+      "Automatic vLLM setup is unavailable: the former 0.11.0 profile is ",
+      "affected by upstream security advisories. Use a separately reviewed ",
+      "current custom profile with exact artifacts and platform/model ",
+      "qualification; no replacement vLLM profile is qualified here."
+    ), "hm_backend_security_error")
+  }
   .hm_require("processx")
   .hm_scalar_character(model_id, "model_id")
   .hm_scalar_character(python, "python")
@@ -60,22 +69,14 @@ hm_resolve_backend <- function(
       )) {
     .hm_abort("Resolution directory must be new and exclusive.")
   }
-  requirements <- if (backend == "reference_cpu") {
-    c("numpy==2.2.6", "torch==2.6.0")
-  } else {
-    "vllm==0.11.0"
-  }
+  requirements <- c("numpy==2.2.6", "torch==2.13.0", "setuptools==84.1.0")
   req <- list(
     directory = normalizePath(directory),
     uv = normalizePath(uv),
     python = normalizePath(python),
     requirements = as.list(requirements),
     platform = "x86_64-manylinux_2_28",
-    torch_backend = if (backend == "reference_cpu") {
-      "cpu"
-    } else {
-      NULL
-    }
+    torch_backend = "cpu"
   )
   request_path <- file.path(directory, "resolution-input.json")
   jsonlite::write_json(req, request_path, auto_unbox = TRUE, null = "null")
@@ -110,23 +111,9 @@ hm_resolve_backend <- function(
   profile <- list(
     profile_id = paste0(backend, "-", version),
     model_id = model_id,
-    source_revision = if (backend == "reference_cpu") {
-      "hypermodr-reference-v1"
-    } else {
-      "vllm-0.11.0"
-    },
-    runtime_version = if (
-                          backend == "reference_cpu") {
-      "torch-2.6.0-numpy-2.2.6"
-    } else {
-      "vllm-0.11.0"
-    },
-    os = "Linux", arch = "x86_64",
-    device = if (backend == "reference_cpu") {
-      "cpu"
-    } else {
-      "cuda"
-    },
+    source_revision = "hypermodr-reference-v1",
+    runtime_version = "torch-2.13.0-numpy-2.2.6",
+    os = "Linux", arch = "x86_64", device = "cpu",
     artifacts = artifacts, terms = resolved$terms, command = "launch.py",
     args = character(), custom_code = FALSE,
     qualification = "installation_pending_smoke_and_parity",
@@ -135,48 +122,34 @@ hm_resolve_backend <- function(
       version = version, lock = "requirements.txt"
     )
   )
-  launcher <- if (backend == "reference_cpu") {
-    .hm_resource("backends", "reference-launch.py")
-  } else {
-    .hm_resource("backends", "vllm-launch.py")
-  }
+  launcher <- .hm_resource("backends", "reference-launch.py")
   profile$artifacts[[length(profile$artifacts) +
                        1L]] <- list(
     path = "launch.py", url = paste0("file://", launcher),
     bytes = unname(file.info(launcher)$size),
     sha256 = digest::digest(file = launcher, algo = "sha256")
   )
-  if (backend == "reference_cpu") {
-    base <- .hm_resource("python", "hypermodr_worker")
-    files <- list.files(base, recursive = TRUE, full.names = TRUE)
-    files <- files[grepl("[.]py$", files)]
-    for (f in files) {
-      profile$artifacts[[length(profile$artifacts) +
-                           1L]] <- list(
-        path = paste0(
-          "hypermodr_worker/", substring(
-            f, nchar(base) +
-              2L
-          )
-        ),
-        url = paste0("file://", f),
-        bytes = unname(file.info(f)$size),
-        sha256 = digest::digest(file = f, algo = "sha256")
-      )
-    }
+  base <- .hm_resource("python", "hypermodr_worker")
+  files <- list.files(base, recursive = TRUE, full.names = TRUE)
+  files <- files[grepl("[.]py$", files)]
+  for (f in files) {
+    profile$artifacts[[length(profile$artifacts) +
+                         1L]] <- list(
+      path = paste0(
+        "hypermodr_worker/", substring(
+          f, nchar(base) +
+            2L
+        )
+      ),
+      url = paste0("file://", f),
+      bytes = unname(file.info(f)$size),
+      sha256 = digest::digest(file = f, algo = "sha256")
+    )
   }
   out <- list(
     profile = profile, packages = resolved$packages, backend = backend,
     directory = normalizePath(directory),
-    hard_gates = c(
-      "artifact-level license/notice review",
-      if (backend == "vllm_linux_cuda") {
-        c(
-          "NVIDIA driver/GPU ABI admission",
-          "exact local checkpoint manifest"
-        )
-      }
-    ),
+    hard_gates = "artifact-level license/notice review",
     qualification = "pending_optional_live_smoke_and_parity"
   )
   jsonlite::write_json(
@@ -274,19 +247,20 @@ hm_resolve_checkpoint <- function(
     tmpdir = tools::R_user_dir("hypermodR", "cache")
   )
 ) {
-  .hm_require("httr2")
   if (!is.character(repository) ||
         length(repository) !=
-          1L || !grepl("^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$", repository) ||
+          1L || is.na(repository) ||
+        !grepl("^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$", repository) ||
         !.hm_safe_relative(repository) ||
         !is.character(revision) ||
         length(revision) !=
-          1L || !grepl("^[a-f0-9]{40}$", revision)) {
+          1L || is.na(revision) || !grepl("^[a-f0-9]{40}$", revision)) {
     .hm_abort(paste0(
       "An exact public repository and immutable commit SHA ",
       "are required."
     ))
   }
+  .hm_require("httr2")
   .hm_no_symlink(directory, dirname(directory))
   if (!dir.create(directory,
         recursive = TRUE, showWarnings = FALSE,

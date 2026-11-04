@@ -8,6 +8,10 @@ test_that(
       hm_resolve_checkpoint("owner/model", "main"),
       "immutable"
     )
+    expect_error(hm_resolve_checkpoint(NA_character_, "main"),
+                 class = "hm_validation_error")
+    expect_error(hm_resolve_checkpoint("owner/model", NA_character_),
+                 class = "hm_validation_error")
     expect_error(
       hm_resolve_checkpoint(
         "../model", paste(
@@ -25,6 +29,7 @@ test_that(
     skip_if(!nzchar(python))
     caps <- hm_backend_capabilities()
     skip_if_not(identical(caps$os, "Linux") && identical(caps$arch, "x86_64"))
+    skip_if_not_installed("processx")
     version <- trimws(
       processx::run(python, c(
         "-c",

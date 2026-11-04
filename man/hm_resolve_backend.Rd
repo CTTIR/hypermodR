@@ -13,7 +13,8 @@ hm_resolve_backend(
 )
 }
 \arguments{
-\item{backend}{Either reference_cpu or vllm_linux_cuda.}
+\item{backend}{reference_cpu. The former vllm_linux_cuda setup route is
+blocked pending a reviewed replacement for its retired vulnerable profile.}
 
 \item{model_id}{Exact model identity or reference family.}
 
