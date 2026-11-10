@@ -19,3 +19,4 @@
 ^tools/branding$
 (^|/)__pycache__($|/)
 \.py[cod]$
+^cran-comments\.md$

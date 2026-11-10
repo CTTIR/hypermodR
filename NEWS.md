@@ -1,4 +1,21 @@
-# hypermodR 0.0.0.9001 (unreleased)
+# hypermodR 0.1.0
+
+## CRAN preparation
+
+* Every exported function now has a documented return value and an example.
+  Examples that need optional R packages are guarded with
+  `requireNamespace()`; examples that need an isolated Python runtime, a
+  network checkpoint or a running model server are not run.
+* Tests that start Python, R or HTTP worker processes, need `openssl` or are
+  Linux-specific are skipped on CRAN.
+* The random-number state is restored through an explicit `.Random.seed`
+  binding, which removes the "assignments to the global environment" NOTE.
+* Reworded the Description in complete sentences, declared the language,
+  added `cran-comments.md` and an `inst/WORDLIST`.
+* Updated the maintainer e-mail address to raban.heller@uni-ulm.de.
+* Includes the unreleased 0.0.0.9001 changes listed below.
+
+# hypermodR 0.0.0.9001 (development version, not released)
 
 * Reject stale temporal partitions, incompatible radiometric prediction units,
   invalid survival inputs and misaligned named matrix outcomes. Reconstruction

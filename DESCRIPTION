@@ -1,18 +1,20 @@
 Package: hypermodR
 Type: Package
 Title: Hyperspectral Modelling and Validation
-Version: 0.0.0.9001
-Authors@R: person("Raban", "Heller", email = "raban.heller@charite.de",
+Version: 0.1.0
+Authors@R: person("Raban", "Heller", email = "raban.heller@uni-ulm.de",
     role = c("aut", "cre"), comment = c(ORCID = "0000-0001-8006-9742"))
-Description: Interpretable and black-box hyperspectral modelling with explicit
-    spectral, spatial and temporal data contracts, grouped validation,
-    reproducible evaluation, optional isolated model runtimes, and an
-    interactive research workbench. Model and instrument qualification is
-    recorded separately from interface availability.
+Description: Provides interpretable and black-box modelling of
+    hyperspectral imaging data with explicit spectral, spatial and temporal
+    data contracts, grouped validation, reproducible evaluation, optional
+    isolated model runtimes and an interactive 'shiny' research workbench.
+    Model and instrument qualification is recorded separately from interface
+    availability.
 License: MIT + file LICENSE
 URL: https://github.com/CTTIR/hypermodR
 BugReports: https://github.com/CTTIR/hypermodR/issues
 Encoding: UTF-8
+Language: en-US
 Depends: R (>= 4.3.0)
 Imports:
     cli,
@@ -63,6 +65,6 @@ Additional_repositories: https://cttir.r-universe.dev
 VignetteBuilder: knitr
 Config/testthat/edition: 3
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 8.0.0
 Config/Needs/website: CTTIR/themakR
 Config/hypermodR/status: development
+Config/roxygen2/version: 8.1.1
