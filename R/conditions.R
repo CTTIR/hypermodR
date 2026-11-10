@@ -39,16 +39,16 @@
         seed < 0) {
     .hm_abort("seed must be one nonnegative integer.")
   }
-  rng_name <- ".Random.seed"
-  present <- exists(rng_name, envir = .GlobalEnv, inherits = FALSE)
+  # Restore the caller's random-number state; only `.Random.seed` is touched.
+  present <- exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)
   if (present) {
-    old <- get(rng_name, envir = .GlobalEnv)
+    old <- get(".Random.seed", envir = .GlobalEnv)
   }
   on.exit({
     if (present) {
-      assign(rng_name, old, envir = .GlobalEnv)
-    } else if (exists(rng_name, envir = .GlobalEnv, inherits = FALSE)) {
-      rm(list = rng_name, envir = .GlobalEnv)
+      assign(".Random.seed", old, envir = .GlobalEnv)
+    } else if (exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) {
+      rm(".Random.seed", envir = .GlobalEnv)
     }
   })
   set.seed(seed)
