@@ -63,6 +63,7 @@ test_that(
     "explicit runtime control"
   ),
   {
+    skip_on_cran()
     skip_if_not(Sys.info()[["sysname"]] == "Linux")
     python <- Sys.getenv("HYPERMODR_TEST_TORCH_PYTHON")
     skip_if(

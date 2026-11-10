@@ -1,4 +1,5 @@
 test_that("installed reference exports relocate and explicitly reproduce", {
+  skip_on_cran()
   skip_if_not(Sys.info()[["sysname"]] == "Linux")
   python <- Sys.getenv("HYPERMODR_TEST_TORCH_PYTHON")
   lib <- Sys.getenv("HYPERMODR_TEST_LIBRARY")

@@ -1,4 +1,5 @@
 test_that("fresh installed namespace loads packaged resources offline", {
+  skip_on_cran()
   library <- Sys.getenv("HYPERMODR_TEST_LIBRARY")
   paths <- unique(c(if (nzchar(library)) library, .libPaths()))
   package_files <- file.path(paths, "hypermodR", "Meta", "package.rds")

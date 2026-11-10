@@ -91,6 +91,7 @@ test_that(
 test_that(
   "minimal isolated CPU Python environment installs and reuses offline",
   {
+    skip_on_cran()
     skip_if_not_installed("processx")
     skip_if_not(Sys.info()[["sysname"]] == "Linux")
     python <- unname(Sys.which("python3"))

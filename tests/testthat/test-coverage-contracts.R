@@ -226,6 +226,7 @@ test_that(
 test_that(
   "registry signatures bind content, trust, revocation and release validity",
   {
+    skip_on_cran()
     skip_if(
       !nzchar(Sys.which("openssl")),
       "openssl executable unavailable"

@@ -102,6 +102,7 @@ test_that(paste0(
   "runtime metadata resolution records pinned artifacts ",
   "and explicit pending admission"
 ), {
+  skip_on_cran()
   state <- new.env(parent = emptyenv())
   state$python <- "3.11.9"
   state$uv <- "uv 0.11.26 (fixture)"

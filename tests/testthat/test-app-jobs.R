@@ -1,6 +1,7 @@
 test_that(
   "actual installed-package jobs complete, deny admission and cancel",
   {
+    skip_on_cran()
     skip_if_not(Sys.info()[["sysname"]] == "Linux")
     skip_if_not_installed("callr")
     lib <- Sys.getenv("HYPERMODR_TEST_LIBRARY")

@@ -94,6 +94,7 @@ test_that(
 test_that(
   "real HTTP transport works against an independent loopback fixture",
   {
+    skip_on_cran()
     skip_if_not_installed("processx")
     skip_if_not_installed("httr2")
     python <- unname(Sys.which("python3"))

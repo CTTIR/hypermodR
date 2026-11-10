@@ -96,6 +96,7 @@ test_that(
 test_that(
   "runtime start and checkpoint staging refuse relinked directories",
   {
+    skip_on_cran()
     skip_on_os("windows")
     skip_if_not_installed("processx")
     parent <- tempfile("relinked-runtime-")

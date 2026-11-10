@@ -1,6 +1,7 @@
 test_that(
   "R-only inner selection excludes outer units and records every fit",
   {
+    skip_on_cran()
     skip_if_not(Sys.info()[["sysname"]] == "Linux")
     n <- 16L
     obs <- data.frame(

@@ -1,4 +1,5 @@
 test_that("Python installation ignores ambient pip configuration", {
+  skip_on_cran()
   skip_if_not_installed("processx")
   skip_on_os("windows")
   python <- unname(Sys.which("python3"))

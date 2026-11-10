@@ -4,6 +4,7 @@ test_that(
     "stops offending process"
   ),
   {
+    skip_on_cran()
     skip_if_not(Sys.info()[["sysname"]] == "Linux")
     skip_if(!nzchar(Sys.which("python3")))
     parent <- tempfile("worker-failures-")

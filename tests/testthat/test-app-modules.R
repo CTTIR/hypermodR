@@ -1,6 +1,7 @@
 test_that(
   "application constructs without side effects and server validates",
   {
+    skip_on_cran()
     skip_if_not_installed("shiny")
     skip_if_not_installed("bslib")
     skip_if_not_installed("callr")

@@ -69,6 +69,7 @@ test_that(
 test_that(
   "signature verification uses only trusted nonrevoked provisioned keys",
   {
+    skip_on_cran()
     skip_if_not_installed("processx")
     skip_if(!nzchar(Sys.which("openssl")))
     dir <- tempfile()

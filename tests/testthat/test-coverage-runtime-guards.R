@@ -31,6 +31,7 @@ test_that(
 test_that(
   "runtime start refuses mismatched, moved or modified installations",
   {
+    skip_on_cran()
     skip_if_not_installed("processx")
     parent <- tempfile("start-guard-")
     dir.create(parent)

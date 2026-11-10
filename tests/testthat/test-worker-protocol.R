@@ -1,6 +1,7 @@
 test_that(
   "independent CPU worker reconstructs arrays and cancellation is owned",
   {
+    skip_on_cran()
     skip_if_not_installed("processx")
     skip_if_not(Sys.info()[["sysname"]] == "Linux")
     skip_if(!nzchar(Sys.which("python3")))
@@ -57,6 +58,7 @@ test_that(
 test_that(
   "packaged reference training is reachable through R worker transport",
   {
+    skip_on_cran()
     skip_if_not_installed("processx")
     skip_if_not(Sys.info()[["sysname"]] == "Linux")
     python <- Sys.getenv("HYPERMODR_TEST_TORCH_PYTHON")

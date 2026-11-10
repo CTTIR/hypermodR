@@ -4,6 +4,7 @@ test_that(
     "impossible inherited CPU budget"
   ),
   {
+    skip_on_cran()
     skip_if_not(Sys.info()[["sysname"]] == "Linux")
     expect_error(
       .hm_resource_admit(list()),
@@ -39,6 +40,7 @@ test_that(
 test_that(
   "actual nested child evaluation must retain identical admitted budget",
   {
+    skip_on_cran()
     skip_if_not(Sys.info()[["sysname"]] == "Linux")
     resource <- hm_resources(memory_mb = 1024, timeout = 20)
     result <- hm_with_resources(

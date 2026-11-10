@@ -1,4 +1,5 @@
 test_that("availability and start share installation integrity admission", {
+  skip_on_cran()
   skip_if_not_installed("processx")
   root <- tempfile("availability-review-")
   dir.create(root)
@@ -51,6 +52,7 @@ test_that("Python environment root cannot be replaced with a matching link", {
 })
 
 test_that("worker array schema failures stop an actual owned process", {
+  skip_on_cran()
   skip_if_not_installed("processx")
   python <- unname(Sys.which("python3"))
   skip_if(!nzchar(python))

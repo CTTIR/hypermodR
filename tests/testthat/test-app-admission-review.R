@@ -1,4 +1,5 @@
 test_that("new runtime notices require a fresh explicit review", {
+  skip_on_cran()
   skip_if_not_installed("shiny")
   skip_if_not_installed("callr")
   fixture <- new.env()
@@ -47,6 +48,7 @@ test_that("new runtime notices require a fresh explicit review", {
 })
 
 test_that("workbench construction does not change the upload limit", {
+  skip_on_cran()
   skip_if_not_installed("shiny")
   skip_if_not_installed("bslib")
   skip_if_not_installed("callr")

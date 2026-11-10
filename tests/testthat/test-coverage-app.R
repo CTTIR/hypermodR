@@ -140,6 +140,7 @@ test_that(
     "verified artifacts"
   ),
   {
+    skip_on_cran()
     result <- coverage_result()
     result$fit$diagnostic <- list(
       token = "secret", nested = c(
@@ -358,6 +359,7 @@ test_that(
     "installation requests"
   ),
   {
+    skip_on_cran()
     skip_if_not_installed("shiny")
     requests <- list()
     process_state <- new.env()

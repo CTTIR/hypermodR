@@ -79,6 +79,7 @@ test_that(
 test_that(
   "installed reference jobs own workers and retain learned artifacts",
   {
+    skip_on_cran()
     skip_if_not(Sys.info()[["sysname"]] == "Linux")
     python <- Sys.getenv("HYPERMODR_TEST_TORCH_PYTHON")
     lib <- Sys.getenv("HYPERMODR_TEST_LIBRARY")

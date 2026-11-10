@@ -4,6 +4,7 @@ test_that(
     "contracts before network"
   ),
   {
+    skip_on_cran()
     expect_error(
       hm_resolve_checkpoint("owner/model", "main"),
       "immutable"

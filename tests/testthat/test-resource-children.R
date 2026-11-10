@@ -1,6 +1,7 @@
 test_that(
   "bounded expression preserves caller data and parent environment",
   {
+    skip_on_cran()
     skip_if_not(Sys.info()[["sysname"]] == "Linux")
     before <- Sys.getenv("OMP_NUM_THREADS")
     parent_pid <- Sys.getpid()
@@ -38,6 +39,7 @@ test_that(
 test_that(
   "timeout terminates a child without status polling",
   {
+    skip_on_cran()
     skip_if_not(Sys.info()[["sysname"]] == "Linux")
     child <- hypermodR:::.hm_resource_r_bg(
       function() {
@@ -56,6 +58,7 @@ test_that(
 test_that(
   "address-space limit rejects an allocation in a small owned child",
   {
+    skip_on_cran()
     skip_if_not(Sys.info()[["sysname"]] == "Linux")
     skip_if(!nzchar(Sys.which("python3")))
     p <- hypermodR:::.hm_resource_process(
@@ -77,6 +80,7 @@ test_that(
 test_that(
   "cancellation requires ownership and leaves unrelated children alone",
   {
+    skip_on_cran()
     skip_if_not(Sys.info()[["sysname"]] == "Linux")
     one <- hypermodR:::.hm_resource_r_bg(
       function() Sys.sleep(30),
@@ -105,6 +109,7 @@ test_that(
 test_that(
   "nested work reuses its admitted budget and refuses changes",
   {
+    skip_on_cran()
     skip_if_not(Sys.info()[["sysname"]] == "Linux")
     expect_true(
       hm_with_resources(hm_resources(), hm_with_resources(
@@ -129,6 +134,7 @@ test_that(
 )
 
 test_that("unsupported systems refuse real bounded child routes explicitly", {
+  skip_on_cran()
   if (identical(Sys.info()[["sysname"]], "Linux")) {
     expect_type(hypermodR:::.hm_resource_admit(hm_resources()), "list")
   } else {
