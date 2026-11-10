@@ -46,7 +46,9 @@
   }
   on.exit({
     if (present) {
+      # nolint start: object_name_linter.
       assign(".Random.seed", old, envir = .GlobalEnv)
+      # nolint end
     } else if (exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) {
       rm(".Random.seed", envir = .GlobalEnv)
     }

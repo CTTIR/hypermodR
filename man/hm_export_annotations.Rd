@@ -32,9 +32,10 @@ if (requireNamespace("hyperannotatR", quietly = TRUE) &&
   destination <- tempfile("hm-annotations-")
   groups <- data.frame(entry_id = "entry-0001", subject_id = "subject",
                        procedure_id = "procedure")
-  exported <- hm_export_annotations(project, destination, groups,
-                                    tile_size = 512L, fractions = c(train = 1),
-                                    label_map = label_map)
+  exported <- hm_export_annotations(
+    project, destination, groups,
+    tile_size = 512L, fractions = c(train = 1), label_map = label_map
+  )
   print(exported$checks)
   unlink(destination, recursive = TRUE)
 }

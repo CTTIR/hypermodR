@@ -39,6 +39,8 @@ backend for every task/model combination.
 \examples{
 regression <- hm_task("response", "regression", "spectrum", "subject_id")
 str(regression)
-classification <- hm_task("class", "classification", "spectrum", "subject_id")
+classification <- hm_task(
+  "class", "classification", "spectrum", "subject_id"
+)
 classification$type
 }

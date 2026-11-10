@@ -20,7 +20,8 @@
 #' @examples
 #' data <- hm_example()
 #' task <- hm_task("response", "regression", "spectrum", "subject_id")
-#' fold <- hm_split(data, task, folds = 3L, inner_folds = 2L, seed = 7L)$folds[[1]]
+#' splits <- hm_split(data, task, folds = 3L, inner_folds = 2L, seed = 7L)
+#' fold <- splits$folds[[1]]
 #' workflow <- hm_workflow(task, hm_recipe(), hm_model_spec("knn", task))
 #' candidates <- list(list(k = 3), list(k = 7))
 #' # Tuning runs in a bounded child process, which needs Linux with taskset,
@@ -28,7 +29,8 @@
 #' if (interactive() && identical(Sys.info()[["sysname"]], "Linux") &&
 #'     all(nzchar(Sys.which(c("taskset", "prlimit", "timeout")))) &&
 #'     requireNamespace("processx", quietly = TRUE)) {
-#'   tuned <- hm_tune(workflow, data, fold, candidates, control = list(seed = 1))
+#'   tuned <- hm_tune(workflow, data, fold, candidates,
+#'                    control = list(seed = 1))
 #'   summary(tuned)
 #' }
 #' @export

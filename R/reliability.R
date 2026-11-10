@@ -25,7 +25,10 @@
 #'   c("a", "b", "a", "b", "a", "b"), task, reference$observation_id,
 #'   probabilities, class_map = c("a", "b")
 #' )
-#' reliability <- hm_reliability(prediction, reference, breaks = c(0, 0.5, 0.75, 1))
+#' reliability <- hm_reliability(
+#'   prediction, reference,
+#'   breaks = c(0, 0.5, 0.75, 1)
+#' )
 #' reliability$bins
 #' reliability$coverage_risk
 #' @export

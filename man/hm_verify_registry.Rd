@@ -39,16 +39,21 @@ Verify a signed registry release
 \examples{
 \donttest{
 # Signs a throw-away registry with a fresh key; needs the openssl executable.
-if (nzchar(Sys.which("openssl")) && requireNamespace("processx", quietly = TRUE)) {
+if (nzchar(Sys.which("openssl")) &&
+    requireNamespace("processx", quietly = TRUE)) {
   dir <- tempfile("hm-registry-")
   dir.create(dir)
   private <- file.path(dir, "private.pem")
   public <- file.path(dir, "public.pem")
   registry <- file.path(dir, "registry.json")
   signature <- file.path(dir, "registry.sig")
-  processx::run("openssl", c("genpkey", "-algorithm", "RSA",
-                             "-pkeyopt", "rsa_keygen_bits:2048", "-out", private))
-  processx::run("openssl", c("pkey", "-in", private, "-pubout", "-out", public))
+  processx::run("openssl", c(
+    "genpkey", "-algorithm", "RSA",
+    "-pkeyopt", "rsa_keygen_bits:2048", "-out", private
+  ))
+  processx::run(
+    "openssl", c("pkey", "-in", private, "-pubout", "-out", public)
+  )
   jsonlite::write_json(
     list(release_sequence = 1, expires = "2099-01-01T00:00:00Z"),
     registry, auto_unbox = TRUE

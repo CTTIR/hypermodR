@@ -128,7 +128,8 @@
 #' terms <- "Local example artifact only; unrestricted example use."
 #' profile <- list(
 #'   profile_id = "example-cpu-v1", model_id = "example-identity",
-#'   source_revision = "example-source-1", runtime_version = "example-runtime-1",
+#'   source_revision = "example-source-1",
+#'   runtime_version = "example-runtime-1",
 #'   custom_code = TRUE, custom_code_reviewed = TRUE,
 #'   os = unname(Sys.info()["sysname"]), arch = unname(Sys.info()["machine"]),
 #'   device = "cpu", qualification = "test_only",
