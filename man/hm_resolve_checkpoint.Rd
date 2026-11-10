@@ -28,7 +28,9 @@ Resolve an immutable public Hugging Face checkpoint without downloading
 weights
 }
 \examples{
-# Not run: queries the Hugging Face Hub over the network.
+# Not run: 'owner/model' and the revision stand for a real public checkpoint
+# and commit; resolving one downloads its configuration, tokenizer and
+# licence files from the Hugging Face Hub.
 \dontrun{
 checkpoint <- hm_resolve_checkpoint(
   "owner/model", revision = strrep("0", 40),
