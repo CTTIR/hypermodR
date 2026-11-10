@@ -6,6 +6,11 @@
 #' receipt, and atomically finalizes COMPLETE. Existing paths are rejected. A
 #' failed write leaves a failed receipt for inspection; completion markers are
 #' removed.
+#' @examples
+#' run <- tempfile("hypermodR-run-")
+#' hm_save_run(list(note = "example", values = 1:3), run)
+#' list.files(run)
+#' unlink(run, recursive = TRUE)
 #' @export
 hm_save_run <- function(object, path) {
   .hm_scalar_character(path, "path")
@@ -77,6 +82,11 @@ hm_save_run <- function(object, path) {
 #' @return The deserialized original R object.
 #' @details Requires matching complete receipt, object SHA-256 and COMPLETE
 #' marker before reading the object. Read only trusted RDS sources.
+#' @examples
+#' run <- tempfile("hypermodR-run-")
+#' hm_save_run(list(note = "example", values = 1:3), run)
+#' hm_read_run(run)
+#' unlink(run, recursive = TRUE)
 #' @export
 hm_read_run <- function(path) {
   if (!file.exists(file.path(path, "COMPLETE"))) {

@@ -15,6 +15,14 @@
 #' remain
 #'   blocked pending source-backed fixtures. Conversion does not infer
 #' calibration.
+#' @examples
+#' \donttest{
+#' if (requireNamespace("hyperspectR", quietly = TRUE)) {
+#'   cube <- hyperspectR::hs_example_cube()
+#'   data <- hm_as_dataset(cube)
+#'   dim(data@sources[[1]])
+#' }
+#' }
 #' @export
 hm_as_dataset <- function(x, profile = NULL, ...) UseMethod("hm_as_dataset")
 #' @rdname hm_as_dataset
@@ -123,6 +131,21 @@ hm_as_dataset.hsi_cube <- function(
 #' @param frame_id One frame ID for sequences; NULL for an image.
 #' @param ... Reserved.
 #' @return An hsi_cube with explicit native band sorting map in metadata.
+#' @examples
+#' image <- hm_dataset(
+#'   array(seq_len(60) / 60, c(3, 5, 4)),
+#'   data.frame(observation_id = "o1", image_id = "i1", acquisition_id = "a1"),
+#'   data.frame(wavelength = c(500, 600, 700, 800)),
+#'   geometry = list(origin = c(0, 0), transform = diag(3))
+#' )
+#' \donttest{
+#' if (requireNamespace("hyperspectR", quietly = TRUE)) {
+#'   cube <- hm_as_hsi_cube(image, acquisition_id = "a1")
+#'   print(class(cube))
+#'   # The round trip restores the native dataset
+#'   hm_as_dataset(cube)@data_kind
+#' }
+#' }
 #' @export
 hm_as_hsi_cube <- function(x, acquisition_id, frame_id = NULL, ...) {
   .hm_require("hyperspectR")

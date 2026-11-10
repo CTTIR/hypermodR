@@ -15,3 +15,10 @@ The cancelled stream invisibly.
 \description{
 Cancel a frame stream
 }
+\examples{
+stream <- hm_stream(function(frame, time) mean(frame))
+hm_stream_push(stream, list(matrix(1, 2, 2)), 0, "recording-1")
+hm_stream_cancel(stream)
+# A cancelled stream accepts no further frames
+try(hm_stream_push(stream, list(matrix(1, 2, 2)), 1, "recording-1"))
+}

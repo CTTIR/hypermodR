@@ -22,3 +22,12 @@ platform and resources.
 \description{
 Capture explicit reproducibility identities
 }
+\examples{
+settings <- list(recipe = "scale", seed = 1L)
+path <- tempfile(fileext = ".txt")
+writeLines("example input", path)
+receipt <- hm_provenance(list(settings = settings), files = path,
+                         resources = hm_resources())
+names(receipt)
+unlink(path)
+}

@@ -6,6 +6,14 @@
 #' @param resources Optional resource declaration retained in the receipt.
 #' @return An `hm_provenance` receipt with object/file hashes, R version,
 #' platform and resources.
+#' @examples
+#' settings <- list(recipe = "scale", seed = 1L)
+#' path <- tempfile(fileext = ".txt")
+#' writeLines("example input", path)
+#' receipt <- hm_provenance(list(settings = settings), files = path,
+#'                          resources = hm_resources())
+#' names(receipt)
+#' unlink(path)
 #' @export
 hm_provenance <- function(
   objects = list(), files = character(),
@@ -46,6 +54,12 @@ hm_provenance <- function(
 #' error.
 #' @details Rehashes the recorded file paths and supplied objects. Does not
 #' compare current R/platform metadata or establish source truth.
+#' @examples
+#' settings <- list(recipe = "scale", seed = 1L)
+#' receipt <- hm_provenance(list(settings = settings))
+#' hm_verify_provenance(receipt, list(settings = settings))
+#' # A changed object fails verification
+#' try(hm_verify_provenance(receipt, list(settings = list(recipe = "snv"))))
 #' @export
 hm_verify_provenance <- function(receipt, objects = list()) {
   if (!inherits(receipt, "hm_provenance")) {

@@ -55,3 +55,12 @@ rejected. Responses must identify the exact served model, contain one choice
 and finish with stop. Text is auxiliary output with no calibrated
 probability interpretation.
 }
+\examples{
+# Not run: needs a running vLLM server serving the named model.
+\dontrun{
+prompt <- hm_prompt("Summarise the acquisition protocol.", "prespecified")
+answer <- hm_vllm_chat("http://127.0.0.1:8000/v1", "served-model-name",
+                       prompt)
+answer$text
+}
+}

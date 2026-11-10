@@ -16,6 +16,28 @@
 #' only after reproduction code and any private artifacts are finalized.
 #' Interrupted exports retain a failed destination with partial contents for
 #' inspection; the destination cannot be read as a completed run.
+#' @examples
+#' data <- hm_example(seed = 42L)
+#' task <- hm_task("response", "regression", "spectrum", "subject_id")
+#' fold <- hm_split(data, task, folds = 3L, seed = 7L)$folds[[1]]
+#' workflow <- hm_workflow(
+#'   task, hm_recipe(list(list(type = "scale"))), hm_model_spec("lm", task)
+#' )
+#' fit <- hm_fit(workflow, data, fold)
+#' heldout <- hm_spectra(data, list(
+#'   observation_id = data@observations$observation_id[fold$test]
+#' ))
+#' prediction <- hm_predict(fit, heldout)
+#' result <- list(
+#'   fit = fit, prediction = prediction,
+#'   evaluation = hm_evaluate(prediction, heldout$observations),
+#'   workflow = workflow, split = fold, control = list(seed = 1),
+#'   input_hash = digest::digest(data, algo = "sha256")
+#' )
+#' path <- tempfile("hypermodR-export-")
+#' hm_export_result(result, path)
+#' list.files(path)
+#' unlink(path, recursive = TRUE)
 #' @export
 hm_export_result <- function(result, path, include_private = FALSE) {
   if (!is.list(result) ||

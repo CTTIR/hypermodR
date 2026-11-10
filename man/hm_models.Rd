@@ -28,3 +28,8 @@ families have separate spectral/tensor routes; not every listed identity is
 accepted by hm_fit(). All returned scientific qualification flags remain
 FALSE.
 }
+\examples{
+regression <- hm_models(task = "regression", include_unavailable = FALSE)
+vapply(regression, `[[`, character(1), "model_id")
+length(hm_models())
+}

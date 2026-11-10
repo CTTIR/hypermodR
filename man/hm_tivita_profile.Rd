@@ -27,3 +27,10 @@ Serializable profile list.
 \description{
 Declare an explicit TIVITA array profile
 }
+\examples{
+profile <- hm_tivita_profile(c(500, 600, 700), device = "declared device",
+                             software = "export-v1", evidence = "fixture-1")
+profile$qualification
+# Unknown wavelengths stay unknown
+is.null(hm_tivita_profile()$wavelengths)
+}

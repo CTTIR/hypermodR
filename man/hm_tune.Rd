@@ -47,3 +47,18 @@ Search is sequential inside one bounded child, so the declared
 elapsed timeout covers the entire search and final refit. The first tied
 candidate wins. Outer test outcomes are excluded from selection.
 }
+\examples{
+data <- hm_example()
+task <- hm_task("response", "regression", "spectrum", "subject_id")
+fold <- hm_split(data, task, folds = 3L, inner_folds = 2L, seed = 7L)$folds[[1]]
+workflow <- hm_workflow(task, hm_recipe(), hm_model_spec("knn", task))
+candidates <- list(list(k = 3), list(k = 7))
+# Tuning runs in a bounded child process, which needs Linux with taskset,
+# prlimit and timeout; the example is meant for interactive use.
+if (interactive() && identical(Sys.info()[["sysname"]], "Linux") &&
+    all(nzchar(Sys.which(c("taskset", "prlimit", "timeout")))) &&
+    requireNamespace("processx", quietly = TRUE)) {
+  tuned <- hm_tune(workflow, data, fold, candidates, control = list(seed = 1))
+  summary(tuned)
+}
+}

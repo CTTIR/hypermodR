@@ -20,6 +20,10 @@
 #' remains CPU-only. GPU memory is not limited, and admitting a device does
 #' not establish live GPU or scientific qualification. This is not a security
 #' sandbox.
+#' @examples
+#' resources <- hm_resources(cpus = 1, threads = 1, memory_mb = 2048,
+#'                           timeout = 30)
+#' resources$memory_mb
 #' @export
 hm_resources <- function(
   cpus = 1L, threads = 1L, memory_mb = 1024, device = "cpu", timeout = 60,
@@ -60,6 +64,16 @@ hm_resources <- function(
 #' hm_resources. Nested evaluation inside an already bounded child must reuse
 #' the identical outer budget. Unsupported platforms/devices fail admission
 #' rather than executing without limits.
+#' @examples
+#' resources <- hm_resources()
+#' # Bounded children need Linux with taskset, prlimit and timeout; the
+#' # example is meant for interactive use.
+#' if (interactive() && identical(Sys.info()[["sysname"]], "Linux") &&
+#'     all(nzchar(Sys.which(c("taskset", "prlimit", "timeout")))) &&
+#'     requireNamespace("processx", quietly = TRUE)) {
+#'   value <- 21
+#'   hm_with_resources(resources, value * 2)
+#' }
 #' @export
 hm_with_resources <- function(resources, code) {
   if (!inherits(resources, "hm_resources")) {

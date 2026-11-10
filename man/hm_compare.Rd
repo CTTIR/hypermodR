@@ -40,3 +40,26 @@ Requires identical cases, references, task, class map, estimand,
 hierarchy and metric names. This is descriptive inference without
 multiplicity-adjusted significance claims.
 }
+\examples{
+data <- hm_example(seed = 42L)
+task <- hm_task("response", "regression", "spectrum", "subject_id")
+fold <- hm_split(data, task, folds = 3L, seed = 7L)$folds[[1]]
+workflow <- hm_workflow(
+  task, hm_recipe(list(list(type = "scale"))), hm_model_spec("lm", task)
+)
+fit <- hm_fit(workflow, data, fold)
+heldout <- hm_spectra(data, list(
+  observation_id = data@observations$observation_id[fold$test]
+))
+knn <- hm_workflow(
+  task, hm_recipe(list(list(type = "scale"))),
+  hm_model_spec("knn", task, list(k = 5))
+)
+first <- hm_evaluate(hm_predict(fit, heldout), heldout$observations)
+second <- hm_evaluate(
+  hm_predict(hm_fit(knn, data, fold), heldout), heldout$observations
+)
+comparison <- hm_compare(list(first, second), unit = "subject_id",
+                         draws = 50L, seed = 1L)
+comparison$metrics
+}

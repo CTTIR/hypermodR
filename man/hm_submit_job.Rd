@@ -37,3 +37,22 @@ timeout; see hm_resources for limits and network policy. Poll
 hm_job_status() to collect completion or failure. Handles belong to the
 creating R session.
 }
+\examples{
+data <- hm_example()
+task <- hm_task("response", "regression", "spectrum", "subject_id")
+workflow <- hm_workflow(task, hm_recipe(), hm_model_spec("lm", task))
+fold <- hm_split(data, task, "grouped", seed = 42, folds = 3)$folds[[1]]
+# Jobs run in a bounded child process, which needs Linux with taskset,
+# prlimit and timeout; the example is meant for interactive use.
+if (interactive() && identical(Sys.info()[["sysname"]], "Linux") &&
+    all(nzchar(Sys.which(c("taskset", "prlimit", "timeout")))) &&
+    requireNamespace("processx", quietly = TRUE)) {
+  job <- hm_submit_job(workflow, data, fold, control = list(seed = 42))
+  for (i in seq_len(200)) {
+    status <- hm_job_status(job)
+    if (status$state != "running") break
+    Sys.sleep(0.05)
+  }
+  status$state
+}
+}

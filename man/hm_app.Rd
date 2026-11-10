@@ -22,3 +22,12 @@ A Shiny application, invisibly when launched.
 Import, configuration and submission are separate explicit actions. Optional
 runtimes are never installed on launch. Each connection owns its state/jobs.
 }
+\examples{
+if (requireNamespace("shiny", quietly = TRUE)) {
+  app <- hm_app(launch = FALSE)
+  class(app)
+}
+if (interactive()) {
+  hm_app()
+}
+}

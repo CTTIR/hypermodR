@@ -27,3 +27,9 @@ This constructor declares intent and checks known core task
 compatibility. It neither installs a backend nor qualifies a model
 scientifically.
 }
+\examples{
+task <- hm_task("response", "regression", "spectrum", "subject_id")
+spec <- hm_model_spec("pls", task, list(ncomp = 3))
+spec$model_id
+spec$parameters
+}

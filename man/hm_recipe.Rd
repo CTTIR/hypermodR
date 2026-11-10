@@ -28,3 +28,10 @@ vectors), derivative (adjacent finite differences per nm), resample
 upper concave envelope division). Missing values must be imputed before
 steps requiring finite data.
 }
+\examples{
+recipe <- hm_recipe(list(
+  list(type = "snv"),
+  list(type = "pca", components = 3L)
+))
+length(recipe$steps)
+}

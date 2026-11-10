@@ -16,3 +16,18 @@ error.
 \description{
 Poll a modelling job
 }
+\examples{
+data <- hm_example()
+task <- hm_task("response", "regression", "spectrum", "subject_id")
+workflow <- hm_workflow(task, hm_recipe(), hm_model_spec("lm", task))
+fold <- hm_split(data, task, "grouped", seed = 42, folds = 3)$folds[[1]]
+# Jobs run in a bounded child process, which needs Linux with taskset,
+# prlimit and timeout; the example is meant for interactive use.
+if (interactive() && identical(Sys.info()[["sysname"]], "Linux") &&
+    all(nzchar(Sys.which(c("taskset", "prlimit", "timeout")))) &&
+    requireNamespace("processx", quietly = TRUE)) {
+  job <- hm_submit_job(workflow, data, fold, control = list(seed = 42))
+  print(hm_job_status(job)$state)
+  hm_cancel_job(job)
+}
+}

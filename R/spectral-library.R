@@ -8,6 +8,13 @@
 #' @param source Character source citation or persistent identifier.
 #' @param license Character declaration of reuse terms.
 #' @return An immutable-by-identity `hm_spectral_library` list.
+#' @examples
+#' lib <- hm_spectral_library(
+#'   cbind(component_a = c(1.2, 0.8, 0.3), component_b = c(0.9, 1.1, 0.7)),
+#'   wavelength = c(450, 550, 750), units = "arbitrary",
+#'   source = "synthetic illustration", license = "CC0"
+#' )
+#' lib$wavelength
 #' @export
 hm_spectral_library <- function(values, wavelength, units, source, license) {
   if (!is.matrix(values) ||

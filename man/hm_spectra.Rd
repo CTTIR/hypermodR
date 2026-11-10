@@ -26,3 +26,11 @@ Only native spectral matrices are admitted; images require explicit
 spatial reduction. Bands are unique positive 1-based indices in requested
 order.
 }
+\examples{
+data <- hm_example()
+selected <- hm_spectra(data, list(
+  observation_id = c("spectrum_1", "spectrum_9"), bands = c(1L, 8L)
+))
+selected$values
+selected$band_map
+}

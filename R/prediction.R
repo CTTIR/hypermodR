@@ -18,6 +18,29 @@
 #' predictive accuracy or calibrated probabilities. Numeric scalar tasks
 #' (including survival risk) require finite numeric vectors; matrix tasks
 #' require finite numeric matrices. Named matrix outputs retain column identity.
+#' @examples
+#' task <- hm_task("y", "classification", "spectrum", "subject_id")
+#' reference <- data.frame(
+#'   observation_id = paste0("o", 1:6),
+#'   y = c("a", "a", "b", "b", "a", "b"),
+#'   subject_id = c("s1", "s1", "s1", "s2", "s2", "s2"),
+#'   acquisition_id = paste0("a", 1:6)
+#' )
+#' probabilities <- cbind(
+#'   a = c(0.8, 0.3, 0.7, 0.1, 0.6, 0.4),
+#'   b = c(0.2, 0.7, 0.3, 0.9, 0.4, 0.6)
+#' )
+#' prediction <- hm_prediction(
+#'   c("a", "b", "a", "b", "a", "b"), task, reference$observation_id,
+#'   probabilities, class_map = c("a", "b")
+#' )
+#' prediction
+#' summary(prediction)
+#'
+#' regression <- hm_task("response", "regression", "spectrum", "subject_id")
+#' numeric_prediction <- hm_prediction(c(1.2, 0.8, 1.9), regression,
+#'                                     c("o1", "o2", "o3"))
+#' plot(numeric_prediction)
 #' @export
 hm_prediction <- function(
   values, task, observation_id, probabilities = NULL, class_map = NULL,

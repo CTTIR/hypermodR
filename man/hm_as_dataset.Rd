@@ -62,3 +62,12 @@ remain
 blocked pending source-backed fixtures. Conversion does not infer
 calibration.
 }
+\examples{
+\donttest{
+if (requireNamespace("hyperspectR", quietly = TRUE)) {
+  cube <- hyperspectR::hs_example_cube()
+  data <- hm_as_dataset(cube)
+  dim(data@sources[[1]])
+}
+}
+}

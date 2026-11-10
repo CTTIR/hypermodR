@@ -21,6 +21,20 @@
 #' inferred.
 #' Survival uses comparable event-time pairs. Evaluation
 #' does not fit models or repair reference alignment.
+#' @examples
+#' data <- hm_example(seed = 42L)
+#' task <- hm_task("response", "regression", "spectrum", "subject_id")
+#' fold <- hm_split(data, task, folds = 3L, seed = 7L)$folds[[1]]
+#' workflow <- hm_workflow(
+#'   task, hm_recipe(list(list(type = "scale"))), hm_model_spec("lm", task)
+#' )
+#' fit <- hm_fit(workflow, data, fold)
+#' heldout <- hm_spectra(data, list(
+#'   observation_id = data@observations$observation_id[fold$test]
+#' ))
+#' evaluation <- hm_evaluate(hm_predict(fit, heldout), heldout$observations)
+#' evaluation
+#' summary(evaluation)$metrics
 #' @export
 hm_evaluate <- function(
   predictions, reference, estimand = "pooled", resampling = NULL,

@@ -1,6 +1,10 @@
 #' Inspect local runtime capabilities without starting services
 #' @return List with OS, architecture, R version, Python executable path, and
 #' explicit unestablished GPU qualification.
+#' @examples
+#' capabilities <- hm_backend_capabilities()
+#' capabilities$os
+#' capabilities$gpu_qualification
 #' @export
 hm_backend_capabilities <- function() {
   list(

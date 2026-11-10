@@ -89,6 +89,8 @@
 #' Validated time-indexed spectral sequence
 #' @slot frame_index Explicit frame identity and elapsed seconds; gaps are
 #' retained.
+#' @examples
+#' methods::showClass("HMSequence")
 #' @exportClass HMSequence
 methods::setClass(
   "HMSequence",
@@ -107,6 +109,20 @@ methods::setClass(
 #' @param geometry Explicit spatial geometry.
 #' @param provenance Source and timing declarations.
 #' @return An HMSequence.
+#' @examples
+#' frames <- list(array(1:60, c(3, 5, 4)), array(61:120, c(3, 5, 4)))
+#' frame_index <- data.frame(
+#'   frame_id = c("f1", "f2"), sequence_id = "s1", acquisition_id = "a1",
+#'   time = c(0, 2.5)
+#' )
+#' observations <- data.frame(
+#'   observation_id = c("o1", "o2"), image_id = c("i1", "i2"),
+#'   acquisition_id = "a1", frame_id = c("f1", "f2")
+#' )
+#' bands <- data.frame(wavelength = c(500, 600, 700, 800))
+#' geometry <- list(origin = c(0, 0), transform = diag(3))
+#' sequence <- hm_sequence(frames, frame_index, observations, bands, geometry)
+#' sequence@frame_index
 #' @export
 hm_sequence <- function(
   frames, frame_index, observations, bands, geometry,

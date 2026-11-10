@@ -16,3 +16,12 @@ Validated declaration, without claiming source truth.
 \description{
 Declare independent reference endpoints
 }
+\examples{
+references <- data.frame(
+  observation_id = c("a", "a", "b"),
+  endpoint = c("burn_grade", "healing", "burn_grade"),
+  value = c("II", NA, "III")
+)
+contract <- hm_endpoint_contract(references)
+contract$source_truth
+}

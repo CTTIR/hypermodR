@@ -9,6 +9,21 @@
 #' @return Decoded worker response list; any array payload is reconstructed as
 #' a finite numeric R array in declared dimensions. Cancellation returns
 #' backend status invisibly.
+#' @examples
+#' # Not run: needs Linux with taskset, prlimit and timeout and an installed
+#' # runtime (see hm_install_backend()) whose worker implements the hypermodR
+#' # worker protocol.
+#' \dontrun{
+#' # 'profile' is an exact runtime manifest as described in hm_backend_plan()
+#' plan <- hm_backend_plan(profile$model_id, profile = profile)
+#' backend <- hm_install_backend(plan, accept_terms = TRUE,
+#'                               acknowledge_custom_code = TRUE)
+#' handle <- hm_start_backend(backend, resources = hm_resources())
+#' hm_worker_request(handle, "handshake")
+#' hm_worker_request(handle, "predict", array = array(runif(24), c(2, 3, 4)),
+#'                   channels = c("500", "600", "700", "800"))
+#' hm_stop_backend(handle)
+#' }
 #' @export
 hm_worker_request <- function(
   handle, operation = "handshake", array = NULL, channels = NULL,

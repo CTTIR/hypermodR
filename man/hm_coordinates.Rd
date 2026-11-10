@@ -19,3 +19,10 @@ A two-column numeric matrix.
 \description{
 Map image coordinates through explicit geometry
 }
+\examples{
+geometry <- list(origin = c(10, 20), transform = diag(c(0.5, 0.5, 1)))
+pixels <- cbind(x = c(1, 2), y = c(1, 3))
+world <- hm_coordinates(geometry, pixels)
+world
+hm_coordinates(geometry, world, inverse = TRUE)
+}

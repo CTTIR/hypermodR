@@ -27,3 +27,13 @@ qualification.
 Resolve an immutable public Hugging Face checkpoint without downloading
 weights
 }
+\examples{
+# Not run: queries the Hugging Face Hub over the network.
+\dontrun{
+checkpoint <- hm_resolve_checkpoint(
+  "owner/model", revision = strrep("0", 40),
+  directory = tempfile("checkpoint-")
+)
+checkpoint$artifacts
+}
+}

@@ -48,3 +48,23 @@ Selects the first temperature minimizing calibration log loss.
 Requires full class support and verifies the supplied predictions against
 the fit; outer test outcomes cannot enter calibration.
 }
+\examples{
+data <- hm_example(seed = 1L)
+observations <- data@observations
+subject <- as.integer(sub("synthetic_subject_", "", observations$subject_id))
+outer <- list(train = which(subject <= 9), test = which(subject > 9))
+inner <- list(train = which(subject <= 6), test = which(subject \%in\% 7:9))
+task <- hm_task("class", "classification", "spectrum", "subject_id")
+workflow <- hm_workflow(task, hm_recipe(),
+                        hm_model_spec("knn", task, list(k = 5)))
+fit <- hm_fit(workflow, data, inner)
+calibration_set <- hm_spectra(data, list(
+  observation_id = observations$observation_id[inner$test]
+))
+calibration <- hm_calibrate(
+  hm_predict(fit, calibration_set), calibration_set$observations,
+  split = inner, data = data, abstention = 0.7, fit = fit,
+  outer_split = outer
+)
+calibration$temperature
+}

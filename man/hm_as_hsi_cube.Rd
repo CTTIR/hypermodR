@@ -21,3 +21,19 @@ An hsi_cube with explicit native band sorting map in metadata.
 \description{
 Materialise one frame through hyperspectR
 }
+\examples{
+image <- hm_dataset(
+  array(seq_len(60) / 60, c(3, 5, 4)),
+  data.frame(observation_id = "o1", image_id = "i1", acquisition_id = "a1"),
+  data.frame(wavelength = c(500, 600, 700, 800)),
+  geometry = list(origin = c(0, 0), transform = diag(3))
+)
+\donttest{
+if (requireNamespace("hyperspectR", quietly = TRUE)) {
+  cube <- hm_as_hsi_cube(image, acquisition_id = "a1")
+  print(class(cube))
+  # The round trip restores the native dataset
+  hm_as_dataset(cube)@data_kind
+}
+}
+}

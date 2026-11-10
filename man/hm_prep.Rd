@@ -26,3 +26,10 @@ Call only on the training partition. Selection, derivatives,
 resampling and PCA can change output dimensions; resampling marks the track
 as adapted.
 }
+\examples{
+spectra <- hm_spectra(hm_example())
+recipe <- hm_recipe(list(list(type = "snv"), list(type = "pca", components = 3L)))
+fitted <- hm_prep(recipe, spectra$values[1:64, ],
+                  wavelength = spectra$band_map$wavelength)
+dim(hm_bake(fitted, spectra$values[65:96, ]))
+}

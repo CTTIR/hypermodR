@@ -6,6 +6,21 @@
 #' @param registration_id Expected registration identity.
 #' @param mask Optional logical y,x validity mask; NA remains unknown.
 #' @return HMDataset; no device calibration is inferred.
+#' @examples
+#' # A list with the structure returned by tivis.r::tivis_measurement()
+#' measurement <- list(
+#'   cube = array(runif(30), c(2, 5, 3)), wavelengths = NULL,
+#'   metadata = list(), references = character(),
+#'   timestamp = as.POSIXct("2020-01-01", tz = "UTC"),
+#'   path = "synthetic_SpecCube.dat"
+#' )
+#' data <- hm_from_tivis(measurement, hm_tivita_profile(c(500, 600, 700)))
+#' data@bands
+#'
+#' if (requireNamespace("tivis.r", quietly = TRUE)) {
+#'   example <- tivis.r::tivis_measurement(tivis.r::tivis_example_file())
+#'   dim(hm_from_tivis(example, hm_tivita_profile())@sources[[1]])
+#' }
 #' @export
 hm_from_tivis <- function(
   x, profile, observations = .hm_image_observations(), assets = data.frame(),

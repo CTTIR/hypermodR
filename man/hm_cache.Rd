@@ -12,3 +12,9 @@ A list with get and set functions; get returns an independent copy.
 \description{
 Create independent in-memory cached values
 }
+\examples{
+cache <- hm_cache()
+key <- hm_cache_key(hm_example(), list(recipe = "scale"))
+cache$set(key, 1:3)
+cache$get(key)
+}

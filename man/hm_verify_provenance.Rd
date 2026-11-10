@@ -23,3 +23,10 @@ Verify source identities against a provenance receipt
 Rehashes the recorded file paths and supplied objects. Does not
 compare current R/platform metadata or establish source truth.
 }
+\examples{
+settings <- list(recipe = "scale", seed = 1L)
+receipt <- hm_provenance(list(settings = settings))
+hm_verify_provenance(receipt, list(settings = settings))
+# A changed object fails verification
+try(hm_verify_provenance(receipt, list(settings = list(recipe = "snv"))))
+}

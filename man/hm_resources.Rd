@@ -48,3 +48,8 @@ remains CPU-only. GPU memory is not limited, and admitting a device does
 not establish live GPU or scientific qualification. This is not a security
 sandbox.
 }
+\examples{
+resources <- hm_resources(cpus = 1, threads = 1, memory_mb = 2048,
+                          timeout = 30)
+resources$memory_mb
+}

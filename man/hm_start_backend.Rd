@@ -37,3 +37,17 @@ limited by this launcher; CPU memory is per-process virtual address space,
 not aggregate RSS. Network remains a policy declaration. Admission is not
 live GPU qualification. Handles are valid only in their owning R session.
 }
+\examples{
+# Not run: needs Linux with taskset, prlimit and timeout and an installed
+# runtime (see hm_install_backend()) whose worker implements the hypermodR
+# worker protocol.
+\dontrun{
+# 'profile' is an exact runtime manifest as described in hm_backend_plan()
+plan <- hm_backend_plan(profile$model_id, profile = profile)
+backend <- hm_install_backend(plan, accept_terms = TRUE,
+                              acknowledge_custom_code = TRUE)
+handle <- hm_start_backend(backend, resources = hm_resources())
+hm_backend_status(handle)
+hm_stop_backend(handle)
+}
+}

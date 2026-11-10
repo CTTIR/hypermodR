@@ -104,10 +104,14 @@ exportClasses(HMSequence)
 exportMethods(hm_read_block)
 exportMethods(hm_spectra)
 import(methods)
-importFrom(generics,augment)
-importFrom(generics,glance)
-importFrom(generics,tidy)
+importFrom(generics,
+  augment,
+  glance,
+  tidy
+)
 importFrom(stats,setNames)
-importFrom(utils,capture.output)
-importFrom(utils,head)
-importFrom(utils,tail)
+importFrom(utils,
+  capture.output,
+  head,
+  tail
+)

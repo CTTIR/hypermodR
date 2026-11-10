@@ -7,6 +7,14 @@
 #' @param port Optional listening port.
 #' @param ... Arguments passed to shiny::runApp.
 #' @return A Shiny application, invisibly when launched.
+#' @examples
+#' if (requireNamespace("shiny", quietly = TRUE)) {
+#'   app <- hm_app(launch = FALSE)
+#'   class(app)
+#' }
+#' if (interactive()) {
+#'   hm_app()
+#' }
 #' @export
 hm_app <- function(launch = TRUE, host = "127.0.0.1", port = NULL, ...) {
   if (!is.logical(launch) ||

@@ -3,6 +3,12 @@
 #' @param max_frames Maximum frames before explicit reset.
 #' @return Mutable stream handle, with per-frame outputs and latency
 #' diagnostics.
+#' @examples
+#' stream <- hm_stream(function(frame, time) mean(frame), max_frames = 10)
+#' out <- hm_stream_push(stream, list(matrix(1, 2, 3), matrix(2, 3, 2)),
+#'                       timestamps = c(0, 0.5), sequence_id = "recording-1")
+#' unlist(out)
+#' hm_stream_cancel(stream)
 #' @export
 hm_stream <- function(predict_frame, max_frames = 256L) {
   if (!is.function(predict_frame) ||
@@ -28,6 +34,13 @@ hm_stream <- function(predict_frame, max_frames = 256L) {
 #' @param timestamps Strictly increasing finite elapsed seconds.
 #' @param sequence_id Explicit recording identity.
 #' @return Outputs in source order, with timestamp and latency metadata.
+#' @examples
+#' stream <- hm_stream(function(frame, time) sum(frame) + time, max_frames = 3)
+#' frames <- list(matrix(1, 2, 3), matrix(2, 3, 2), matrix(3, 1, 4))
+#' out <- hm_stream_push(stream, frames, c(0, 0.2, 0.8), "recording-a")
+#' unlist(out)
+#' attr(out, "timestamps")
+#' hm_stream_cancel(stream)
 #' @export
 hm_stream_push <- function(stream, frames, timestamps, sequence_id) {
   if (!inherits(stream, "hm_stream") ||
@@ -80,6 +93,12 @@ hm_stream_push <- function(stream, frames, timestamps, sequence_id) {
 #' Cancel a frame stream
 #' @param stream An hm_stream.
 #' @return The cancelled stream invisibly.
+#' @examples
+#' stream <- hm_stream(function(frame, time) mean(frame))
+#' hm_stream_push(stream, list(matrix(1, 2, 2)), 0, "recording-1")
+#' hm_stream_cancel(stream)
+#' # A cancelled stream accepts no further frames
+#' try(hm_stream_push(stream, list(matrix(1, 2, 2)), 1, "recording-1"))
 #' @export
 hm_stream_cancel <- function(stream) {
   if (!inherits(stream, "hm_stream")) {

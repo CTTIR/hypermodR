@@ -23,3 +23,10 @@ Assemble a modelling workflow
 Assembly validates compatible declarations; fitting and backend
 admission occur separately.
 }
+\examples{
+task <- hm_task("response", "regression", "spectrum", "subject_id")
+workflow <- hm_workflow(
+  task, hm_recipe(list(list(type = "scale"))), hm_model_spec("lm", task)
+)
+workflow$model$model_id
+}

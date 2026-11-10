@@ -24,3 +24,10 @@ Validated spectral data container
 
 \item{\code{assets}}{Distinct asset-role metadata.}
 }}
+
+\examples{
+methods::showClass("HMDataset")
+data <- hm_example()
+methods::is(data, "HMDataset")
+data@data_kind
+}

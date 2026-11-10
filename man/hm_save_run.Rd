@@ -23,3 +23,9 @@ receipt, and atomically finalizes COMPLETE. Existing paths are rejected. A
 failed write leaves a failed receipt for inspection; completion markers are
 removed.
 }
+\examples{
+run <- tempfile("hypermodR-run-")
+hm_save_run(list(note = "example", values = 1:3), run)
+list.files(run)
+unlink(run, recursive = TRUE)
+}

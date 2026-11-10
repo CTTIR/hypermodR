@@ -17,3 +17,10 @@ SHA-256 identity. Lazy sources include declared content hashes.
 \description{
 Compute a complete cache identity
 }
+\examples{
+data <- hm_example()
+key <- hm_cache_key(data, list(recipe = "scale", model = "lm"))
+key
+# Any change of state yields a different identity
+identical(key, hm_cache_key(data, list(recipe = "snv", model = "lm")))
+}

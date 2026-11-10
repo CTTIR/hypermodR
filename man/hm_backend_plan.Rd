@@ -31,3 +31,33 @@ cache, artifact-byte budget, actions and immutable digest.
 \description{
 Plan an isolated runtime installation
 }
+\examples{
+dir <- tempfile("hm-backend-")
+dir.create(dir)
+worker <- file.path(dir, "worker")
+writeLines("#!/bin/sh\nexit 0", worker)
+terms <- "Local example artifact only; unrestricted example use."
+profile <- list(
+  profile_id = "example-cpu-v1", model_id = "example-identity",
+  source_revision = "example-source-1", runtime_version = "example-runtime-1",
+  custom_code = TRUE, custom_code_reviewed = TRUE,
+  os = unname(Sys.info()["sysname"]), arch = unname(Sys.info()["machine"]),
+  device = "cpu", qualification = "test_only",
+  artifacts = list(list(
+    path = "worker", url = paste0("file://", worker),
+    bytes = unname(file.info(worker)$size),
+    sha256 = digest::digest(file = worker, algo = "sha256")
+  )),
+  terms = list(list(
+    reviewed = TRUE, text = terms,
+    sha256 = digest::digest(terms, algo = "sha256", serialize = FALSE)
+  )),
+  command = "worker", args = character()
+)
+# Keep the runtime cache in the temporary directory
+plan <- hm_backend_plan("example-identity", profile = profile,
+                        cache = file.path(dir, "cache"))
+class(plan)
+plan$digest
+unlink(dir, recursive = TRUE)
+}

@@ -24,3 +24,11 @@ An immutable-by-identity \code{hm_spectral_library} list.
 Values must be supplied from measured or otherwise justified sources. This
 constructor records a declaration; it cannot verify the physical reference.
 }
+\examples{
+lib <- hm_spectral_library(
+  cbind(component_a = c(1.2, 0.8, 0.3), component_b = c(0.9, 1.1, 0.7)),
+  wavelength = c(450, 550, 750), units = "arbitrary",
+  source = "synthetic illustration", license = "CC0"
+)
+lib$wavelength
+}

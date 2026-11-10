@@ -2,6 +2,17 @@
 #' @param project annot_project.
 #' @param label_map Named positive integer class codes; zero is background.
 #' @return Serializable exact manifest binding and label map.
+#' @examples
+#' \donttest{
+#' if (requireNamespace("hyperannotatR", quietly = TRUE) &&
+#'     requireNamespace("tiff", quietly = TRUE)) {
+#'   project <- hyperannotatR::at_example_project()
+#'   label_map <- c(tumour = 1L, necrosis = 2L, stroma = 3L)
+#'   contract <- hm_annotation_contract(project, label_map)
+#'   print(contract$dimensions)
+#'   contract$annotation_revision
+#' }
+#' }
 #' @export
 hm_annotation_contract <- function(project, label_map) {
   .hm_require("hyperannotatR")
@@ -45,6 +56,23 @@ hm_annotation_contract <- function(project, label_map) {
 #' at_training_export.
 #' @param ... Additional public export arguments.
 #' @return Companion export including integrity checks.
+#' @examples
+#' \donttest{
+#' if (requireNamespace("hyperannotatR", quietly = TRUE) &&
+#'     requireNamespace("tiff", quietly = TRUE)) {
+#'   project <- hyperannotatR::at_example_project()
+#'   label_map <- c(tumour = 1L, necrosis = 2L, stroma = 3L)
+#'   contract <- hm_annotation_contract(project, label_map)
+#'   destination <- tempfile("hm-annotations-")
+#'   groups <- data.frame(entry_id = "entry-0001", subject_id = "subject",
+#'                        procedure_id = "procedure")
+#'   exported <- hm_export_annotations(project, destination, groups,
+#'                                     tile_size = 512L, fractions = c(train = 1),
+#'                                     label_map = label_map)
+#'   print(exported$checks)
+#'   unlink(destination, recursive = TRUE)
+#' }
+#' }
 #' @export
 hm_export_annotations <- function(x, destination, groups, ...) {
   .hm_require("hyperannotatR")

@@ -23,3 +23,21 @@ Companion staged patch with unknown mask receipt; never committed.
 \description{
 Stage a bound integer prediction for human review
 }
+\examples{
+\donttest{
+if (requireNamespace("hyperannotatR", quietly = TRUE) &&
+    requireNamespace("tiff", quietly = TRUE)) {
+  project <- hyperannotatR::at_example_project()
+  label_map <- c(tumour = 1L, necrosis = 2L, stroma = 3L)
+  contract <- hm_annotation_contract(project, label_map)
+  mask <- matrix(0L, contract$dimensions[2], contract$dimensions[1])
+  mask[1:3, 2:5] <- 1L
+  mask[10, 11] <- NA_integer_
+  patch <- hm_stage_annotations(
+    mask, project, label_map, contract,
+    list(name = "example-model", version = "1", sha256 = strrep("a", 64))
+  )
+  attr(patch, "hypermodR_receipt")$unknown_count
+}
+}
+}

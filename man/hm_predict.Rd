@@ -39,3 +39,20 @@ in fitted recipe coordinates, recorded as provenance$output_space. Evaluate
 it against a target baked with that recipe and the matching target_space
 reference attribute, never against untransformed spectra.
 }
+\examples{
+data <- hm_example(seed = 42L)
+task <- hm_task("response", "regression", "spectrum", "subject_id")
+fold <- hm_split(data, task, folds = 3L, seed = 7L)$folds[[1]]
+workflow <- hm_workflow(
+  task, hm_recipe(list(list(type = "scale"))), hm_model_spec("lm", task)
+)
+fit <- hm_fit(workflow, data, fold)
+heldout <- hm_spectra(data, list(
+  observation_id = data@observations$observation_id[fold$test]
+))
+prediction <- hm_predict(fit, heldout)
+prediction
+head(prediction$values)
+# The predict() method returns the same object
+identical(predict(fit, heldout), prediction)
+}

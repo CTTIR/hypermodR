@@ -9,6 +9,18 @@
 #' @return A declared `hm_physics_kernel`. Supplying a function does not
 #' validate
 #'   its physiological assumptions; independent standards remain necessary.
+#' @examples
+#' kernel <- hm_physics_kernel(
+#'   forward = function(concentration, p) concentration * p$scale,
+#'   inverse = function(spectra, p) as.vector(spectra) / p$scale,
+#'   parameters = list(scale = 2), source = "synthetic linear law",
+#'   units = c(input = "signal", output = "amount")
+#' )
+#' class(kernel)
+#' task <- hm_task("response", "regression", "spectrum", "subject_id")
+#' spec <- hm_model_spec("physics_hybrid", task,
+#'                       list(kernel = kernel, residual_model = "lm"))
+#' spec$model_id
 #' @export
 hm_physics_kernel <- function(
   forward, inverse, parameters = list(),

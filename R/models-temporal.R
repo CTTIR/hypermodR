@@ -4,6 +4,11 @@
 #' @param task An hm_task.
 #' @param parameters Explicit sequence and training declarations.
 #' @return An hm_model_spec with a separate package reference identity.
+#' @examples
+#' task <- hm_task("y", "temporal", "sequence", "subject_id")
+#' spec <- hm_temporal_model("gru", task)
+#' spec$model_id
+#' spec$parameters
 #' @export
 hm_temporal_model <- function(family, task, parameters = list()) {
   family <- match.arg(

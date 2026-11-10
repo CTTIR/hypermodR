@@ -38,6 +38,21 @@
 #' @details Resamples complete units with replacement. Fitting and
 #' model-selection uncertainty are excluded. If any draw lacks valid metrics,
 #' intervals remain unavailable and status reports invalid draws.
+#' @examples
+#' data <- hm_example(seed = 42L)
+#' task <- hm_task("response", "regression", "spectrum", "subject_id")
+#' fold <- hm_split(data, task, folds = 3L, seed = 7L)$folds[[1]]
+#' workflow <- hm_workflow(
+#'   task, hm_recipe(list(list(type = "scale"))), hm_model_spec("lm", task)
+#' )
+#' fit <- hm_fit(workflow, data, fold)
+#' heldout <- hm_spectra(data, list(
+#'   observation_id = data@observations$observation_id[fold$test]
+#' ))
+#' evaluation <- hm_evaluate(hm_predict(fit, heldout), heldout$observations)
+#' uncertainty <- hm_bootstrap(evaluation, unit = "subject_id", draws = 50L,
+#'                             seed = 9L)
+#' uncertainty$interval
 #' @export
 hm_bootstrap <- function(
   evaluation, unit, draws = 200L, seed = 1L, level = 0.95, comparison = NULL

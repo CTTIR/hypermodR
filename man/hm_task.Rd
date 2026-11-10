@@ -36,3 +36,9 @@ Segmentation requires pixel/image units; temporal tasks require
 sequence/subject units. Declaring a task does not establish an executable
 backend for every task/model combination.
 }
+\examples{
+regression <- hm_task("response", "regression", "spectrum", "subject_id")
+str(regression)
+classification <- hm_task("class", "classification", "spectrum", "subject_id")
+classification$type
+}

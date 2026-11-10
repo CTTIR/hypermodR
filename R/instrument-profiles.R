@@ -1,5 +1,7 @@
 #' Inspect admitted instrument capabilities
 #' @return A data frame. Synthetic profiles are not device qualification.
+#' @examples
+#' hm_instrument_profiles()
 #' @export
 hm_instrument_profiles <- function() {
   data.frame(
@@ -23,6 +25,12 @@ hm_instrument_profiles <- function() {
 #' @param software Export software declaration.
 #' @param evidence Evidence identifier.
 #' @return Serializable profile list.
+#' @examples
+#' profile <- hm_tivita_profile(c(500, 600, 700), device = "declared device",
+#'                              software = "export-v1", evidence = "fixture-1")
+#' profile$qualification
+#' # Unknown wavelengths stay unknown
+#' is.null(hm_tivita_profile()$wavelengths)
 #' @export
 hm_tivita_profile <- function(
   wavelengths = NULL, device = "unknown", software = "unknown",

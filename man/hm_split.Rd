@@ -52,3 +52,15 @@ times are not repaired or reinterpreted. Temporal results retain the selected
 time-column identity and its observations; fitting rejects a stale clock or
 altered partition. Regenerate the temporal split after changing timestamps.
 }
+\examples{
+data <- hm_example()
+task <- hm_task("response", "regression", "spectrum", "subject_id")
+splits <- hm_split(data, task, folds = 3L, inner_folds = 2L, seed = 7L)
+fold <- splits$folds[[1]]
+lengths(fold[c("train", "test")])
+# No subject contributes to both partitions
+intersect(
+  data@observations$subject_id[fold$train],
+  data@observations$subject_id[fold$test]
+)
+}

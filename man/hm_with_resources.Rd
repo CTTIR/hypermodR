@@ -26,3 +26,14 @@ hm_resources. Nested evaluation inside an already bounded child must reuse
 the identical outer budget. Unsupported platforms/devices fail admission
 rather than executing without limits.
 }
+\examples{
+resources <- hm_resources()
+# Bounded children need Linux with taskset, prlimit and timeout; the
+# example is meant for interactive use.
+if (interactive() && identical(Sys.info()[["sysname"]], "Linux") &&
+    all(nzchar(Sys.which(c("taskset", "prlimit", "timeout")))) &&
+    requireNamespace("processx", quietly = TRUE)) {
+  value <- 21
+  hm_with_resources(resources, value * 2)
+}
+}

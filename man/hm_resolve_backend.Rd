@@ -33,3 +33,15 @@ This explicit network operation resolves metadata only. It does not download
 model weights or install packages. Published terms and inherited distribution
 notices must be reviewed before converting the result into an install plan.
 }
+\examples{
+# Not run: queries package indexes over the network and needs an explicit
+# Python 3.11/3.12 interpreter and the uv resolver on Linux x86_64.
+\dontrun{
+resolution <- hm_resolve_backend(
+  "reference_cpu", "reference:cnn1d",
+  python = Sys.which("python3"), uv = Sys.which("uv"),
+  directory = tempfile("resolution-")
+)
+resolution$profile$artifacts
+}
+}

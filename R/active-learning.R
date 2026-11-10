@@ -16,6 +16,34 @@
 #' reference revision, run hash, annotation owner and labels_acquired=FALSE.
 #' @details Only training-access unlabelled rows may enter the pool. This
 #' creates a review queue; it does not acquire labels or modify annotations.
+#' @examples
+#' task <- hm_task("y", "classification", "spectrum", "subject_id")
+#' reference <- data.frame(
+#'   observation_id = paste0("o", 1:6),
+#'   y = c("a", "a", "b", "b", "a", "b"),
+#'   subject_id = c("s1", "s1", "s1", "s2", "s2", "s2"),
+#'   acquisition_id = paste0("a", 1:6)
+#' )
+#' probabilities <- cbind(
+#'   a = c(0.8, 0.3, 0.7, 0.1, 0.6, 0.4),
+#'   b = c(0.2, 0.7, 0.3, 0.9, 0.4, 0.6)
+#' )
+#' prediction <- hm_prediction(
+#'   c("a", "b", "a", "b", "a", "b"), task, reference$observation_id,
+#'   probabilities, class_map = c("a", "b")
+#' )
+#' pool <- reference
+#' pool$y <- NA_character_
+#' heldout <- data.frame(observation_id = "o7", y = "a", subject_id = "s3",
+#'                       acquisition_id = "a7")
+#' data <- hm_dataset(matrix(seq_len(14), 7, 2), rbind(reference, heldout),
+#'                    data.frame(wavelength = c(500, 600)))
+#' queue <- hm_active_learning(
+#'   prediction, pool, training_ids = reference$observation_id,
+#'   heldout_ids = "o7", budget = 2, seed = 1, reference_revision = "rev-1",
+#'   data = data, split = list(train = 1:6, test = 7L)
+#' )
+#' queue$queue
 #' @export
 hm_active_learning <- function(
   predictions, pool, training_ids, heldout_ids, budget = 1L, seed = 1L,

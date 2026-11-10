@@ -2,6 +2,14 @@
 #' @param references Data frame with observation_id, endpoint and value.
 #' Missing values remain missing.
 #' @return Validated declaration, without claiming source truth.
+#' @examples
+#' references <- data.frame(
+#'   observation_id = c("a", "a", "b"),
+#'   endpoint = c("burn_grade", "healing", "burn_grade"),
+#'   value = c("II", NA, "III")
+#' )
+#' contract <- hm_endpoint_contract(references)
+#' contract$source_truth
 #' @export
 hm_endpoint_contract <- function(references) {
   allowed <- c("burn_grade", "healing", "injury", "anatomy")

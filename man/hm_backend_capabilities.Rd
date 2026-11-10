@@ -13,3 +13,8 @@ explicit unestablished GPU qualification.
 \description{
 Inspect local runtime capabilities without starting services
 }
+\examples{
+capabilities <- hm_backend_capabilities()
+capabilities$os
+capabilities$gpu_qualification
+}

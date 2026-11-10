@@ -21,3 +21,11 @@ Outputs in source order, with timestamp and latency metadata.
 \description{
 Push ordered frames into a stream
 }
+\examples{
+stream <- hm_stream(function(frame, time) sum(frame) + time, max_frames = 3)
+frames <- list(matrix(1, 2, 3), matrix(2, 3, 2), matrix(3, 1, 4))
+out <- hm_stream_push(stream, frames, c(0, 0.2, 0.8), "recording-a")
+unlist(out)
+attr(out, "timestamps")
+hm_stream_cancel(stream)
+}

@@ -1,5 +1,8 @@
 #' Create an isolated workbench state
 #' @return An independent session state environment.
+#' @examples
+#' state <- hm_app_state()
+#' sort(ls(state))
 #' @export
 hm_app_state <- function() {
   state <- new.env(parent = emptyenv())
@@ -81,6 +84,11 @@ hm_app_state <- function() {
 #' Generate an explicitly synthetic grouped spectral example
 #' @param seed Nonnegative integer seed.
 #' @return An HMDataset with synthetic labels, subject groups and eight bands.
+#' @examples
+#' data <- hm_example(seed = 42L)
+#' dim(data@sources[[1]])
+#' head(data@observations)
+#' data@bands$wavelength
 #' @export
 hm_example <- function(seed = 42L) {
   .hm_seed(

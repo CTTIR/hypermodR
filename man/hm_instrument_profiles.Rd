@@ -12,3 +12,6 @@ A data frame. Synthetic profiles are not device qualification.
 \description{
 Inspect admitted instrument capabilities
 }
+\examples{
+hm_instrument_profiles()
+}

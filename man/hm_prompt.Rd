@@ -25,3 +25,12 @@ optional images, auxiliary_only flag and content digest.
 \description{
 Declare auxiliary language-model prompt provenance
 }
+\examples{
+cube <- array(seq_len(24), c(2, 3, 4))
+rendering <- hm_render_hsi(cube, c(450, 500, 550, 600), bands = c(1, 2, 4),
+                           limits = c(0, 24), source_id = "synthetic")
+prompt <- hm_prompt("Describe the rendering", origin = "prespecified",
+                    rendering = rendering$manifest)
+prompt$auxiliary_only
+prompt$digest
+}

@@ -36,3 +36,19 @@ device/checkpoint admission.
 \description{
 Admit reviewed resolved metadata as an exact install plan
 }
+\examples{
+# Not run: needs a network resolution from hm_resolve_backend() and a human
+# review of every artifact's terms.
+\dontrun{
+resolution <- hm_resolve_backend(
+  "reference_cpu", "reference:cnn1d",
+  python = Sys.which("python3"), directory = tempfile("resolution-")
+)
+reviewed <- lapply(resolution$profile$terms, function(entry) {
+  entry$reviewed <- TRUE
+  entry
+})
+plan <- hm_admit_backend(resolution, reviewed, cache = tempfile("cache-"))
+plan$digest
+}
+}

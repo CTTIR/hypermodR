@@ -27,3 +27,23 @@ Confidence is the maximum class probability. Empty bins or zero
 retained coverage have unavailable accuracy/risk. Confidence does not
 constitute a validated OOD detector.
 }
+\examples{
+task <- hm_task("y", "classification", "spectrum", "subject_id")
+reference <- data.frame(
+  observation_id = paste0("o", 1:6),
+  y = c("a", "a", "b", "b", "a", "b"),
+  subject_id = c("s1", "s1", "s1", "s2", "s2", "s2"),
+  acquisition_id = paste0("a", 1:6)
+)
+probabilities <- cbind(
+  a = c(0.8, 0.3, 0.7, 0.1, 0.6, 0.4),
+  b = c(0.2, 0.7, 0.3, 0.9, 0.4, 0.6)
+)
+prediction <- hm_prediction(
+  c("a", "b", "a", "b", "a", "b"), task, reference$observation_id,
+  probabilities, class_map = c("a", "b")
+)
+reliability <- hm_reliability(prediction, reference, breaks = c(0, 0.5, 0.75, 1))
+reliability$bins
+reliability$coverage_risk
+}

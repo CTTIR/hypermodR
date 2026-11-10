@@ -26,3 +26,10 @@ An \code{hm_rendering} list with a height-by-width-by-3 image scaled to
 \description{
 Render a declared three-band auxiliary image
 }
+\examples{
+cube <- array(seq_len(24), c(2, 3, 4))
+rendering <- hm_render_hsi(cube, c(450, 500, 550, 600), bands = c(1, 2, 4),
+                           limits = c(0, 24), source_id = "synthetic")
+dim(rendering$image)
+rendering$manifest$discarded_bands
+}

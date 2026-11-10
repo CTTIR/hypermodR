@@ -26,3 +26,22 @@ An HMDataset.
 \description{
 Construct a native spectral dataset
 }
+\examples{
+# Native spectra: one row per observation, one column per band
+spectra <- hm_dataset(
+  matrix(runif(12), 3, 4),
+  data.frame(observation_id = c("o1", "o2", "o3"),
+             subject_id = c("s1", "s1", "s2")),
+  data.frame(wavelength = c(500, 600, 700, 800))
+)
+spectra@data_kind
+
+# A y, x, wavelength image with explicit geometry
+image <- hm_dataset(
+  array(seq_len(60), c(3, 5, 4)),
+  data.frame(observation_id = "o1", image_id = "i1", acquisition_id = "a1"),
+  data.frame(wavelength = c(500, 600, 700, 800)),
+  geometry = list(origin = c(0, 0), transform = diag(3))
+)
+image@data_kind
+}

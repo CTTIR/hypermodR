@@ -7,6 +7,14 @@
 #' @param timestamps Frame timestamps retained in order.
 #' @return An `hm_prompt` list retaining text, origin, rendering, timestamps,
 #' optional images, auxiliary_only flag and content digest.
+#' @examples
+#' cube <- array(seq_len(24), c(2, 3, 4))
+#' rendering <- hm_render_hsi(cube, c(450, 500, 550, 600), bands = c(1, 2, 4),
+#'                            limits = c(0, 24), source_id = "synthetic")
+#' prompt <- hm_prompt("Describe the rendering", origin = "prespecified",
+#'                     rendering = rendering$manifest)
+#' prompt$auxiliary_only
+#' prompt$digest
 #' @export
 hm_prompt <- function(
   text, origin, rendering = NULL, timestamps = NULL,

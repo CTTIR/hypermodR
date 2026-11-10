@@ -24,3 +24,27 @@ Apply a frozen calibrator without learning from new outcomes
 Does not learn from new outcomes. Abstention marks low confidence
 without deleting rows.
 }
+\examples{
+data <- hm_example(seed = 1L)
+observations <- data@observations
+subject <- as.integer(sub("synthetic_subject_", "", observations$subject_id))
+outer <- list(train = which(subject <= 9), test = which(subject > 9))
+inner <- list(train = which(subject <= 6), test = which(subject \%in\% 7:9))
+task <- hm_task("class", "classification", "spectrum", "subject_id")
+workflow <- hm_workflow(task, hm_recipe(),
+                        hm_model_spec("knn", task, list(k = 5)))
+fit <- hm_fit(workflow, data, inner)
+calibration_set <- hm_spectra(data, list(
+  observation_id = observations$observation_id[inner$test]
+))
+calibration <- hm_calibrate(
+  hm_predict(fit, calibration_set), calibration_set$observations,
+  split = inner, data = data, abstention = 0.7, fit = fit,
+  outer_split = outer
+)
+test_set <- hm_spectra(data, list(
+  observation_id = observations$observation_id[outer$test]
+))
+calibrated <- hm_apply_calibration(calibration, hm_predict(fit, test_set))
+table(calibrated$abstain)
+}

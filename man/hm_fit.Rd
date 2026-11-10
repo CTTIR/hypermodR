@@ -73,3 +73,19 @@ aliased coefficients and incompatible dimensions raise typed errors.
 Coefficients describe a fitted coordinate system and do not establish
 biological causality.
 }
+\examples{
+data <- hm_example(seed = 42L)
+task <- hm_task("response", "regression", "spectrum", "subject_id")
+fold <- hm_split(data, task, folds = 3L, seed = 7L)$folds[[1]]
+workflow <- hm_workflow(
+  task, hm_recipe(list(list(type = "scale"))), hm_model_spec("lm", task)
+)
+fit <- hm_fit(workflow, data, fold)
+heldout <- hm_spectra(data, list(
+  observation_id = data@observations$observation_id[fold$test]
+))
+fit
+summary(fit)
+head(coef(fit))
+head(coef(fit, scale = "original"))
+}

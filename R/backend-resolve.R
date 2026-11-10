@@ -11,6 +11,17 @@
 #' @param directory External persistent resolution directory.
 #' @return An `hm_backend_resolution` containing exact artifact profile,
 #' package metadata, external directory, hard gates and pending qualification.
+#' @examples
+#' # Not run: queries package indexes over the network and needs an explicit
+#' # Python 3.11/3.12 interpreter and the uv resolver on Linux x86_64.
+#' \dontrun{
+#' resolution <- hm_resolve_backend(
+#'   "reference_cpu", "reference:cnn1d",
+#'   python = Sys.which("python3"), uv = Sys.which("uv"),
+#'   directory = tempfile("resolution-")
+#' )
+#' resolution$profile$artifacts
+#' }
 #' @export
 hm_resolve_backend <- function(
   backend = c("reference_cpu", "vllm_linux_cuda"),
@@ -171,6 +182,21 @@ hm_resolve_backend <- function(
 #' @param port Unprivileged loopback server port.
 #' @return An `hm_backend_plan` bound to reviewed artifact terms and supplied
 #' device/checkpoint admission.
+#' @examples
+#' # Not run: needs a network resolution from hm_resolve_backend() and a human
+#' # review of every artifact's terms.
+#' \dontrun{
+#' resolution <- hm_resolve_backend(
+#'   "reference_cpu", "reference:cnn1d",
+#'   python = Sys.which("python3"), directory = tempfile("resolution-")
+#' )
+#' reviewed <- lapply(resolution$profile$terms, function(entry) {
+#'   entry$reviewed <- TRUE
+#'   entry
+#' })
+#' plan <- hm_admit_backend(resolution, reviewed, cache = tempfile("cache-"))
+#' plan$digest
+#' }
 #' @export
 hm_admit_backend <- function(
   resolution, reviewed_terms, cache = tools::R_user_dir("hypermodR", "cache"),
@@ -241,6 +267,15 @@ hm_admit_backend <- function(
 #' @return List containing repository/revision, architecture, local checkpoint
 #' directory name, artifact hashes/sizes/URLs, unreviewed terms and pending
 #' qualification.
+#' @examples
+#' # Not run: queries the Hugging Face Hub over the network.
+#' \dontrun{
+#' checkpoint <- hm_resolve_checkpoint(
+#'   "owner/model", revision = strrep("0", 40),
+#'   directory = tempfile("checkpoint-")
+#' )
+#' checkpoint$artifacts
+#' }
 #' @export
 hm_resolve_checkpoint <- function(
   repository, revision, directory = tempfile("checkpoint-",

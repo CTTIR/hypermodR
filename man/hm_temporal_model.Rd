@@ -20,3 +20,9 @@ An hm_model_spec with a separate package reference identity.
 \description{
 Declare a causal temporal reference
 }
+\examples{
+task <- hm_task("y", "temporal", "sequence", "subject_id")
+spec <- hm_temporal_model("gru", task)
+spec$model_id
+spec$parameters
+}

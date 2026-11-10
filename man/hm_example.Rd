@@ -15,3 +15,9 @@ An HMDataset with synthetic labels, subject groups and eight bands.
 \description{
 Generate an explicitly synthetic grouped spectral example
 }
+\examples{
+data <- hm_example(seed = 42L)
+dim(data@sources[[1]])
+head(data@observations)
+data@bands$wavelength
+}

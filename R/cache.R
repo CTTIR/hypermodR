@@ -2,6 +2,12 @@
 #' @param data Data, including all source values and band metadata.
 #' @param state Reader, calibration, model and preprocessing state.
 #' @return SHA-256 identity. Lazy sources include declared content hashes.
+#' @examples
+#' data <- hm_example()
+#' key <- hm_cache_key(data, list(recipe = "scale", model = "lm"))
+#' key
+#' # Any change of state yields a different identity
+#' identical(key, hm_cache_key(data, list(recipe = "snv", model = "lm")))
 #' @export
 hm_cache_key <- function(data, state = list()) {
   if (!.hm_plain(state)) {
@@ -28,6 +34,11 @@ hm_cache_key <- function(data, state = list()) {
 }
 #' Create independent in-memory cached values
 #' @return A list with get and set functions; get returns an independent copy.
+#' @examples
+#' cache <- hm_cache()
+#' key <- hm_cache_key(hm_example(), list(recipe = "scale"))
+#' cache$set(key, 1:3)
+#' cache$get(key)
 #' @export
 hm_cache <- function() {
   store <- new.env(parent = emptyenv())

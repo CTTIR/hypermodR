@@ -12,3 +12,7 @@ An independent session state environment.
 \description{
 Create an isolated workbench state
 }
+\examples{
+state <- hm_app_state()
+sort(ls(state))
+}

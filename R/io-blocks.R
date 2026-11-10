@@ -69,6 +69,13 @@
 #' @details Only native spectral matrices are admitted; images require explicit
 #'   spatial reduction. Bands are unique positive 1-based indices in requested
 #' order.
+#' @examples
+#' data <- hm_example()
+#' selected <- hm_spectra(data, list(
+#'   observation_id = c("spectrum_1", "spectrum_9"), bands = c(1L, 8L)
+#' ))
+#' selected$values
+#' selected$band_map
 #' @export
 methods::setGeneric(
   "hm_spectra", function(x, selection = list()) {
@@ -130,6 +137,16 @@ methods::setMethod(
 #' planned
 #'   output allocation, not total resident memory; RDS sources have a separate
 #'   bounded deserialization admission check.
+#' @examples
+#' image <- hm_dataset(
+#'   array(seq_len(60), c(3, 5, 4)),
+#'   data.frame(observation_id = "o1", image_id = "i1", acquisition_id = "a1"),
+#'   data.frame(wavelength = c(500, 600, 700, 800)),
+#'   geometry = list(origin = c(0, 0), transform = diag(3))
+#' )
+#' block <- hm_read_block(image, list(rows = 1:2, cols = 2:3, bands = c(1, 4)))
+#' dim(block$values)
+#' dim(block$valid)
 #' @export
 methods::setGeneric(
   "hm_read_block", function(x, selection = list()) {

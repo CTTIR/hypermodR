@@ -25,6 +25,12 @@
 #' @param coordinates Two-column x,y matrix of source indices (1-based).
 #' @param inverse Map world coordinates back to source indices.
 #' @return A two-column numeric matrix.
+#' @examples
+#' geometry <- list(origin = c(10, 20), transform = diag(c(0.5, 0.5, 1)))
+#' pixels <- cbind(x = c(1, 2), y = c(1, 3))
+#' world <- hm_coordinates(geometry, pixels)
+#' world
+#' hm_coordinates(geometry, world, inverse = TRUE)
 #' @export
 hm_coordinates <- function(geometry, coordinates, inverse = FALSE) {
   .hm_check_geometry(geometry)

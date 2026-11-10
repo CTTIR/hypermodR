@@ -226,6 +226,20 @@
 #'   weight_terms_admitted flags. Extraction is not upstream downstream-task
 #' training
 #'   or scientific qualification; other named architectures remain blocked.
+#' @examples
+#' # Not run: needs an installed and running htc, hyperfree or hypersigma worker
+#' # (see hm_start_backend()) and separately admitted source code and weights.
+#' \dontrun{
+#' cube <- array(runif(2 * 3 * 4), c(2, 3, 4))
+#' features <- hm_extract_native(
+#'   "htc", cube, wavelengths = c(450, 500, 600, 750),
+#'   mask = matrix(TRUE, 2, 3),
+#'   admission = list(execute_source_acknowledged = TRUE,
+#'                    code_terms_admitted = TRUE, weight_terms_admitted = TRUE),
+#'   control = list(backend_handle = handle)
+#' )
+#' dim(features$features)
+#' }
 #' @export
 hm_extract_native <- function(
   model_id, cube, wavelengths, mask, admission,

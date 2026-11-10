@@ -17,3 +17,9 @@ An hm_model_spec; upstream execution remains admission-gated.
 \description{
 Declare the htc upstream candidate
 }
+\examples{
+task <- hm_task("y", "classification", "image", "subject_id")
+spec <- hm_htc(task)
+spec$model_id
+# Declaring a candidate neither installs nor executes the upstream model
+}

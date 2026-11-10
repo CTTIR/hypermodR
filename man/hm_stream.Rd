@@ -18,3 +18,10 @@ diagnostics.
 \description{
 Bounded causal frame streaming
 }
+\examples{
+stream <- hm_stream(function(frame, time) mean(frame), max_frames = 10)
+out <- hm_stream_push(stream, list(matrix(1, 2, 3), matrix(2, 3, 2)),
+                      timestamps = c(0, 0.5), sequence_id = "recording-1")
+unlist(out)
+hm_stream_cancel(stream)
+}

@@ -27,3 +27,15 @@ Explicitly pool all valid spatial pixels
 All eligible finite pixels in the selected support contribute
 equally; an empty eligible support is rejected.
 }
+\examples{
+image <- hm_dataset(
+  array(seq_len(60), c(3, 5, 4)),
+  data.frame(observation_id = "o1", image_id = "i1", acquisition_id = "a1"),
+  data.frame(wavelength = c(500, 600, 700, 800)),
+  geometry = list(origin = c(0, 0), transform = diag(3))
+)
+hm_pool(image)$values
+mask <- array(TRUE, c(3, 5, 1))
+mask[1, , 1] <- FALSE
+hm_pool(image, mask = mask)$values
+}

@@ -12,6 +12,12 @@
 #' (explicit wavelength grid within measured support), and continuum (positive
 #' upper concave envelope division). Missing values must be imputed before
 #' steps requiring finite data.
+#' @examples
+#' recipe <- hm_recipe(list(
+#'   list(type = "snv"),
+#'   list(type = "pca", components = 3L)
+#' ))
+#' length(recipe$steps)
 #' @export
 hm_recipe <- function(steps = list()) {
   if (!is.list(steps) ||
@@ -33,6 +39,12 @@ hm_recipe <- function(steps = list()) {
 #' @details Call only on the training partition. Selection, derivatives,
 #' resampling and PCA can change output dimensions; resampling marks the track
 #' as adapted.
+#' @examples
+#' spectra <- hm_spectra(hm_example())
+#' recipe <- hm_recipe(list(list(type = "snv"), list(type = "pca", components = 3L)))
+#' fitted <- hm_prep(recipe, spectra$values[1:64, ],
+#'                   wavelength = spectra$band_map$wavelength)
+#' dim(hm_bake(fitted, spectra$values[65:96, ]))
 #' @export
 hm_prep <- function(recipe, training, wavelength = NULL) {
   if (!inherits(recipe, "hm_recipe") ||
@@ -82,6 +94,12 @@ hm_prep <- function(recipe, training, wavelength = NULL) {
 #' follow the fitted steps.
 #' @details Reuses frozen training transformations without learning from new
 #' data.
+#' @examples
+#' spectra <- hm_spectra(hm_example())
+#' fitted <- hm_prep(hm_recipe(list(list(type = "scale"))), spectra$values[1:64, ])
+#' # New rows reuse the training means and standard deviations
+#' baked <- hm_bake(fitted, spectra$values[65:96, ])
+#' dim(baked)
 #' @export
 hm_bake <- function(recipe, newdata) {
   if (!inherits(recipe, "hm_recipe") ||
@@ -106,6 +124,17 @@ hm_bake <- function(recipe, newdata) {
 #' including eligible pixel count, equal weights and mask hash.
 #' @details All eligible finite pixels in the selected support contribute
 #' equally; an empty eligible support is rejected.
+#' @examples
+#' image <- hm_dataset(
+#'   array(seq_len(60), c(3, 5, 4)),
+#'   data.frame(observation_id = "o1", image_id = "i1", acquisition_id = "a1"),
+#'   data.frame(wavelength = c(500, 600, 700, 800)),
+#'   geometry = list(origin = c(0, 0), transform = diag(3))
+#' )
+#' hm_pool(image)$values
+#' mask <- array(TRUE, c(3, 5, 1))
+#' mask[1, , 1] <- FALSE
+#' hm_pool(image, mask = mask)$values
 #' @export
 hm_pool <- function(x, mask = NULL, method = "mean", selection = list()) {
   if (!identical(method, "mean")) {

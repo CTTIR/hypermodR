@@ -17,3 +17,15 @@ Serializable exact manifest binding and label map.
 \description{
 Bind an annotation project to its immutable export contract
 }
+\examples{
+\donttest{
+if (requireNamespace("hyperannotatR", quietly = TRUE) &&
+    requireNamespace("tiff", quietly = TRUE)) {
+  project <- hyperannotatR::at_example_project()
+  label_map <- c(tumour = 1L, necrosis = 2L, stroma = 3L)
+  contract <- hm_annotation_contract(project, label_map)
+  print(contract$dimensions)
+  contract$annotation_revision
+}
+}
+}

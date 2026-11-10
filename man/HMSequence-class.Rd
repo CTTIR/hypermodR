@@ -13,3 +13,7 @@ Validated time-indexed spectral sequence
 \item{\code{frame_index}}{Explicit frame identity and elapsed seconds; gaps are
 retained.}
 }}
+
+\examples{
+methods::showClass("HMSequence")
+}

@@ -19,3 +19,9 @@ Read and verify a completed run
 Requires matching complete receipt, object SHA-256 and COMPLETE
 marker before reading the object. Read only trusted RDS sources.
 }
+\examples{
+run <- tempfile("hypermodR-run-")
+hm_save_run(list(note = "example", values = 1:3), run)
+hm_read_run(run)
+unlink(run, recursive = TRUE)
+}

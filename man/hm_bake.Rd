@@ -23,3 +23,10 @@ Apply immutable training transformations
 Reuses frozen training transformations without learning from new
 data.
 }
+\examples{
+spectra <- hm_spectra(hm_example())
+fitted <- hm_prep(hm_recipe(list(list(type = "scale"))), spectra$values[1:64, ])
+# New rows reuse the training means and standard deviations
+baked <- hm_bake(fitted, spectra$values[65:96, ])
+dim(baked)
+}

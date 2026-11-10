@@ -5,6 +5,12 @@
 #' @return An `hm_workflow` list containing the three declarations.
 #' @details Assembly validates compatible declarations; fitting and backend
 #' admission occur separately.
+#' @examples
+#' task <- hm_task("response", "regression", "spectrum", "subject_id")
+#' workflow <- hm_workflow(
+#'   task, hm_recipe(list(list(type = "scale"))), hm_model_spec("lm", task)
+#' )
+#' workflow$model$model_id
 #' @export
 hm_workflow <- function(task, recipe, model) {
   if (!inherits(task, "hm_task") ||
@@ -62,6 +68,21 @@ hm_workflow <- function(task, recipe, model) {
 #' reference:multitask and reference:domain_adversarial with the appropriate
 #' task; worker-level tensor families have a separate protocol. A fitted model
 #' is not independent scientific qualification.
+#' @examples
+#' data <- hm_example(seed = 42L)
+#' task <- hm_task("response", "regression", "spectrum", "subject_id")
+#' fold <- hm_split(data, task, folds = 3L, seed = 7L)$folds[[1]]
+#' workflow <- hm_workflow(
+#'   task, hm_recipe(list(list(type = "scale"))), hm_model_spec("lm", task)
+#' )
+#' fit <- hm_fit(workflow, data, fold)
+#' heldout <- hm_spectra(data, list(
+#'   observation_id = data@observations$observation_id[fold$test]
+#' ))
+#' fit
+#' summary(fit)
+#' head(coef(fit))
+#' head(coef(fit, scale = "original"))
 #' @export
 hm_fit <- function(workflow, data, split, control = list()) {
   if (!inherits(workflow, "hm_workflow")) {
@@ -172,6 +193,22 @@ hm_fit <- function(workflow, data, split, control = list()) {
 #' in fitted recipe coordinates, recorded as provenance$output_space. Evaluate
 #' it against a target baked with that recipe and the matching target_space
 #' reference attribute, never against untransformed spectra.
+#' @examples
+#' data <- hm_example(seed = 42L)
+#' task <- hm_task("response", "regression", "spectrum", "subject_id")
+#' fold <- hm_split(data, task, folds = 3L, seed = 7L)$folds[[1]]
+#' workflow <- hm_workflow(
+#'   task, hm_recipe(list(list(type = "scale"))), hm_model_spec("lm", task)
+#' )
+#' fit <- hm_fit(workflow, data, fold)
+#' heldout <- hm_spectra(data, list(
+#'   observation_id = data@observations$observation_id[fold$test]
+#' ))
+#' prediction <- hm_predict(fit, heldout)
+#' prediction
+#' head(prediction$values)
+#' # The predict() method returns the same object
+#' identical(predict(fit, heldout), prediction)
 #' @export
 hm_predict <- function(object, newdata, ...) UseMethod("hm_predict")
 #' @rdname hm_predict
