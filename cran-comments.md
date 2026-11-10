@@ -5,8 +5,8 @@ This is a new submission.
 ## Test environments
 
 * local: macOS (aarch64), R 4.6.1 — `R CMD check --as-cran --no-manual`
-  (no LaTeX installation available locally, hence `--no-manual`; the PDF
-  manual still needs to be checked, e.g. on win-builder, before submission).
+  (the PDF manual was built locally with TinyTeX (TeX Live 2026) via
+  `R CMD Rd2pdf` without errors; the check run itself used `--no-manual`).
   The suggested package 'brms' was not installed locally, so this run used
   `_R_CHECK_FORCE_SUGGESTS_=false`; all code using it is conditional.
 * GitHub Actions (r-lib/actions v2, `--as-cran`):
