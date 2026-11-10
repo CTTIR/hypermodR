@@ -109,6 +109,7 @@ importFrom(generics,
   glance,
   tidy
 )
+importFrom(rlang,abort)
 importFrom(stats,setNames)
 importFrom(utils,
   capture.output,

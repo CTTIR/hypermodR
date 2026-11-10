@@ -5,6 +5,7 @@
 #'
 #' @keywords internal
 #' @import methods
+#' @importFrom rlang abort
 #' @importFrom stats setNames
 #' @importFrom utils capture.output head tail
 "_PACKAGE"
