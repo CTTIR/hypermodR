@@ -20,11 +20,11 @@ test_that("categorical matrices cannot manufacture observations", {
 test_that("prediction identities and categorical maps remain vectors", {
   task <- hm_task("y", "classification", "spectrum", "subject_id")
   expect_error(hm_prediction(c("A", "B"), task, matrix(c("o1", "o2")),
-                            class_map = c("A", "B")), "identities")
+                             class_map = c("A", "B")), "identities")
   expect_error(hm_prediction(c("A", "B"), task, c("o1", "o2"),
-                            class_map = matrix(c("A", "B"))), "class map")
+                             class_map = matrix(c("A", "B"))), "class map")
   expect_error(hm_prediction("A", task, c("o1", "o2"),
-                            class_map = c("A", "B")), "row count")
+                             class_map = c("A", "B")), "row count")
 })
 
 test_that("matrix categorical training targets are rejected before fitting", {
@@ -35,7 +35,8 @@ test_that("matrix categorical training targets are rejected before fitting", {
                      data.frame(wavelength = c(500, 600)))
   task <- hm_task("y", "classification", "spectrum", "subject_id")
   workflow <- hm_workflow(task, hm_recipe(), hm_model_spec("knn", task))
-  set.seed(42); before <- .Random.seed
+  set.seed(42)
+  before <- .Random.seed
   expect_error(hm_fit(workflow, data, list(train = 1:4, test = 5:8)),
                "dimensionless vectors")
   expect_identical(.Random.seed, before)
@@ -43,14 +44,17 @@ test_that("matrix categorical training targets are rejected before fitting", {
 
 test_that("genuine matrix-response tasks preserve row and output identity", {
   ids <- c("o1", "o2")
-  values <- diag(2); colnames(values) <- c("A", "B")
+  values <- diag(2)
+  colnames(values) <- c("A", "B")
   for (type in c("multilabel", "unmixing", "reconstruction")) {
     task <- hm_task(if (type == "reconstruction") NULL else "y", type,
-                     "spectrum", "subject_id")
+                    "spectrum", "subject_id")
     prediction <- hm_prediction(values, task, ids,
-      class_map = if (type == "multilabel") c("A", "B") else NULL)
+                                class_map = if (type == "multilabel")
+                                  c("A", "B") else NULL)
     reference <- data.frame(observation_id = ids)
-    if (type == "reconstruction") attr(reference, "target") <- values else reference$y <- values
+    if (type == "reconstruction")
+      attr(reference, "target") <- values else reference$y <- values
     result <- hm_evaluate(prediction, reference)
     expect_identical(prediction$values, values)
     expect_identical(prediction$observation_id, ids)

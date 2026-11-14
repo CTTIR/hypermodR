@@ -16,9 +16,9 @@ test_that("anomaly AUC matches direct positive-negative pair comparisons", {
     ids <- paste0("o", seq_len(n))
     for (scores in list(rep(.5, n), seq_len(n), seq_len(n) %% 3)) {
       expected <- mean(outer(scores[y == 1], scores[y == 0],
-        function(a, b) (a > b) + .5 * (a == b)))
+                             function(a, b) (a > b) + .5 * (a == b)))
       out <- hm_evaluate(hm_prediction(scores, task, ids),
-        data.frame(observation_id = ids, y = y))
+                         data.frame(observation_id = ids, y = y))
       expect_equal(out$metrics[["roc_auc"]], expected)
     }
   }
