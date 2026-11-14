@@ -4,11 +4,12 @@ This is a new submission.
 
 ## Test environments
 
-* local: macOS (aarch64), R 4.6.1 — `R CMD check --as-cran --no-manual`
-  (the PDF manual was built locally with TinyTeX (TeX Live 2026) via
-  `R CMD Rd2pdf` without errors; the check run itself used `--no-manual`).
-  The suggested package 'brms' was not installed locally, so this run used
-  `_R_CHECK_FORCE_SUGGESTS_=false`; all code using it is conditional.
+* Local: macOS (aarch64-apple-darwin), R 4.6.1, 14 November 2026:
+  full `R CMD check --as-cran` on the built source tarball, including
+  PDF manual compilation with TinyTeX (TeX Live 2026) and HTML manual
+  validation. This supersedes the earlier local check environment.
+  The optional package 'brms' (2.23.0) was available locally; the
+  earlier missing-package limitation no longer describes this environment.
 * GitHub Actions (r-lib/actions v2, `--as-cran`):
   * macOS-latest (release)
   * windows-latest (release)
