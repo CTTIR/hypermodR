@@ -78,6 +78,10 @@ hm_task <- function(outcome, type, unit, groups, reference = NULL) {
         is.null(y)) {
     return(invisible(TRUE))
   }
+  if (type %in% c("classification", "ordinal", "segmentation", "clustering",
+                  "regression", "temporal", "anomaly") && !is.null(dim(y))) {
+    .hm_abort("Scalar-task outcomes must be dimensionless vectors.")
+  }
   if (NROW(y) !=
         n || anyNA(y)) {
     .hm_abort("Outcome shape or missingness is incompatible with task.")

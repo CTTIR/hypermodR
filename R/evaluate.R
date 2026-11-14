@@ -1,8 +1,9 @@
 #' Evaluate predictions against an explicitly aligned reference
 #' @param predictions An `hm_prediction`.
 #' @param reference Data frame with observation_id in exactly prediction order
-#' and task outcome/reference columns. Reconstruction targets are supplied as
-#' the numeric matrix attribute target. For predictions in fitted recipe
+#' and task outcome/reference columns. Scalar-task outcomes must be
+#' dimensionless vectors with one value per observation. Reconstruction targets
+#' are supplied as the numeric matrix attribute target. For predictions in fitted recipe
 #' coordinates, bake this target with the fitted recipe and set attribute
 #' target_space to predictions$provenance$output_space.
 #' @param estimand Either pooled or equal_class_subject_acquisition.
@@ -249,7 +250,7 @@ hm_evaluate <- function(
         rank(p$values, ties.method = "average")[y ==
                                                   1]
       ) -
-        positive * (positive + 1) / 2) / (positive * negative)
+        positive * (positive + 1) / 2) / (as.double(positive) * negative)
       thresholds <- sort(
         unique(p$values),
         decreasing = TRUE

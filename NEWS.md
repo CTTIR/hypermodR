@@ -1,5 +1,7 @@
 # hypermodR 0.1.0
 
+- Anomaly ROC AUC avoids integer overflow in large positive/negative sample products. Scalar-task targets and predictions reject dimensioned columns before fitting or evaluation, preventing matrix columns from manufacturing observations; prediction identities and categorical class maps must also be vectors.
+
 ## CRAN preparation
 
 * Every exported function now has a documented return value and an example.

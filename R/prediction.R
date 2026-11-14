@@ -2,13 +2,13 @@
 #' @param values Prediction vector, or observation-by-output matrix for
 #' multilabel, unmixing and reconstruction.
 #' @param task An `hm_task`.
-#' @param observation_id Unique nonmissing character identifiers in prediction
-#' row order.
+#' @param observation_id Unique nonmissing character vector of identifiers
+#' in prediction row order.
 #' @param probabilities Optional numeric observation-by-class matrix in `[0,1]`,
 #' with columns exactly matching class_map; rows sum to one except for
 #' multilabel tasks.
-#' @param class_map Exact character class/label order, required for categorical
-#' and multilabel predictions.
+#' @param class_map Exact character vector giving class/label order, required
+#' for categorical and multilabel predictions.
 #' @param provenance List of source, fit and transformation provenance.
 #' @return An `hm_prediction` list retaining values, task, identities,
 #' probabilities, class map and provenance.
@@ -47,7 +47,7 @@ hm_prediction <- function(
   provenance = list()
 ) {
   if (!inherits(task, "hm_task") ||
-        !is.character(observation_id) ||
+        !is.character(observation_id) || !is.null(dim(observation_id)) ||
         anyNA(observation_id) ||
         anyDuplicated(observation_id)) {
     .hm_abort("Invalid prediction identities or task.")
@@ -67,7 +67,7 @@ hm_prediction <- function(
   }
   if (task$type %in% c("classification", "ordinal", "segmentation")) {
     if (is.null(class_map) ||
-      !is.character(class_map) ||
+      !is.character(class_map) || !is.null(dim(class_map)) ||
       anyNA(class_map) ||
       anyDuplicated(class_map) ||
       any(
@@ -175,6 +175,12 @@ plot.hm_prediction <- function(x, ...) {
 }
 
 .hm_numeric_prediction <- function(values, task) {
+  if (task$type %in% c("classification", "ordinal", "segmentation",
+                       "clustering", "regression", "temporal", "survival",
+                       "anomaly") && !is.null(dim(values))) {
+    .hm_abort("Scalar-task predictions must be dimensionless vectors.",
+              "hm_prediction_error")
+  }
   if (is.matrix(values) && !is.null(colnames(values)) &&
         (anyNA(colnames(values)) || any(!nzchar(colnames(values))) ||
            anyDuplicated(colnames(values)))) {

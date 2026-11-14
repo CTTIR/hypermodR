@@ -28,15 +28,15 @@ multilabel, unmixing and reconstruction.}
 
 \item{task}{An \code{hm_task}.}
 
-\item{observation_id}{Unique nonmissing character identifiers in prediction
-row order.}
+\item{observation_id}{Unique nonmissing character vector of identifiers
+in prediction row order.}
 
 \item{probabilities}{Optional numeric observation-by-class matrix in \verb{[0,1]},
 with columns exactly matching class_map; rows sum to one except for
 multilabel tasks.}
 
-\item{class_map}{Exact character class/label order, required for categorical
-and multilabel predictions.}
+\item{class_map}{Exact character vector giving class/label order, required
+for categorical and multilabel predictions.}
 
 \item{provenance}{List of source, fit and transformation provenance.}
 
