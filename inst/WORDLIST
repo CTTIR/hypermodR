@@ -27,6 +27,7 @@ ManUSPECTRAL
 Materialise
 MiB
 Modelling
+Napierian
 NumPy
 OOD
 ORCID
@@ -78,6 +79,7 @@ cpu
 cpus
 cuda
 cuvis
+decadic
 deserialization
 deserialized
 dimensioned
