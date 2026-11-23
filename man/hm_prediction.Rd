@@ -55,7 +55,9 @@ The input object invisibly.
 
 A list of descriptive fields.
 
-The graphics plotting return value, invisibly.
+\code{plot()} draws the predictions in observation order with labelled
+axes (one colour-blind-safe line per output column for matrix outputs) and
+returns the input object invisibly.
 }
 \description{
 Validate model predictions
@@ -91,4 +93,8 @@ regression <- hm_task("response", "regression", "spectrum", "subject_id")
 numeric_prediction <- hm_prediction(c(1.2, 0.8, 1.9), regression,
                                     c("o1", "o2", "o3"))
 plot(numeric_prediction)
+
+unmixing <- hm_task("abundance", "unmixing", "spectrum", "subject_id")
+abundances <- cbind(water = c(0.2, 0.5, 0.7), lipid = c(0.8, 0.5, 0.3))
+plot(hm_prediction(abundances, unmixing, c("o1", "o2", "o3")))
 }

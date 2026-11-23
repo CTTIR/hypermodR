@@ -41,6 +41,10 @@
 #' numeric_prediction <- hm_prediction(c(1.2, 0.8, 1.9), regression,
 #'                                     c("o1", "o2", "o3"))
 #' plot(numeric_prediction)
+#'
+#' unmixing <- hm_task("abundance", "unmixing", "spectrum", "subject_id")
+#' abundances <- cbind(water = c(0.2, 0.5, 0.7), lipid = c(0.8, 0.5, 0.3))
+#' plot(hm_prediction(abundances, unmixing, c("o1", "o2", "o3")))
 #' @export
 hm_prediction <- function(
   values, task, observation_id, probabilities = NULL, class_map = NULL,
@@ -162,7 +166,9 @@ summary.hm_prediction <- function(object, ...) {
 #' @param x An object returned by `hm_prediction()`.
 #' @param ... Additional arguments; forwarded to graphics for plotting,
 #' otherwise unused.
-#' @return The graphics plotting return value, invisibly.
+#' @return `plot()` draws the predictions in observation order with labelled
+#' axes (one colour-blind-safe line per output column for matrix outputs) and
+#' returns the input object invisibly.
 #' @export
 plot.hm_prediction <- function(x, ...) {
   if (!is.numeric(x$values)) {
@@ -171,7 +177,60 @@ plot.hm_prediction <- function(x, ...) {
       "hm_unsupported_error"
     )
   }
-  graphics::plot(x$values, ...)
+  values <- x$values
+  outcome <- x$task$outcome
+  defaults <- list(
+    xlab = "Observation (prediction order)",
+    ylab = if (is.null(outcome)) {
+      "Predicted value"
+    } else {
+      paste0("Predicted ", outcome)
+    }
+  )
+  args <- list(...)
+  args <- c(args, defaults[setdiff(names(defaults), names(args))])
+  if (is.matrix(values)) {
+    outputs <- colnames(values)
+    if (is.null(outputs)) {
+      outputs <- paste0("output ", seq_len(ncol(values)))
+    }
+    palette <- .hm_plot_palette(ncol(values))
+    args <- c(
+      list(x = seq_len(nrow(values)), y = values),
+      args,
+      list(type = "l", lty = 1, col = palette)[
+        setdiff(c("type", "lty", "col"), names(args))
+      ]
+    )
+    do.call(graphics::matplot, args)
+    if (ncol(values) <= 8L) {
+      graphics::legend(
+        "topright", legend = outputs, col = args$col, lty = args$lty,
+        bty = "n", title = "Output", cex = 0.8
+      )
+    }
+  } else {
+    args <- c(
+      list(x = seq_along(values), y = values),
+      args,
+      list(pch = 19, col = "#0072B2")[setdiff(c("pch", "col"), names(args))]
+    )
+    do.call(graphics::plot, args)
+  }
+  invisible(x)
+}
+
+# Colour-blind-safe series colours: the Okabe-Ito palette that ships with R
+# (grDevices::palette.colors()) for up to eight series, in the order songR
+# uses (yellow and black last), and viridis beyond eight.
+.hm_plot_palette <- function(n) {
+  okabe_ito <- unname(grDevices::palette.colors(8L, palette = "Okabe-Ito"))
+  okabe_ito <- okabe_ito[c(2L, 3L, 4L, 6L, 7L, 8L, 5L, 1L)]
+  if (n <= length(okabe_ito)) {
+    okabe_ito[seq_len(n)]
+  } else {
+    grDevices::hcl.colors(n, "viridis")
+  }
 }
 
 .hm_numeric_prediction <- function(values, task) {

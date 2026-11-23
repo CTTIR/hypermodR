@@ -24,8 +24,9 @@ hm_evaluate(
 \item{reference}{Data frame with observation_id in exactly prediction order
 and task outcome/reference columns. Scalar-task outcomes must be
 dimensionless vectors with one value per observation. Reconstruction targets
-are supplied as the numeric matrix attribute target. For predictions in fitted recipe
-coordinates, bake this target with the fitted recipe and set attribute
+are supplied as the numeric matrix attribute target. For predictions in
+fitted recipe coordinates, bake this target with the fitted recipe and set
+attribute
 target_space to predictions$provenance$output_space.}
 
 \item{estimand}{Either pooled or equal_class_subject_acquisition.}

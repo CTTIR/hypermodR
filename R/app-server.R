@@ -578,6 +578,7 @@
           d$band_map$wavelength, t(d$values),
           type = "l",
           lty = 1,
+          col = .hm_plot_palette(nrow(d$values)),
           xlab = "Wavelength (nm)",
           ylab = "Source intensity"
         )
@@ -605,6 +606,7 @@
         block <- hm_read_block(x, selection)
         graphics::image(
           t(block$values[, , 1, 1]),
+          col = grDevices::hcl.colors(64L, "viridis"),
           xlab = "Source x (first 64)",
           ylab = "Source y (first 64)",
           main = "First-band preview \u00b7 first frame"
