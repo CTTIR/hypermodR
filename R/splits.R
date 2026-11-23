@@ -59,17 +59,25 @@
           any(obs$window_start > obs$window_end)) {
       .hm_abort("Invalid source windows.")
     }
+    # Closed windows overlap when start_a <= end_b and start_b <= end_a. After
+    # sorting by start, a window joins the running cluster exactly when its
+    # start does not exceed the largest end seen so far, which yields the same
+    # connected components as the all-pairs comparison in O(n log n).
     for (ids in split(
       seq_len(n),
       obs$source_id
     )) {
-      for (a in ids) {
-        for (b in ids) {
-          if (obs$window_start[a] <= obs$window_end[b] &&
-                obs$window_start[b] <=
-                  obs$window_end[a]) {
-            merge(a, b)
+      ids <- ids[order(obs$window_start[ids])]
+      reach <- obs$window_end[ids[1L]]
+      for (k in seq_along(ids)[-1L]) {
+        current <- ids[k]
+        if (obs$window_start[current] <= reach) {
+          merge(ids[k - 1L], current)
+          if (obs$window_end[current] > reach) {
+            reach <- obs$window_end[current]
           }
+        } else {
+          reach <- obs$window_end[current]
         }
       }
     }

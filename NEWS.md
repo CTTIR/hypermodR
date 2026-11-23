@@ -1,6 +1,7 @@
 # hypermodR 0.1.0
 
 - Anomaly ROC AUC avoids integer overflow in large positive/negative sample products. Scalar-task targets and predictions reject dimensioned columns before fitting or evaluation, preventing matrix columns from manufacturing observations; prediction identities and categorical class maps must also be vectors.
+- Grouped splits connect overlapping source windows with a sorted sweep instead of comparing every pair of windows, so splits over many windows per source no longer take quadratic time.
 
 ## CRAN preparation
 
