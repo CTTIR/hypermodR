@@ -252,16 +252,15 @@ hm_evaluate <- function(
                                                   1]
       ) -
         positive * (positive + 1) / 2) / (as.double(positive) * negative)
-      thresholds <- sort(
-        unique(p$values),
-        decreasing = TRUE
-      )
-      recall <- precision <- numeric(length(thresholds))
-      for (i in seq_along(thresholds)) {
-        keep <- p$values >= thresholds[i]
-        recall[i] <- sum(y[keep] == 1) / positive
-        precision[i] <- mean(y[keep] == 1)
-      }
+      # Precision and recall at every distinct score threshold t, retaining
+      # scores >= t: sort once by decreasing score and read the cumulative
+      # true positives at the last case of each tied score block.
+      ordering <- order(p$values, decreasing = TRUE)
+      sorted <- p$values[ordering]
+      true_positive <- cumsum(y[ordering] == 1)
+      last <- which(c(sorted[-1L] != sorted[-length(sorted)], TRUE))
+      recall <- true_positive[last] / positive
+      precision <- true_positive[last] / last
       ap <- sum(
         diff(c(0, recall)) *
           precision
@@ -297,26 +296,23 @@ hm_evaluate <- function(
       .hm_abort(paste0("Invalid survival reference: nonnegative times and ",
                        "binary status required."), "hm_reference_error")
     }
-    pairs <- which(
-      outer(time, time, "<") &
-        outer(
-          status, rep(1, length(status)),
-          "*"
-        ) ==
-          1,
-      arr.ind = TRUE
-    )
-    concordance <- if (nrow(pairs)) {
-      mean(
-        (p$values[pairs[, 1]] > p$values[pairs[, 2]]) + 0.5 * (p$values[pairs[
-          ,
-          1
-        ]] == p$values[pairs[, 2]])
-      )
-    } else {
-      NA_real_
+    # Comparable pairs: an observed event at a time strictly earlier than the
+    # other case's time. Accumulate them per event so memory stays linear in
+    # the number of cases instead of materialising n-by-n pair matrices.
+    risk <- p$values
+    comparable <- 0
+    score <- 0
+    for (i in which(status == 1)) {
+      later <- time > time[i]
+      n_later <- sum(later)
+      if (n_later > 0) {
+        comparable <- comparable + n_later
+        score <- score + sum(risk[i] > risk[later]) +
+          0.5 * sum(risk[i] == risk[later])
+      }
     }
-    metrics <- c(concordance = concordance, comparable_pairs = nrow(pairs))
+    concordance <- if (comparable > 0) score / comparable else NA_real_
+    metrics <- c(concordance = concordance, comparable_pairs = comparable)
     loss <- NULL
     per <- cm <- NULL
   } else if (task$type %in% c(

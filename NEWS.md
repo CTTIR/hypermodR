@@ -5,6 +5,7 @@
 - Runtime installation reports an `hm_platform_error` with the interpreter's own message when the pinned Python cannot create a copied virtual environment (for example the macOS framework build), instead of a bare process failure; the pip-configuration test skips on such interpreters.
 - `plot()` for numeric predictions labels both axes (observation order and the predicted outcome), draws matrix outputs as one Okabe-Ito line per named output with a legend instead of plotting the first two columns against each other, and returns the prediction invisibly. The workbench source preview uses the same colour-blind-safe series colours and a viridis band image.
 - `hm_reliability()` compares predicted and reference labels as text, as `hm_evaluate()` does, so factor labels with different level sets no longer fail, and computes the coverage-risk table from sorted cumulative counts instead of rescanning every case for every confidence threshold.
+- Anomaly average precision is computed from one sort of the scores instead of a pass over all cases per distinct score, and survival concordance accumulates comparable pairs per event instead of building several observation-by-observation matrices, so both metrics stay usable on spectrum-level data. Values are unchanged.
 
 ## CRAN preparation
 
