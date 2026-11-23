@@ -57,6 +57,6 @@ test_that("the series palette stays colour-blind safe for many outputs", {
   )
   expect_identical(
     hypermodR:::.hm_plot_palette(12L),
-    grDevices::hcl.colors(12L, "viridis")
+    grDevices::hcl.colors(14L, "viridis")[1:12]
   )
 })

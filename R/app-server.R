@@ -612,7 +612,7 @@
           main = "First-band preview \u00b7 first frame"
         )
       }
-    }, alt = paste0(
+    }, res = 96, alt = paste0(
       "Bounded source preview: first twelve spectra or the ",
       "first band of the first spatial frame."
     )
@@ -700,7 +700,7 @@
           color = TRUE
         )
       }
-    }, alt = paste0(
+    }, res = 96, alt = paste0(
       "Held-out observed versus predicted values from the ",
       "same evaluation used for the metric table; ",
       "classification uses a confusion mosaic."

@@ -225,14 +225,16 @@ plot.hm_prediction <- function(x, ...) {
 
 # Colour-blind-safe series colours: the Okabe-Ito palette that ships with R
 # (grDevices::palette.colors()) for up to eight series, in the order songR
-# uses (yellow and black last), and viridis beyond eight.
+# uses (yellow and black last), and the darker part of viridis beyond eight.
 .hm_plot_palette <- function(n) {
   okabe_ito <- unname(grDevices::palette.colors(8L, palette = "Okabe-Ito"))
   okabe_ito <- okabe_ito[c(2L, 3L, 4L, 6L, 7L, 8L, 5L, 1L)]
   if (n <= length(okabe_ito)) {
     okabe_ito[seq_len(n)]
   } else {
-    grDevices::hcl.colors(n, "viridis")
+    # Drop the two lightest viridis colours, which have too little contrast
+    # for thin lines on a white background.
+    grDevices::hcl.colors(n + 2L, "viridis")[seq_len(n)]
   }
 }
 
