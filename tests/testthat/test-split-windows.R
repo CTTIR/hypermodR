@@ -52,6 +52,7 @@ test_that("touching windows connect and separated windows do not", {
 })
 
 test_that("many source windows are grouped without all-pairs comparisons", {
+  skip_on_cran()
   n <- 20000
   obs <- data.frame(
     observation_id = paste0("o", seq_len(n)),

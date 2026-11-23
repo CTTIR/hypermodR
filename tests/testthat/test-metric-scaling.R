@@ -67,6 +67,7 @@ test_that("survival concordance accepts logical event status", {
 })
 
 test_that("anomaly and survival metrics scale to many observations", {
+  skip_on_cran()
   set.seed(7)
   n <- 40000
   ids <- paste0("o", seq_len(n))

@@ -41,6 +41,7 @@ test_that("coverage-risk matches the per-threshold definition", {
 })
 
 test_that("coverage-risk scales to many held-out observations", {
+  skip_on_cran()
   fixture <- reliability_fixture(50000, 4)
   elapsed <- system.time(
     result <- hm_reliability(fixture$prediction, fixture$reference)

@@ -1,4 +1,5 @@
 test_that("whole-unit bootstrap scales to many units", {
+  skip_on_cran()
   set.seed(8)
   n <- 6000
   units <- sprintf("s%04d", rep(seq_len(1500), length.out = n))
