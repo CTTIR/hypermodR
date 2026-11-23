@@ -204,10 +204,12 @@ plot.hm_prediction <- function(x, ...) {
     )
     do.call(graphics::matplot, args)
     if (ncol(values) <= 8L) {
+      # One row above the plotting region, so the key never covers data.
+      usr <- graphics::par("usr")
       graphics::legend(
-        "topright", legend = outputs, col = args$col, lty = args$lty,
-        pch = args$pch,
-        bty = "n", title = "Output", cex = 0.8
+        x = mean(usr[1:2]), y = usr[4], xjust = 0.5, yjust = 0,
+        legend = outputs, col = args$col, lty = args$lty, pch = args$pch,
+        horiz = TRUE, bty = "n", xpd = NA
       )
     }
   } else {

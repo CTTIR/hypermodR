@@ -47,7 +47,7 @@ test_that("matrix predictions draw one line per output with a legend", {
     drawn$calls[names(drawn$calls) == "C_text"],
     function(e) e[[2]][[3]]
   ))
-  expect_true(all(c("water", "lipid", "Output") %in% legend_text))
+  expect_true(all(c("water", "lipid") %in% legend_text))
 })
 
 test_that("the series palette stays colour-blind safe for many outputs", {
