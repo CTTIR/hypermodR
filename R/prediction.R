@@ -166,8 +166,8 @@ summary.hm_prediction <- function(object, ...) {
 #' @param x An object returned by `hm_prediction()`.
 #' @param ... Additional arguments; forwarded to graphics for plotting,
 #' otherwise unused.
-#' @return `plot()` draws the predictions in observation order with labelled
-#' axes (one colour-blind-safe line per output column for matrix outputs) and
+#' @return `plot()` draws the predictions in observation order with labeled
+#' axes (one color-blind-safe line per output column for matrix outputs) and
 #' returns the input object invisibly.
 #' @export
 plot.hm_prediction <- function(x, ...) {
@@ -223,7 +223,7 @@ plot.hm_prediction <- function(x, ...) {
   invisible(x)
 }
 
-# Colour-blind-safe series colours: the Okabe-Ito palette that ships with R
+# Colour-blind-safe series colors: the Okabe-Ito palette that ships with R
 # (grDevices::palette.colors()) for up to eight series, in the order songR
 # uses (yellow and black last), and the darker part of viridis beyond eight.
 .hm_plot_palette <- function(n) {
@@ -232,7 +232,7 @@ plot.hm_prediction <- function(x, ...) {
   if (n <= length(okabe_ito)) {
     okabe_ito[seq_len(n)]
   } else {
-    # Drop the two lightest viridis colours, which have too little contrast
+    # Drop the two lightest viridis colors, which have too little contrast
     # for thin lines on a white background.
     grDevices::hcl.colors(n + 2L, "viridis")[seq_len(n)]
   }
