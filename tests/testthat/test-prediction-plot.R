@@ -13,12 +13,12 @@ axis_titles <- function(calls) {
   c(xlab = title[[4]], ylab = title[[5]])
 }
 
-test_that("numeric prediction plots label their axes and return the input", {
+test_that("numeric prediction plots label their axes and return NULL", {
   task <- hm_task("response", "regression", "spectrum", "subject_id")
   prediction <- hm_prediction(c(1.2, 0.8, 1.9), task, c("o1", "o2", "o3"))
   drawn <- recorded_calls(plot(prediction))
   expect_false(drawn$value$visible)
-  expect_identical(drawn$value$value, prediction)
+  expect_null(drawn$value$value)
   expect_identical(
     axis_titles(drawn$calls),
     c(xlab = "Observation (prediction order)", ylab = "Predicted response")
@@ -40,7 +40,7 @@ test_that("matrix predictions draw one line per output with a legend", {
   abundances <- cbind(water = c(0.2, 0.5, 0.7), lipid = c(0.8, 0.5, 0.3))
   prediction <- hm_prediction(abundances, task, c("o1", "o2", "o3"))
   drawn <- recorded_calls(plot(prediction))
-  expect_identical(drawn$value$value, prediction)
+  expect_null(drawn$value$value)
   # One series per output plus the legend's point symbols.
   expect_identical(sum(names(drawn$calls) == "C_plotXY"), 3L)
   legend_text <- unlist(lapply(

@@ -168,7 +168,7 @@ summary.hm_prediction <- function(object, ...) {
 #' otherwise unused.
 #' @return `plot()` draws the predictions in observation order with labeled
 #' axes (one color-blind-safe line per output column for matrix outputs) and
-#' returns the input object invisibly.
+#' returns the graphics plotting return value (`NULL`) invisibly.
 #' @export
 plot.hm_prediction <- function(x, ...) {
   if (!is.numeric(x$values)) {
@@ -202,7 +202,7 @@ plot.hm_prediction <- function(x, ...) {
         setdiff(c("type", "lty", "pch", "cex", "col"), names(args))
       ]
     )
-    do.call(graphics::matplot, args)
+    drawn <- do.call(graphics::matplot, args)
     if (ncol(values) <= 8L) {
       # One row above the plotting region, so the key never covers data.
       usr <- graphics::par("usr")
@@ -218,9 +218,9 @@ plot.hm_prediction <- function(x, ...) {
       args,
       list(pch = 19, col = "#0072B2")[setdiff(c("pch", "col"), names(args))]
     )
-    do.call(graphics::plot, args)
+    drawn <- do.call(graphics::plot, args)
   }
-  invisible(x)
+  invisible(drawn)
 }
 
 # Colour-blind-safe series colors: the Okabe-Ito palette that ships with R

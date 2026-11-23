@@ -57,7 +57,7 @@ A list of descriptive fields.
 
 \code{plot()} draws the predictions in observation order with labeled
 axes (one color-blind-safe line per output column for matrix outputs) and
-returns the input object invisibly.
+returns the graphics plotting return value (\code{NULL}) invisibly.
 }
 \description{
 Validate model predictions
