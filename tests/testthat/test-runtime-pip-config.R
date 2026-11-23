@@ -4,6 +4,12 @@ test_that("Python installation ignores ambient pip configuration", {
   skip_on_os("windows")
   python <- unname(Sys.which("python3"))
   skip_if(!nzchar(python))
+  probe <- tempfile("copied-venv-")
+  copied <- processx::run(python, c("-m", "venv", "--copies", probe),
+                          error_on_status = FALSE)
+  unlink(probe, recursive = TRUE)
+  skip_if(copied$status != 0L,
+          "This Python build cannot create copied virtual environments.")
   root <- tempfile("pip-configuration-")
   dir.create(root)
   root <- normalizePath(root)
@@ -65,4 +71,30 @@ test_that("Python installation ignores ambient pip configuration", {
   )
   expect_identical(trimws(result$stdout), "17")
   expect_true(.hm_environment_ok(backend$path))
+})
+
+test_that("an interpreter without copied environments fails informatively", {
+  skip_if_not_installed("processx")
+  root <- tempfile("copied-venv-refusal-")
+  dir.create(root)
+  on.exit(unlink(root, recursive = TRUE), add = TRUE)
+  writeLines(paste0("fixture==1.0 --hash=sha256:", strrep("a", 64)),
+             file.path(root, "requirements.txt"))
+  profile <- list(
+    python = list(executable = "python-fixture", version = "3.12.0",
+                  lock = "requirements.txt"),
+    artifacts = list(list(path = "requirements.txt", sha256 = strrep("a", 64)))
+  )
+  testthat::local_mocked_bindings(run = function(command, args, ...) {
+    if ("venv" %in% args) {
+      return(list(status = 1L, stdout = "",
+                  stderr = "Error: cannot create venvs without symlinks"))
+    }
+    list(status = 0L, stdout = "3.12.0\n", stderr = "")
+  }, .package = "processx")
+  expect_error(
+    hypermodR:::.hm_setup_python(profile, root),
+    "isolated environment with copied files",
+    class = "hm_platform_error"
+  )
 })

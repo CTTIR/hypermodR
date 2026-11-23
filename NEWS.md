@@ -2,6 +2,7 @@
 
 - Anomaly ROC AUC avoids integer overflow in large positive/negative sample products. Scalar-task targets and predictions reject dimensioned columns before fitting or evaluation, preventing matrix columns from manufacturing observations; prediction identities and categorical class maps must also be vectors.
 - Grouped splits connect overlapping source windows with a sorted sweep instead of comparing every pair of windows, so splits over many windows per source no longer take quadratic time.
+- Runtime installation reports an `hm_platform_error` with the interpreter's own message when the pinned Python cannot create a copied virtual environment (for example the macOS framework build), instead of a bare process failure; the pip-configuration test skips on such interpreters.
 
 ## CRAN preparation
 

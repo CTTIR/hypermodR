@@ -327,12 +327,28 @@ hm_install_backend <- function(
     .hm_abort("Python interpreter version mismatch.")
   }
   # --copies makes the environment independent of mutable symlink targets.
-  processx::run(
+  created <- processx::run(
     py$executable, c("-m", "venv", "--copies", file.path(
       stage,
       "environment"
-    ))
+    )),
+    error_on_status = FALSE
   )
+  if (!identical(created$status, 0L)) {
+    # Framework builds of Python (for example the macOS system interpreter)
+    # cannot create copied environments.
+    reason <- trimws(paste(created$stderr, created$stdout))
+    .hm_abort(
+      c(
+        paste0(
+          "The pinned Python interpreter cannot create an isolated ",
+          "environment with copied files."
+        ),
+        i = "Interpreter output: {reason}"
+      ),
+      "hm_platform_error"
+    )
+  }
   binary <- file.path(
     stage, "environment", if (.Platform$OS.type == "windows") {
       "Scripts/python.exe"
