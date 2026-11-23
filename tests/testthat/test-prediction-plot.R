@@ -41,7 +41,8 @@ test_that("matrix predictions draw one line per output with a legend", {
   prediction <- hm_prediction(abundances, task, c("o1", "o2", "o3"))
   drawn <- recorded_calls(plot(prediction))
   expect_identical(drawn$value$value, prediction)
-  expect_identical(sum(names(drawn$calls) == "C_plotXY"), 2L)
+  # One series per output plus the legend's point symbols.
+  expect_identical(sum(names(drawn$calls) == "C_plotXY"), 3L)
   legend_text <- unlist(lapply(
     drawn$calls[names(drawn$calls) == "C_text"],
     function(e) e[[2]][[3]]
