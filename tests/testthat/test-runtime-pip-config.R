@@ -88,13 +88,21 @@ test_that("an interpreter without copied environments fails informatively", {
   testthat::local_mocked_bindings(run = function(command, args, ...) {
     if ("venv" %in% args) {
       return(list(status = 1L, stdout = "",
-                  stderr = "Error: cannot create venvs without symlinks"))
+                  stderr = "Error: no venv {copies}"))
     }
     list(status = 0L, stdout = "3.12.0\n", stderr = "")
   }, .package = "processx")
   expect_error(
     hypermodR:::.hm_setup_python(profile, root),
     "isolated environment with copied files",
+    class = "hm_platform_error"
+  )
+  # The interpreter output is interpolated, not parsed as a template, so
+  # braces in it reach the message verbatim.
+  expect_error(
+    hypermodR:::.hm_setup_python(profile, root),
+    "Interpreter output: Error: no venv {copies}",
+    fixed = TRUE,
     class = "hm_platform_error"
   )
 })

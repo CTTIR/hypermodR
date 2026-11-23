@@ -60,8 +60,8 @@ test_that("survival concordance accepts logical event status", {
                   list(time = "time", status = "status"))
   reference <- data.frame(observation_id = c("a", "b", "c"),
                           time = c(1, 2, 4), status = c(TRUE, FALSE, TRUE))
-  result <- hm_evaluate(hm_prediction(c(3, 1, 2), task, reference$observation_id),
-                        reference)
+  prediction <- hm_prediction(c(3, 1, 2), task, reference$observation_id)
+  result <- hm_evaluate(prediction, reference)
   expect_identical(result$metrics[["concordance"]], 1)
   expect_identical(result$metrics[["comparable_pairs"]], 2)
 })

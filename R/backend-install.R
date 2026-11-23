@@ -343,7 +343,10 @@ hm_install_backend <- function(
           "The pinned Python interpreter cannot create an isolated ",
           "environment with copied files."
         ),
-        i = "Interpreter output: {trimws(paste(created$stderr, created$stdout))}"
+        i = paste0(
+          "Interpreter output: ",
+          "{trimws(paste(created$stderr, created$stdout))}"
+        )
       ),
       "hm_platform_error"
     )
