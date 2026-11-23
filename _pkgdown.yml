@@ -5,10 +5,11 @@ development:
   mode: auto
 home:
   title: Hyperspectral modelling with explicit validation
-  sidebar:
-    structure: [links, license, community, citation, authors]
 reference:
 - title: Data and source interoperability
+  desc: >
+    Build spectral and sequence datasets, read bounded blocks and exchange data
+    with hyperspectR, hyperannotatR, tivis.r and cuvis.r.
   contents:
   - HMDataset-class
   - HMSequence-class
@@ -29,6 +30,9 @@ reference:
   - hm_stage_annotations
   - hm_tivita_profile
 - title: Tasks, modelling and evaluation
+  desc: >
+    Declare tasks, plan grouped resampling, fit interpretable and black-box
+    models, and evaluate, calibrate and compare their held-out predictions.
   contents:
   - hm_active_learning
   - hm_apply_calibration
@@ -68,6 +72,9 @@ reference:
   - glance.hm_fit
   - hm_workflow
 - title: Runtime, provenance and application
+  desc: >
+    Plan, install and admit isolated model runtimes, record provenance and run
+    the interactive Shiny workbench.
   contents:
   - hm_admit_backend
   - hm_app
@@ -100,6 +107,9 @@ reference:
   - hm_with_resources
   - hm_worker_request
   - hm_extract_native
+- title: Package
+  desc: Package overview.
+  contents:
   - hypermodR-package
 articles:
 - title: Start here
