@@ -24,6 +24,19 @@ An immutable-by-identity \code{hm_spectral_library} list.
 Values must be supplied from measured or otherwise justified sources. This
 constructor records a declaration; it cannot verify the physical reference.
 }
+\details{
+The \code{beer_lambert} engine solves
+\eqn{-\ln R = L E c}{-ln(R) = L E c} for nonnegative component amounts
+\eqn{c}, where \eqn{R} is calibrated reflectance, \eqn{L} the declared
+\code{path_length} and \eqn{E} these library values. The attenuation uses the
+natural logarithm, so library values must be natural-log (Napierian)
+coefficients per unit of path length. Decadic coefficients, such as
+tabulated molar extinction coefficients, must first be multiplied by
+\eqn{\ln 10 \approx 2.303}{ln(10), about 2.303} (because
+\eqn{10^{-A} = e^{-A \ln 10}}{10^-A = exp(-A ln(10))}) and converted to the
+intended amount units; otherwise the retrieved amounts are too large by
+that factor.
+}
 \examples{
 lib <- hm_spectral_library(
   cbind(component_a = c(1.2, 0.8, 0.3), component_b = c(0.9, 1.1, 0.7)),

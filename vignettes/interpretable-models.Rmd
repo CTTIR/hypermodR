@@ -100,7 +100,10 @@ Canonical statistical IDs include `lm`, `glm`, `glmnet`, `gam`, `mixed`, `pls`,
 `pcr`, `bayes_conjugate` and optional `brms`. Chemometric/physiological IDs are
 `pca`, `ica`, `nmf`, `mcr_als`, `fcls` and `beer_lambert`. Use
 `hm_spectral_library()` to declare wavelength, units, source and license for
-endmembers. Nonnegative abundances or a Beer–Lambert fit do not prove biological
+endmembers. The `beer_lambert` engine models attenuation as the natural
+logarithm of calibrated reflectance, so a library of decadic coefficients (for
+example tabulated molar extinction coefficients) must be multiplied by
+ln(10) ≈ 2.303 before it is declared. Nonnegative abundances or a Beer–Lambert fit do not prove biological
 identifiability. Baselines, scattering, endmember ambiguity, priors, random
 effects and reference calibration need task-specific justification. Unsupported
 coefficient retrieval raises a typed error rather than inventing uncertainty.
