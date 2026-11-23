@@ -52,7 +52,10 @@ hm_reliability <- function(predictions, reference, breaks = seq(0, 1,
     .hm_abort("Bins must span zero to one in increasing order.")
   }
   confidence <- apply(p$probabilities, 1, max)
-  correct <- p$values == reference[[p$task$outcome]]
+  # Compare labels as text, as hm_evaluate() does, so factors with different
+  # level sets remain comparable.
+  correct <- as.character(p$values) ==
+    as.character(reference[[p$task$outcome]])
   bins <- cut(confidence, breaks, include.lowest = TRUE)
   table <- lapply(
     levels(bins),
@@ -73,22 +76,22 @@ hm_reliability <- function(predictions, reference, breaks = seq(0, 1,
     }
   )
   thresholds <- sort(unique(c(0, confidence, 1)))
-  coverage <- lapply(
-    thresholds, function(t) {
-      keep <- confidence >= t
-      data.frame(
-        threshold = t, coverage = mean(keep),
-        risk = if (any(keep)) {
-          mean(!correct[keep])
-        } else {
-          NA_real_
-        }
-      )
-    }
+  # Retained cases at threshold t are those with confidence >= t. Sorting the
+  # confidences once gives the retained counts and errors for every threshold
+  # from cumulative sums instead of rescanning all cases per threshold.
+  n <- length(confidence)
+  ordering <- order(confidence)
+  errors <- c(0, cumsum(!correct[ordering]))
+  below <- findInterval(thresholds, confidence[ordering], left.open = TRUE)
+  kept <- n - below
+  kept_errors <- errors[n + 1L] - errors[below + 1L]
+  coverage <- data.frame(
+    threshold = thresholds, coverage = kept / n,
+    risk = ifelse(kept > 0, kept_errors / pmax(kept, 1), NA_real_)
   )
   list(
     bins = do.call(rbind, table),
-    coverage_risk = do.call(rbind, coverage),
+    coverage_risk = coverage,
     scores = e$metrics, ood = paste0(
       "Confidence is not a validated OOD detector; no ",
       "OOD/safety claim."

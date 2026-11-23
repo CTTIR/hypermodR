@@ -4,6 +4,7 @@
 - Grouped splits connect overlapping source windows with a sorted sweep instead of comparing every pair of windows, so splits over many windows per source no longer take quadratic time.
 - Runtime installation reports an `hm_platform_error` with the interpreter's own message when the pinned Python cannot create a copied virtual environment (for example the macOS framework build), instead of a bare process failure; the pip-configuration test skips on such interpreters.
 - `plot()` for numeric predictions labels both axes (observation order and the predicted outcome), draws matrix outputs as one Okabe-Ito line per named output with a legend instead of plotting the first two columns against each other, and returns the prediction invisibly. The workbench source preview uses the same colour-blind-safe series colours and a viridis band image.
+- `hm_reliability()` compares predicted and reference labels as text, as `hm_evaluate()` does, so factor labels with different level sets no longer fail, and computes the coverage-risk table from sorted cumulative counts instead of rescanning every case for every confidence threshold.
 
 ## CRAN preparation
 
