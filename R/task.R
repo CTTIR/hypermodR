@@ -6,7 +6,7 @@
 #' temporal.
 #' @param unit Observation unit: spectrum, pixel, roi, image, sequence or
 #' subject.
-#' @param groups Nonempty character vector of biological/source grouping column
+#' @param groups Non-empty character vector of biological/source grouping column
 #' names.
 #' @param reference Optional reference declaration; survival uses time/status
 #' column names, unmixing may declare abundance_constraint, and temporal tasks

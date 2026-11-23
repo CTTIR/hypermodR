@@ -17,7 +17,7 @@ temporal.}
 \item{unit}{Observation unit: spectrum, pixel, roi, image, sequence or
 subject.}
 
-\item{groups}{Nonempty character vector of biological/source grouping column
+\item{groups}{Non-empty character vector of biological/source grouping column
 names.}
 
 \item{reference}{Optional reference declaration; survival uses time/status

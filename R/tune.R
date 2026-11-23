@@ -3,7 +3,7 @@
 #' @param data Source data accepted by `hm_fit()`.
 #' @param split Validated outer split containing inner grouped folds; their
 #' test rows must cover outer training exactly once.
-#' @param candidates Nonempty list of complete model-parameter lists.
+#' @param candidates Non-empty list of complete model-parameter lists.
 #' @param control Fit-control list; resources must declare one CPU/thread.
 #' Optional max_trials must cover all candidates and seed controls
 #' reproducibility.

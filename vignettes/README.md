@@ -11,12 +11,12 @@
 | `interpretable-models.Rmd` | Fit and interpret statistical, chemometric and physiological models with explicit assumptions | Independent numerical values, train-only preprocessing, coefficient/uncertainty interpretation and failure cases |
 | `machine-learning.Rmd` | Select conventional model families with leakage-resistant tuning and comparison | Identical grouped support across methods; independently verified metrics and paired uncertainty |
 | `deep-and-foundation-models.Rmd` | Use compatible frozen/fine-tuned neural adapters and understand input adaptations, model provenance and limits | Small qualified model examples in explicit backend lanes; exact weights/input/preprocessing records and reference-output comparisons |
-| `backends-and-installation.Rmd` | Inspect capabilities and explicitly install a supported isolated runtime/model setup | Platform-specific preflight, repeat-install behavior, interrupted install, integrity failure and actual model smoke receipts |
+| `backends-and-installation.Rmd` | Inspect capabilities and explicitly install a supported isolated runtime/model setup | Platform-specific preflight, repeat-install behaviour, interrupted install, integrity failure and actual model smoke receipts |
 | `validation-and-reliability.Rmd` | Define independent units, estimands and intended use; distinguish development, transfer and confirmation | Synthetic leakage traps, known calibration/probability scores, conditional-uncertainty examples and invalid-draw accounting |
 | `shiny-workbench.Rmd` | Reproduce the API workflow through planned `hm_app()` and export the same configuration/results | Browser-tested synthetic walkthrough, cancellation/recovery and app-to-script equivalence |
 | `extending-hypermodR.Rmd` | Add a data, model or backend adapter against the documented extension contract | A minimal test adapter passing the same conformance checks as built-in adapters |
 
-Core articles execute without internet access, model downloads, vendor SDKs or GPUs. Examples use synthetic or explicitly redistributable fixtures with source and license metadata. Heavy examples identify their optional dependency, tested platform/model versions, bounded runtime and opt-in reproduction procedure.
+Core articles execute without internet access, model downloads, vendor SDKs or GPUs. Examples use synthetic or explicitly redistributable fixtures with source and licence metadata. Heavy examples identify their optional dependency, tested platform/model versions, bounded runtime and opt-in reproduction procedure.
 
 Every article states the scientific task, input representation, independent unit, assumptions and limitations before presenting a score. Models selected with target outcomes remain development models. Technical execution is not clinical validation, and a plotted RGB image is not the full spectral measurement.
 

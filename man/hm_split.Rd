@@ -29,13 +29,13 @@ observations.}
 \item{inner_folds}{Integer inner-fold count for nested_grouped, at least two.}
 
 \item{...}{Temporal controls: time is the numeric timestamp-column name
-(default timestamp), cutoff is required, and nonnegative look_back/embargo
+(default timestamp), \code{cutoff} is required, and nonnegative look_back/embargo
 use the same units as time.}
 }
 \value{
 An \code{hm_split}. Grouped designs contain folds (train/test row indices
 and optional inner folds), component membership, observation identities and
-hash. Temporal designs contain train/test/excluded indices, cutoff,
+hash. Temporal designs contain train/test/excluded indices, \code{cutoff},
 look-back and embargo.
 }
 \description{
@@ -46,8 +46,8 @@ Groups connected through any task grouping column or known
 biological/source identities stay together; overlapping source windows are
 connected. Grouped assignment balances component counts rather than
 stratifying outcomes and rejects outer categorical folds without full class
-support. Temporal training precedes cutoff minus embargo and look-back;
-groups exposed at/after cutoff are removed entirely from training. Source
+support. Temporal training precedes cut-off minus embargo and look-back;
+groups exposed at/after cut-off are removed entirely from training. Source
 times are not repaired or reinterpreted. Temporal results retain the selected
 time-column identity and its observations; fitting rejects a stale clock or
 altered partition. Regenerate the temporal split after changing timestamps.

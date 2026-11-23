@@ -17,7 +17,7 @@ hm_admit_backend(
 \item{resolution}{Result of hm_resolve_backend.}
 
 \item{reviewed_terms}{Full reviewed terms entries, preserving each package,
-version and artifact identity. Use the resolved entries after artifact
+version and artefact identity. Use the resolved entries after artefact
 notice
 review and set each reviewed flag to TRUE.}
 
@@ -25,12 +25,12 @@ review and set each reviewed flag to TRUE.}
 
 \item{hardware_verified}{Whether exact driver/device ABI has been checked.}
 
-\item{checkpoint}{Optional exact local checkpoint artifact manifest for vLLM.}
+\item{checkpoint}{Optional exact local checkpoint artefact manifest for vLLM.}
 
 \item{port}{Unprivileged loopback server port.}
 }
 \value{
-An \code{hm_backend_plan} bound to reviewed artifact terms and supplied
+An \code{hm_backend_plan} bound to reviewed artefact terms and supplied
 device/checkpoint admission.
 }
 \description{

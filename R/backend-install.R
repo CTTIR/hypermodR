@@ -88,7 +88,7 @@
 #' Install declared files into an immutable user runtime directory
 #' @param plan Resolved backend plan.
 #' @param accept_terms Explicit acceptance bound to this plan's terms and
-#' artifacts.
+#' artefacts.
 #' @param offline Forbid network downloads.
 #' @param acknowledge_custom_code Explicit permission to run reviewed custom
 #' code.

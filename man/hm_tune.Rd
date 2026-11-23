@@ -22,7 +22,7 @@ hm_tune(
 \item{split}{Validated outer split containing inner grouped folds; their
 test rows must cover outer training exactly once.}
 
-\item{candidates}{Nonempty list of complete model-parameter lists.}
+\item{candidates}{Non-empty list of complete model-parameter lists.}
 
 \item{control}{Fit-control list; resources must declare one CPU/thread.
 Optional max_trials must cover all candidates and seed controls

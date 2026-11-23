@@ -68,6 +68,6 @@ There is no public arbitrary model-plugin registration API. New model engines
 must integrate the package's task/specification contract with train-only recipe
 fitting, prediction schema and explicit fit/predict availability. Backend
 extensions require installed resources addressed through `system.file()`, exact
-artifact hashes/rights and numerical parity. Do not load code from mutable
+artefact hashes/rights and numerical parity. Do not load code from mutable
 remote repositories or use private development paths at runtime. Read the
 architecture, interoperability and backend specifications for acceptance criteria.

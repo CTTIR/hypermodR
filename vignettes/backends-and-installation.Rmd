@@ -54,7 +54,7 @@ Automatic `vllm_linux_cuda` resolution is blocked pending a reviewed replacement
 for its vulnerable 0.11.0 profile; see the publisher's
 [video-processing advisory](https://github.com/vllm-project/vllm/security/advisories/GHSA-4r2x-xpjr-7cvv).
 Existing files are preserved, but those generated profiles cannot be installed
-or started again. Resolve a new CPU profile and review its artifacts/terms, or
+or started again. Resolve a new CPU profile and review its artefacts/terms, or
 use a separately reviewed current custom manifest. Exact upstream/model/Linux
 qualification remains separate from these version and admission repairs.
 
@@ -68,7 +68,7 @@ resolution <- hm_resolve_backend("reference_cpu",
 resolution$hard_gates
 ```
 
-Inspect every artifact's full license/notice text and exact identity before
+Inspect every artefact's full licence/notice text and exact identity before
 setting its reviewed flag. `hm_admit_backend(resolution, reviewed_terms)`
 creates an installation plan only after that review. Pip configuration files
 and inherited pip options do not redirect installation outside the owned environment. `hm_backend_plan()` also
@@ -87,9 +87,9 @@ for remote transmission. Native HSI architectures do not run through stock
 vLLM. `hm_render_hsi()` records the information lost in three-channel views;
 `hm_prompt()` binds prompt origins. Generated text remains auxiliary.
 
-Install receipts, artifact hashes, exact versions and `hm_check_backend()`
+Install receipts, artefact hashes, exact versions and `hm_check_backend()`
 smoke/parity evidence must travel with a support claim. Offline misses, corrupt
-artifacts and unsupported platforms fail explicitly. Repeat installs verify
+artefacts and unsupported platforms fail explicitly. Repeat installs verify
 integrity; interrupted staging and ownership locks are not silently stolen.
 No Windows, macOS, GPU or named upstream model qualification follows from this
 article. No installation is triggered by loading the package or opening the app.

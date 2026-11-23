@@ -89,4 +89,4 @@ editor is outside this workbench. Runtime metadata resolution, terms review and
 installation are explicit user actions.
 Each new runtime resolution clears the terms checkbox. Review its displayed
 notices and check it again before installing; review of an earlier resolution
-does not authorize the new set of artifacts.
+does not authorize the new set of artefacts.

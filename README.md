@@ -159,7 +159,7 @@ Missing-class draws remain invalid; model confidence is not an admitted
 out-of-distribution detector.
 
 Package-owned code uses the [MIT
-license](https://github.com/CTTIR/hypermodR/blob/main/LICENSE.md). Data,
+licence](https://github.com/CTTIR/hypermodR/blob/main/LICENSE.md). Data,
 external source, SDKs and weights retain their own terms. Review the
 [contribution
 guide](https://github.com/CTTIR/hypermodR/blob/main/CONTRIBUTING.md),

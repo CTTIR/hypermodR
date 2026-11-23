@@ -7,13 +7,13 @@
 #' script.
 #' @return Verified export directory, invisibly.
 #' @details Reference reproduction requires an explicitly supplied admitted
-#' backend and artifact_root; it retrains in an owned bounded job. Private
+#' backend and `artifact_root`; it retrains in an owned bounded job. Private
 #' reference exports include checked learned files. The generated
 #' read_private_fit() helper resolves their location after moving the export;
 #' use hm_predict with an owned matching backend_handle to verify and predict.
 #' Installed runtime receipts and cache paths are not portable exports.
 #' The destination is reserved before writing. Its completion marker appears
-#' only after reproduction code and any private artifacts are finalized.
+#' only after reproduction code and any private artefacts are finalized.
 #' Interrupted exports retain a failed destination with partial contents for
 #' inspection; the destination cannot be read as a completed run.
 #' @examples

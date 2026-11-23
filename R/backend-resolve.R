@@ -9,7 +9,7 @@
 #' @param python Explicit existing Python 3.11 or 3.12 executable.
 #' @param uv Explicit uv resolver executable (version 0.11.26).
 #' @param directory External persistent resolution directory.
-#' @return An `hm_backend_resolution` containing exact artifact profile,
+#' @return An `hm_backend_resolution` containing exact artefact profile,
 #' package metadata, external directory, hard gates and pending qualification.
 #' @examples
 #' # Not run: queries package indexes over the network and needs an explicit
@@ -173,14 +173,14 @@ hm_resolve_backend <- function(
 #' Admit reviewed resolved metadata as an exact install plan
 #' @param resolution Result of hm_resolve_backend.
 #' @param reviewed_terms Full reviewed terms entries, preserving each package,
-#'   version and artifact identity. Use the resolved entries after artifact
+#'   version and artefact identity. Use the resolved entries after artefact
 #' notice
 #'   review and set each reviewed flag to TRUE.
 #' @param cache External runtime cache.
 #' @param hardware_verified Whether exact driver/device ABI has been checked.
-#' @param checkpoint Optional exact local checkpoint artifact manifest for vLLM.
+#' @param checkpoint Optional exact local checkpoint artefact manifest for vLLM.
 #' @param port Unprivileged loopback server port.
-#' @return An `hm_backend_plan` bound to reviewed artifact terms and supplied
+#' @return An `hm_backend_plan` bound to reviewed artefact terms and supplied
 #' device/checkpoint admission.
 #' @examples
 #' # Not run: needs a network resolution from hm_resolve_backend() and a human
@@ -265,7 +265,7 @@ hm_admit_backend <- function(
 #' @param revision Exact 40-character commit SHA.
 #' @param directory New external metadata staging directory.
 #' @return List containing repository/revision, architecture, local checkpoint
-#' directory name, artifact hashes/sizes/URLs, unreviewed terms and pending
+#' directory name, artefact hashes/sizes/URLs, unreviewed terms and pending
 #' qualification.
 #' @examples
 #' # Not run: 'owner/model' and the revision stand for a real public checkpoint

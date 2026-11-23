@@ -166,8 +166,8 @@ summary.hm_prediction <- function(object, ...) {
 #' @param x An object returned by `hm_prediction()`.
 #' @param ... Additional arguments; forwarded to graphics for plotting,
 #' otherwise unused.
-#' @return `plot()` draws the predictions in observation order with labeled
-#' axes (one color-blind-safe line per output column for matrix outputs) and
+#' @return `plot()` draws the predictions in observation order with labelled
+#' axes (one colour-blind-safe line per output column for matrix outputs) and
 #' returns the graphics plotting return value (`NULL`) invisibly.
 #' @export
 plot.hm_prediction <- function(x, ...) {

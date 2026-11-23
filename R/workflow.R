@@ -55,7 +55,7 @@ hm_workflow <- function(task, recipe, model) {
 #' @param control Engine-control list: seed defaults to one; weights may align
 #' to all source rows or training rows. Optional tuning contains candidates,
 #' metric and direction. Reference workers require backend_handle and a new
-#' artifact_path.
+#' `artifact_path`.
 #' @return An `hm_fit` containing workflow, fitted recipe, engine, training
 #' indices, validated split, original band map, input radiometric unit and
 #' hash-bound provenance.
@@ -302,7 +302,7 @@ predict.hm_fit <- function(object, newdata, ...) {
 #' @details Fitted coefficient availability depends on the engine.
 #' Original-band mapping is restricted to lm, glm, glmnet, pls, pcr and
 #' bayes_conjugate with globally affine scale, pca, select, derivative,
-#' resample or reflectance recipes. Nonlinear/missingness-dependent recipes,
+#' resample or reflectance recipes. Non-linear/missingness-dependent recipes,
 #' aliased coefficients and incompatible dimensions raise typed errors.
 #' Coefficients describe a fitted coordinate system and do not establish
 #' biological causality.

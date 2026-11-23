@@ -15,7 +15,7 @@ hm_install_backend(
 \item{plan}{Resolved backend plan.}
 
 \item{accept_terms}{Explicit acceptance bound to this plan's terms and
-artifacts.}
+artefacts.}
 
 \item{offline}{Forbid network downloads.}
 

@@ -153,7 +153,7 @@ uncertainty. Development, transfer and confirmation claims require distinct
 independent units and admission evidence. Missing-class draws remain invalid;
 model confidence is not an admitted out-of-distribution detector.
 
-Package-owned code uses the [MIT license](https://github.com/CTTIR/hypermodR/blob/main/LICENSE.md). Data, external source,
+Package-owned code uses the [MIT licence](https://github.com/CTTIR/hypermodR/blob/main/LICENSE.md). Data, external source,
 SDKs and weights retain their own terms. Review the [contribution guide](https://github.com/CTTIR/hypermodR/blob/main/CONTRIBUTING.md),
 [architecture](https://github.com/CTTIR/hypermodR/blob/main/docs/architecture.md) and [quality requirements](https://github.com/CTTIR/hypermodR/blob/main/docs/quality-and-documentation.md).
 Use `citation("hypermodR")` for the software citation; no publication DOI is claimed.

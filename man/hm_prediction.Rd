@@ -55,8 +55,8 @@ The input object invisibly.
 
 A list of descriptive fields.
 
-\code{plot()} draws the predictions in observation order with labeled
-axes (one color-blind-safe line per output column for matrix outputs) and
+\code{plot()} draws the predictions in observation order with labelled
+axes (one colour-blind-safe line per output column for matrix outputs) and
 returns the graphics plotting return value (\code{NULL}) invisibly.
 }
 \description{

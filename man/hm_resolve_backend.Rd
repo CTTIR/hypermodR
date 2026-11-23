@@ -25,7 +25,7 @@ blocked pending a reviewed replacement for its retired vulnerable profile.}
 \item{directory}{External persistent resolution directory.}
 }
 \value{
-An \code{hm_backend_resolution} containing exact artifact profile,
+An \code{hm_backend_resolution} containing exact artefact profile,
 package metadata, external directory, hard gates and pending qualification.
 }
 \description{

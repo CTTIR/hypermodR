@@ -29,7 +29,7 @@ Inspect installation and separately supplied parity evidence
 }
 \details{
 Availability verifies the declared installation path, containment,
-artifact sizes/hashes and any Python environment inventory. Parity is
+artefact sizes/hashes and any Python environment inventory. Parity is
 caller-supplied evidence bound to the plan digest,
 reported as reported_pass rather than independently executed here. No
 scientific qualification follows.

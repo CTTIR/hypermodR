@@ -67,7 +67,7 @@ Their worker protocol is distinct from the ordinary R engine workflow; registry
 visibility alone does not admit an R `hm_fit()` neural route.
 
 Reproduction is opt-in: resolve and review an exact runtime, use explicit training
-roles/group IDs, bound epochs, retain numeric artifacts and run adapter-specific
+roles/group IDs, bound epochs, retain numeric artefacts and run adapter-specific
 parity. Do not run a model from a documentation build. GPU/Metal/ROCm/WSL,
 PEFT, quantization and scientific transfer are not qualified by CPU reference
 tests. See the runtime article before enabling any external execution.

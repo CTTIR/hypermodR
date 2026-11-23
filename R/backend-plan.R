@@ -114,12 +114,12 @@
 #' Plan an isolated runtime installation
 #' @param model_id Candidate or custom model identity.
 #' @param device Requested device.
-#' @param profile Exact custom artifact manifest; no upstream profile is
+#' @param profile Exact custom artefact manifest; no upstream profile is
 #' inferred.
 #' @param cache External user cache.
 #' @param capabilities Local capability record.
 #' @return An `hm_backend_plan` containing the validated profile, capabilities,
-#' cache, artifact-byte budget, actions and immutable digest.
+#' cache, artefact-byte budget, actions and immutable digest.
 #' @examples
 #' dir <- tempfile("hm-backend-")
 #' dir.create(dir)

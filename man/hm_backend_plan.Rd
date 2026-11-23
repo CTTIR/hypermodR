@@ -17,7 +17,7 @@ hm_backend_plan(
 
 \item{device}{Requested device.}
 
-\item{profile}{Exact custom artifact manifest; no upstream profile is
+\item{profile}{Exact custom artefact manifest; no upstream profile is
 inferred.}
 
 \item{cache}{External user cache.}
@@ -26,7 +26,7 @@ inferred.}
 }
 \value{
 An \code{hm_backend_plan} containing the validated profile, capabilities,
-cache, artifact-byte budget, actions and immutable digest.
+cache, artefact-byte budget, actions and immutable digest.
 }
 \description{
 Plan an isolated runtime installation

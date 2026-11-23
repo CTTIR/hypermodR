@@ -20,7 +20,7 @@ hm_resolve_checkpoint(
 }
 \value{
 List containing repository/revision, architecture, local checkpoint
-directory name, artifact hashes/sizes/URLs, unreviewed terms and pending
+directory name, artefact hashes/sizes/URLs, unreviewed terms and pending
 qualification.
 }
 \description{

@@ -1,9 +1,10 @@
 # hypermodR 0.1.0
 
+- Documentation uses British English (`Language: en-GB`); code identifiers and argument names are unchanged.
 - Anomaly ROC AUC avoids integer overflow in large positive/negative sample products. Scalar-task targets and predictions reject dimensioned columns before fitting or evaluation, preventing matrix columns from manufacturing observations; prediction identities and categorical class maps must also be vectors.
 - Grouped splits connect overlapping source windows with a sorted sweep instead of comparing every pair of windows, so splits over many windows per source no longer take quadratic time.
 - Runtime installation reports an `hm_platform_error` with the interpreter's own message when the pinned Python cannot create a copied virtual environment (for example the macOS framework build), instead of a bare process failure; the pip-configuration test skips on such interpreters.
-- `plot()` for numeric predictions labels both axes (observation order and the predicted outcome), draws matrix outputs as one Okabe-Ito line per named output with a key above the plotting region (wrapped into columns and placed under any `main` title, also on logarithmic axes) instead of plotting the first two columns against each other. The workbench source preview uses the same color-blind-safe series colors and a viridis band image, and the workbench plots render at 96 dpi so their axis labels stay legible.
+- `plot()` for numeric predictions labels both axes (observation order and the predicted outcome), draws matrix outputs as one Okabe-Ito line per named output with a key above the plotting region (wrapped into columns and placed under any `main` title, also on logarithmic axes) instead of plotting the first two columns against each other. The workbench source preview uses the same colour-blind-safe series colours and a viridis band image, and the workbench plots render at 96 dpi so their axis labels stay legible.
 - `hm_reliability()` compares predicted and reference labels as text, as `hm_evaluate()` does, so factor labels with different level sets no longer fail, and computes the coverage-risk table from sorted cumulative counts instead of scanning every case again for every confidence threshold.
 - Anomaly average precision is computed from one sort of the scores instead of a pass over all cases per distinct score, and survival concordance accumulates comparable pairs per event instead of building several observation-by-observation matrices, so both metrics stay usable on spectrum-level data. Values are unchanged.
 - `hm_spectral_library()` and the interpretable-models article state that the `beer_lambert` engine uses natural-log attenuation, so decadic coefficients such as tabulated molar extinction coefficients must be multiplied by `log(10)` before they are declared.
@@ -39,7 +40,7 @@
 * Update the CPU reference profile to Torch 2.13.0, NumPy 2.2.6 and setuptools
   84.1.0. Retire affected generated profiles and block automatic vLLM setup
   until a replacement is reviewed; existing runtime files remain preserved.
-* Honor the workbench's 50 MiB upload limit, bind setup consent to the reviewed
+* Honour the workbench's 50 MiB upload limit, bind setup consent to the reviewed
   resolution, and show unsupported-platform restrictions before job submission.
 * Make development installation and first use executable from a fresh session,
   repair packaged-document links, pin shared lint configuration and exclude

@@ -7,7 +7,7 @@
 \title{Hyperspectral Modelling and Validation}
 \description{
 Explicit data contracts, grouped modelling and isolated optional runtimes.
-Package attachment never starts a worker or downloads an artifact.
+Package attachment never starts a worker or downloads an artefact.
 }
 \seealso{
 Useful links:
