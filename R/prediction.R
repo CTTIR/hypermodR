@@ -198,14 +198,15 @@ plot.hm_prediction <- function(x, ...) {
     args <- c(
       list(x = seq_len(nrow(values)), y = values),
       args,
-      list(type = "l", lty = 1, col = palette)[
-        setdiff(c("type", "lty", "col"), names(args))
+      list(type = "b", lty = 1, pch = 19, cex = 0.7, col = palette)[
+        setdiff(c("type", "lty", "pch", "cex", "col"), names(args))
       ]
     )
     do.call(graphics::matplot, args)
     if (ncol(values) <= 8L) {
       graphics::legend(
         "topright", legend = outputs, col = args$col, lty = args$lty,
+        pch = args$pch,
         bty = "n", title = "Output", cex = 0.8
       )
     }
