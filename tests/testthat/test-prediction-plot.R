@@ -60,3 +60,22 @@ test_that("the series palette stays colour-blind safe for many outputs", {
     grDevices::hcl.colors(14L, "viridis")[1:12]
   )
 })
+
+test_that("a matrix plot title sits above a wrapped key on log axes", {
+  task <- hm_task("abundance", "unmixing", "spectrum", "subject_id")
+  outputs <- c("water", "lipid", "oxyhemoglobin", "deoxyhemoglobin",
+               "melanin")
+  abundances <- matrix(seq(0.1, 0.9, length.out = 15), 3, 5,
+                       dimnames = list(NULL, outputs))
+  abundances <- abundances / rowSums(abundances)
+  prediction <- hm_prediction(abundances, task, c("o1", "o2", "o3"))
+  drawn <- recorded_calls(plot(prediction, main = "Unmixing", log = "y"))
+  titles <- drawn$calls[names(drawn$calls) == "C_title"]
+  mains <- unname(unlist(lapply(titles, function(e) e[[2]][[2]])))
+  expect_identical(mains, "Unmixing")
+  legend_text <- unlist(lapply(
+    drawn$calls[names(drawn$calls) == "C_text"],
+    function(e) e[[2]][[3]]
+  ))
+  expect_true(all(outputs %in% legend_text))
+})

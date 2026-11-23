@@ -202,15 +202,56 @@ plot.hm_prediction <- function(x, ...) {
         setdiff(c("type", "lty", "pch", "cex", "col"), names(args))
       ]
     )
+    keyed <- ncol(values) <= 8L
+    main <- if (keyed) args$main else NULL
+    if (keyed) {
+      args$main <- NULL
+    }
     drawn <- do.call(graphics::matplot, args)
-    if (ncol(values) <= 8L) {
-      # One row above the plotting region, so the key never covers data.
-      usr <- graphics::par("usr")
+    if (keyed) {
+      # The key sits in rows above the plotting region, so it never covers
+      # data. Each entry is a label plus about five character widths of
+      # line, symbol and spacing (legend()'s layout); entries wrap into as
+      # many columns as fit the plot width, and the key shrinks (to no less
+      # than 70%) until its rows and any title fit the top margin.
+      # grconvertX/Y return data-scale coordinates, as legend() expects, so
+      # the key also stays in place on logarithmic axes.
+      margin <- graphics::par("mar")[3L] - if (is.null(main)) 0.3 else 2.3
+      for (key_cex in c(1, 0.9, 0.8, 0.7)) {
+        entry <- key_cex * (
+          max(graphics::strwidth(outputs, units = "inches")) +
+            graphics::strwidth("MM", units = "inches") +
+            5 * graphics::par("cin")[1L] * graphics::par("cex")
+        )
+        columns <- max(1L, min(
+          length(outputs),
+          floor(graphics::par("pin")[1L] / entry)
+        ))
+        rows <- ceiling(length(outputs) / columns)
+        if (rows * key_cex <= margin) {
+          break
+        }
+      }
       graphics::legend(
-        x = mean(usr[1:2]), y = usr[4], xjust = 0.5, yjust = 0,
+        x = graphics::grconvertX(0.5, "npc", "user"),
+        y = graphics::grconvertY(1, "npc", "user"),
+        xjust = 0.5, yjust = 0,
         legend = outputs, col = args$col, lty = args$lty, pch = args$pch,
-        horiz = TRUE, bty = "n", xpd = NA
+        text.width = key_cex * (max(abs(graphics::strwidth(outputs))) +
+                                  abs(graphics::strwidth("MM"))),
+        cex = key_cex, ncol = columns, bty = "n", xpd = NA
       )
+      if (!is.null(main)) {
+        # The title goes above the key rows instead of underneath them.
+        title_args <- args[intersect(
+          names(args),
+          c("cex.main", "col.main", "font.main", "family")
+        )]
+        do.call(graphics::title, c(
+          list(main = main, line = rows * key_cex + 0.8),
+          title_args
+        ))
+      }
     }
   } else {
     args <- c(
