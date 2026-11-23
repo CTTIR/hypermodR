@@ -337,14 +337,13 @@ hm_install_backend <- function(
   if (!identical(created$status, 0L)) {
     # Framework builds of Python (for example the macOS system interpreter)
     # cannot create copied environments.
-    reason <- trimws(paste(created$stderr, created$stdout))
     .hm_abort(
       c(
         paste0(
           "The pinned Python interpreter cannot create an isolated ",
           "environment with copied files."
         ),
-        i = "Interpreter output: {reason}"
+        i = "Interpreter output: {trimws(paste(created$stderr, created$stdout))}"
       ),
       "hm_platform_error"
     )
