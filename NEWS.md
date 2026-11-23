@@ -7,6 +7,7 @@
 - `hm_reliability()` compares predicted and reference labels as text, as `hm_evaluate()` does, so factor labels with different level sets no longer fail, and computes the coverage-risk table from sorted cumulative counts instead of scanning every case again for every confidence threshold.
 - Anomaly average precision is computed from one sort of the scores instead of a pass over all cases per distinct score, and survival concordance accumulates comparable pairs per event instead of building several observation-by-observation matrices, so both metrics stay usable on spectrum-level data. Values are unchanged.
 - `hm_spectral_library()` and the interpretable-models article state that the `beer_lambert` engine uses natural-log attenuation, so decadic coefficients such as tabulated molar extinction coefficients must be multiplied by `log(10)` before they are declared.
+- `hm_bootstrap()` (and therefore `hm_compare()`) looks up each unit's rows once and relabels resampled copies in one vectorized step instead of scanning all observations for every sampled unit in every draw; the resamples are unchanged.
 
 ## CRAN preparation
 

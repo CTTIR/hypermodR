@@ -113,28 +113,22 @@ hm_bootstrap <- function(
     dimnames = list(NULL, names(e$metrics))
   )
   indices <- vector("list", draws)
+  # Row indices of every unit, computed once; each draw then concatenates the
+  # rows of its sampled units in sampling order.
+  unit_rows <- split(seq_len(nrow(r)), r[[unit]])
   for (i in seq_len(draws)) {
-    ix <- unlist(
-      lapply(sampled[[i]], function(u) which(r[[unit]] == u)),
-      use.names = FALSE
-    )
+    ix <- unlist(unit_rows[sampled[[i]]], use.names = FALSE)
+    unit_sizes <- lengths(unit_rows[sampled[[i]]], use.names = FALSE)
     indices[[i]] <- ix
     evaluate <- function(obj) {
       # Give each bootstrap copy a distinct biological/acquisition
       # identity.
-      offset <- 0L
       pp <- .hm_resample_evaluation(obj, ix)
-      for (j in seq_along(sampled[[i]])) {
-        n <- sum(r[[unit]] == sampled[[i]][j])
-        rows <- offset + seq_len(n)
-        for (g in unique(c(unit, obj$hierarchy))) {
-          if (g %in% names(pp$reference)) {
-            pp$reference[[g]][rows] <- paste(j, pp$reference[[g]][rows],
-              sep = ":"
-            )
-          }
+      copy <- rep(seq_along(sampled[[i]]), unit_sizes)
+      for (g in unique(c(unit, obj$hierarchy))) {
+        if (g %in% names(pp$reference)) {
+          pp$reference[[g]] <- paste(copy, pp$reference[[g]], sep = ":")
         }
-        offset <- offset + n
       }
       hm_evaluate(pp$predictions, pp$reference, obj$estimand,
         hierarchy = obj$hierarchy
