@@ -9,4 +9,4 @@ permissions:
 jobs:
   r_cmd_check:
     permissions: read-all
-    uses: CTTIR/.github/.github/workflows/R-CMD-check.yaml@7781930dce57f5d8ac05a7803fb42fe3b591d354
+    uses: CTTIR/.github/.github/workflows/R-CMD-check.yaml@cfc7bb9d090a8e35b60911ff5d71aef18b2d0d94

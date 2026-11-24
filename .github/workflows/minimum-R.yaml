@@ -36,7 +36,7 @@ jobs:
         run: |
           rcmdcheck::rcmdcheck(args = c("--as-cran", "--no-manual"),
                               error_on = "warning", check_dir = "check")
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7.0.2
         if: always()
         with:
           name: minimum-R-results
